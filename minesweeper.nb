@@ -3,10 +3,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[         0,          0]
-NotebookDataLength[    157422,       3124]
-NotebookOptionsPosition[    156605,       3095]
-NotebookOutlinePosition[    157061,       3114]
-CellTagsIndexPosition[    157018,       3111]
+NotebookDataLength[    160141,       3186]
+NotebookOptionsPosition[    159324,       3157]
+NotebookOutlinePosition[    159780,       3176]
+CellTagsIndexPosition[    159737,       3173]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -814,38 +814,80 @@ Cell[BoxData[{
          "]"}]}], ";", "\n", "\n", "  ", 
        RowBox[{
         RowBox[{"dispatch", "[", 
+         RowBox[{"\"\<RandomClick\>\"", ",", " ", "True"}], "]"}], " ", ":=", 
+        "\n", "    ", 
+        RowBox[{"With", "[", 
+         RowBox[{
+          RowBox[{"{", 
+           RowBox[{"alternative", " ", "=", " ", 
+            RowBox[{"Function", "[", 
+             RowBox[{"AnyTrue", "[", 
+              RowBox[{
+               RowBox[{"neighbors", "[", 
+                RowBox[{"#", ",", " ", "clicked"}], "]"}], ",", " ", 
+               RowBox[{"Function", "[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"markRemains", "[", "#", "]"}], " ", "\[Equal]", 
+                  " ", "1"}], " ", "&&", " ", 
+                 RowBox[{
+                  RowBox[{"Length", "@", 
+                   RowBox[{"neighbors", "[", 
+                    RowBox[{"#", ",", " ", "freeQ"}], "]"}]}], " ", 
+                  "\[Equal]", " ", "2"}]}], "]"}]}], "]"}], "]"}]}], "}"}], 
+          ",", "\n", "      ", 
+          RowBox[{"click", "@", 
+           RowBox[{"SelectFirst", "[", 
+            RowBox[{
+             RowBox[{"Join", "@@", 
+              RowBox[{"Array", "[", 
+               RowBox[{"List", ",", " ", 
+                RowBox[{"{", 
+                 RowBox[{"rows", ",", "cols"}], "}"}]}], "]"}]}], ",", "\n", 
+             "                        ", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"freeQ", "[", "#", "]"}], " ", "&&", " ", 
+               RowBox[{"!", 
+                RowBox[{"mineQ", "[", "#", "]"}]}], " ", "&&", " ", 
+               RowBox[{"alternative", "[", "#", "]"}]}], " ", "&"}], ",", 
+             "\n", "                        ", 
+             RowBox[{"randomCell", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"freeQ", "[", "#", "]"}], " ", "&&", " ", 
+                RowBox[{"!", 
+                 RowBox[{"mineQ", "[", "#", "]"}]}]}], " ", "&"}], "]"}]}], 
+            "]"}]}]}], "]"}]}], ";", "\n", "                        ", "\n", 
+       "  ", 
+       RowBox[{
+        RowBox[{"dispatch", "[", 
          RowBox[{"\"\<RandomClick\>\"", ",", " ", 
-          RowBox[{"cheat_:", "False"}]}], "]"}], " ", ":=", "\n", "    ", 
+          RowBox[{"_", ":", "False"}]}], "]"}], " ", ":=", "\n", "    ", 
         RowBox[{"With", "[", 
          RowBox[{
           RowBox[{"{", 
            RowBox[{"reasoningMineQ", " ", "=", " ", 
-            RowBox[{"If", "[", 
-             RowBox[{
-             "cheat", ",", " ", "\n", "                              ", 
-              "mineQ", ",", " ", "\n", "                              ", 
-              RowBox[{"Function", "[", 
-               RowBox[{"AnyTrue", "[", 
+            RowBox[{"Function", "[", 
+             RowBox[{"AnyTrue", "[", 
+              RowBox[{
+               RowBox[{"neighbors", "[", 
+                RowBox[{"#", ",", " ", "clicked"}], "]"}], ",", " ", 
+               RowBox[{"Function", "[", 
                 RowBox[{
-                 RowBox[{"neighbors", "[", 
-                  RowBox[{"#", ",", " ", "clicked"}], "]"}], ",", "\n", 
-                 "                                               ", 
-                 RowBox[{
-                  RowBox[{
-                   RowBox[{"markRemains", "[", "#", "]"}], " ", "\[Equal]", 
-                   " ", 
-                   RowBox[{"Length", "@", 
-                    RowBox[{"neighbors", "[", 
-                    RowBox[{"#", ",", " ", "freeQ"}], "]"}]}]}], " ", "&"}]}],
-                 "]"}], "]"}]}], "]"}]}], "}"}], ",", "\n", "      ", 
-          RowBox[{"click", "[", 
+                 RowBox[{"markRemains", "[", "#", "]"}], " ", "\[Equal]", " ", 
+                 RowBox[{"Length", "@", 
+                  RowBox[{"neighbors", "[", 
+                   RowBox[{"#", ",", " ", "freeQ"}], "]"}]}]}], "]"}]}], 
+              "]"}], "]"}]}], "}"}], ",", "\n", "      ", 
+          RowBox[{"click", "@", 
            RowBox[{"randomCell", "[", 
             RowBox[{
              RowBox[{
               RowBox[{"freeQ", "[", "#", "]"}], " ", "&&", " ", 
               RowBox[{"!", 
                RowBox[{"reasoningMineQ", "[", "#", "]"}]}]}], " ", "&"}], 
-            "]"}], "]"}]}], "\n", "    ", "]"}]}], ";", "\n", "\n", "  ", 
+            "]"}]}]}], "]"}]}], ";", "\n", "\n", "  ", 
        RowBox[{
         RowBox[{"solve0", "[", 
          RowBox[{"k_", ",", " ", "lst_", ",", " ", "remains_"}], "]"}], " ", ":=",
@@ -2314,13 +2356,16 @@ PXF6jRnv37TA9w+ZLccWYf/k/YvEwt8/F/r+/Ru8/pqH
    3.7291688893674917`*^9, 3.7291688914490957`*^9}, {3.729169012098482*^9, 
    3.7291690672402353`*^9}, {3.729169232828561*^9, 3.729169273929372*^9}, {
    3.729169480028037*^9, 3.72916948056103*^9}, {3.729169522271121*^9, 
-   3.7291695434237423`*^9}},ExpressionUUID->"49ff5b48-8bca-44be-bbb8-\
+   3.7291695434237423`*^9}, {3.729223935471065*^9, 3.7292239536617937`*^9}, {
+   3.7292240090855703`*^9, 3.7292244279969387`*^9}, {3.729224523123567*^9, 
+   3.729224527494526*^9}, {3.729224661843727*^9, 
+   3.729224662557622*^9}},ExpressionUUID->"49ff5b48-8bca-44be-bbb8-\
 04ef2b4e4699"],
 
 Cell[BoxData[
  DynamicModuleBox[{$CellContext`grid$$ = \
-$CellContext`Dispatcher[$CellContext`dispatch$135523], $CellContext`plotter$$ \
-= $CellContext`Dispatcher[$CellContext`dispatch$135525], \
+$CellContext`Dispatcher[$CellContext`dispatch$119861], $CellContext`plotter$$ \
+= $CellContext`Dispatcher[$CellContext`dispatch$119863], \
 $CellContext`autoSolve$$ = False, $CellContext`uncertain$$ = 
   "Guess", $CellContext`greedy$$ = False, $CellContext`clickOnly$$ = 
   False, $CellContext`safe$$ = {}, $CellContext`cheats$$ = {}, \
@@ -2518,79 +2563,94 @@ $CellContext`ClickOnly -> $CellContext`clickOnly$$]],
        Blank[]]], 
      $CellContext`self[
       ToString[$CellContext`msg]]], 
-    Attributes[$CellContext`dispatch$135523] = {
-     Temporary}, $CellContext`dispatch$135523[
-     "Boomed"] := $CellContext`boomed$135523, $CellContext`dispatch$135523[
-     "Cols"] := $CellContext`cols$135523, $CellContext`dispatch$135523[
-     "Mines"] := $CellContext`mines$135523, $CellContext`dispatch$135523[
+    Attributes[$CellContext`dispatch$119861] = {
+     Temporary}, $CellContext`dispatch$119861[
+     "Boomed"] := $CellContext`boomed$119861, $CellContext`dispatch$119861[
+     "Cols"] := $CellContext`cols$119861, $CellContext`dispatch$119861[
+     "Mines"] := $CellContext`mines$119861, $CellContext`dispatch$119861[
      "MinesRemaining"] := 
-    If[$CellContext`success$135523, 
-      0, $CellContext`minesRemaining$135523], $CellContext`dispatch$135523[
-     "Remaining"] := $CellContext`remaining$135523, \
-$CellContext`dispatch$135523[
-     "Rows"] := $CellContext`rows$135523, $CellContext`dispatch$135523[
+    If[$CellContext`success$119861, 
+      0, $CellContext`minesRemaining$119861], $CellContext`dispatch$119861[
+     "Remaining"] := $CellContext`remaining$119861, \
+$CellContext`dispatch$119861[
+     "Rows"] := $CellContext`rows$119861, $CellContext`dispatch$119861[
      "Show"] := Array[
-      Composition[$CellContext`show$135523, 
-       List], {$CellContext`rows$135523, $CellContext`cols$135523}], \
-$CellContext`dispatch$135523["Started"] := $CellContext`startTime$135523 != 
-     0, $CellContext`dispatch$135523[
-     "Success"] := $CellContext`success$135523, $CellContext`dispatch$135523[
+      Composition[$CellContext`show$119861, 
+       List], {$CellContext`rows$119861, $CellContext`cols$119861}], \
+$CellContext`dispatch$119861["Started"] := $CellContext`startTime$119861 != 
+     0, $CellContext`dispatch$119861[
+     "Success"] := $CellContext`success$119861, $CellContext`dispatch$119861[
      "TimeUsed"] := 
-    Which[$CellContext`startTime$135523 == 0, 0, $CellContext`stopTime$135523 != 
-      0, $CellContext`stopTime$135523 - $CellContext`startTime$135523, True, 
-      SessionTime[] - $CellContext`startTime$135523], \
-$CellContext`dispatch$135523["Click", 
+    Which[$CellContext`startTime$119861 == 0, 0, $CellContext`stopTime$119861 != 
+      0, $CellContext`stopTime$119861 - $CellContext`startTime$119861, True, 
+      SessionTime[] - $CellContext`startTime$119861], \
+$CellContext`dispatch$119861["RandomClick", True] := 
+    With[{$CellContext`alternative$ = AnyTrue[
+         $CellContext`neighbors$119861[#, $CellContext`clicked$119861], 
+         And[$CellContext`markRemains$119861[#] == 1, Length[
+            $CellContext`neighbors$119861[#, $CellContext`freeQ$119861]] == 
+          2]& ]& }, 
+      $CellContext`click$119861[
+       SelectFirst[
+        Apply[Join, 
+         Array[List, {$CellContext`rows$119861, $CellContext`cols$119861}]], 
+        And[
+         $CellContext`freeQ$119861[#], 
+         Not[
+          $CellContext`mineQ$119861[#]], 
+         $CellContext`alternative$[#]]& , 
+        $CellContext`randomCell$119861[And[
+          $CellContext`freeQ$119861[#], 
+          Not[
+           $CellContext`mineQ$119861[#]]]& ]]]], $CellContext`dispatch$119861[
+     "Click", 
       Pattern[$CellContext`cell$, 
        Blank[]], True] := If[
-      $CellContext`mineQ$135523[$CellContext`cell$], 
-      $CellContext`mark$135523[$CellContext`cell$], 
-      $CellContext`click$135523[$CellContext`cell$]], \
-$CellContext`dispatch$135523["Click", 
+      $CellContext`mineQ$119861[$CellContext`cell$], 
+      $CellContext`mark$119861[$CellContext`cell$], 
+      $CellContext`click$119861[$CellContext`cell$]], \
+$CellContext`dispatch$119861["Click", 
       Pattern[$CellContext`cell$, 
        Blank[]], 
       Optional[
        Blank[], False]] := If[
       Not[
-       $CellContext`marked$135523[$CellContext`cell$]], 
-      $CellContext`click$135523[$CellContext`cell$]], \
-$CellContext`dispatch$135523["Mark", 
+       $CellContext`marked$119861[$CellContext`cell$]], 
+      $CellContext`click$119861[$CellContext`cell$]], \
+$CellContext`dispatch$119861["Mark", 
       Pattern[$CellContext`cell$, 
-       Blank[]]] := $CellContext`mark$135523[$CellContext`cell$], \
-$CellContext`dispatch$135523["Safe", 
+       Blank[]]] := $CellContext`mark$119861[$CellContext`cell$], \
+$CellContext`dispatch$119861["Safe", 
       Pattern[$CellContext`cell$, 
-       Blank[]]] := $CellContext`safe$135523[$CellContext`cell$], \
-$CellContext`dispatch$135523["Reset", 
+       Blank[]]] := $CellContext`safe$119861[$CellContext`cell$], \
+$CellContext`dispatch$119861["Reset", 
       Optional[
        Pattern[$CellContext`keep$, 
         Blank[]], False]] := If[$CellContext`keep$, 
-      $CellContext`restart$135523[], 
-      $CellContext`reset$135523[$CellContext`rows$135523, \
-$CellContext`cols$135523, $CellContext`mines$135523]], \
-$CellContext`dispatch$135523["Reset", 
+      $CellContext`restart$119861[], 
+      $CellContext`reset$119861[$CellContext`rows$119861, \
+$CellContext`cols$119861, $CellContext`mines$119861]], \
+$CellContext`dispatch$119861["Reset", 
       Pattern[$CellContext`rows1$, 
        Blank[Integer]], 
       Pattern[$CellContext`cols1$, 
        Blank[Integer]], 
       Pattern[$CellContext`mines1$, 
        Blank[
-       Integer]]] := $CellContext`reset$135523[$CellContext`rows1$, \
-$CellContext`cols1$, $CellContext`mines1$], $CellContext`dispatch$135523[
+       Integer]]] := $CellContext`reset$119861[$CellContext`rows1$, \
+$CellContext`cols1$, $CellContext`mines1$], $CellContext`dispatch$119861[
      "RandomClick", 
       Optional[
-       Pattern[$CellContext`cheat$, 
-        Blank[]], False]] := 
-    With[{$CellContext`reasoningMineQ$ = 
-       If[$CellContext`cheat$, $CellContext`mineQ$135523, AnyTrue[
-          $CellContext`neighbors$135523[#, $CellContext`clicked$135523], \
-$CellContext`markRemains$135523[#] == Length[
-            $CellContext`neighbors$135523[#, $CellContext`freeQ$135523]]& ]& \
-]}, 
-      $CellContext`click$135523[
-       $CellContext`randomCell$135523[And[
-         $CellContext`freeQ$135523[#], 
+       Blank[], False]] := With[{$CellContext`reasoningMineQ$ = AnyTrue[
+         $CellContext`neighbors$119861[#, $CellContext`clicked$119861], \
+$CellContext`markRemains$119861[#] == Length[
+           $CellContext`neighbors$119861[#, $CellContext`freeQ$119861]]& ]& }, 
+      $CellContext`click$119861[
+       $CellContext`randomCell$119861[And[
+         $CellContext`freeQ$119861[#], 
          Not[
           $CellContext`reasoningMineQ$[#]]]& ]]], \
-$CellContext`dispatch$135523["Solve", 
+$CellContext`dispatch$119861["Solve", 
       OptionsPattern[{$CellContext`Greedy -> False, $CellContext`ClickOnly -> 
         False}]] := 
     With[{$CellContext`clickOnly$ = OptionValue[$CellContext`ClickOnly]}, 
@@ -2600,7 +2660,7 @@ $CellContext`dispatch$135523["Solve",
                  Blank[]] -> 0) :> $CellContext`pos]}, 
            And[
            Length[$CellContext`clicks$] != 0, 
-            Scan[$CellContext`click$135523, 
+            Scan[$CellContext`click$119861, 
               Sow[$CellContext`clicks$]]; True]]& , 
           With[{$CellContext`clicks$ = Cases[#, (Pattern[$CellContext`pos, 
                  Blank[]] -> 0) :> $CellContext`pos], $CellContext`marks$ = 
@@ -2608,8 +2668,8 @@ $CellContext`dispatch$135523["Solve",
                  Blank[]] -> 1) :> $CellContext`pos]}, 
            And[
            Length[$CellContext`clicks$] + Length[$CellContext`marks$] != 0, 
-            Scan[$CellContext`click$135523, 
-              Sow[$CellContext`clicks$]]; Scan[$CellContext`mark$135523, 
+            Scan[$CellContext`click$119861, 
+              Sow[$CellContext`clicks$]]; Scan[$CellContext`mark$119861, 
               Sow[$CellContext`marks$]]; True]]& ]}, 
        Or[
         If[
@@ -2617,115 +2677,80 @@ $CellContext`dispatch$135523["Solve",
          AnyTrue[
           Array[
            Composition[
-            $CellContext`solve$135523[$CellContext`k$, \
+            $CellContext`solve$119861[$CellContext`k$, \
 $CellContext`clickOnly$], 
-            List], {$CellContext`rows$135523, $CellContext`cols$135523}], 
+            List], {$CellContext`rows$119861, $CellContext`cols$119861}], 
           Identity, 2], 
          AnyTrue[
-          Array[List, {$CellContext`rows$135523, $CellContext`cols$135523}], 
-          $CellContext`solve$135523[$CellContext`k$, $CellContext`clickOnly$],
+          Array[List, {$CellContext`rows$119861, $CellContext`cols$119861}], 
+          $CellContext`solve$119861[$CellContext`k$, $CellContext`clickOnly$],
            2]], 
-        And[$CellContext`minesRemaining$135523 < 5, 
-         $CellContext`solve0$135523[$CellContext`k$, 
+        And[$CellContext`minesRemaining$119861 < 5, 
+         $CellContext`solve0$119861[$CellContext`k$, 
           Apply[Join, 
            Array[If[
-             $CellContext`freeQ$135523[{
+             $CellContext`freeQ$119861[{
                SlotSequence[1]}], {
               SlotSequence[1]}, 
-             Nothing]& , {$CellContext`rows$135523, \
-$CellContext`cols$135523}]], $CellContext`minesRemaining$135523]]]]], \
-$CellContext`dispatch$135523["Solve", 
+             Nothing]& , {$CellContext`rows$119861, \
+$CellContext`cols$119861}]], $CellContext`minesRemaining$119861]]]]], \
+$CellContext`dispatch$119861["Solve", 
       Pattern[$CellContext`cell$, 
-       Blank[]]] := $CellContext`solve$135523[Identity][$CellContext`cell$], 
-    Attributes[$CellContext`rows$135523] = {
-     Temporary}, $CellContext`rows$135523 = 16, 
-    Attributes[$CellContext`cols$135523] = {
-     Temporary}, $CellContext`cols$135523 = 16, 
-    Attributes[$CellContext`mines$135523] = {
-     Temporary}, $CellContext`mines$135523 = 40, 
-    Attributes[$CellContext`show$135523] = {
-     Temporary}, $CellContext`show$135523[
+       Blank[]]] := $CellContext`solve$119861[Identity][$CellContext`cell$], 
+    Attributes[$CellContext`rows$119861] = {
+     Temporary}, $CellContext`rows$119861 = 16, 
+    Attributes[$CellContext`cols$119861] = {
+     Temporary}, $CellContext`cols$119861 = 16, 
+    Attributes[$CellContext`mines$119861] = {
+     Temporary}, $CellContext`mines$119861 = 40, 
+    Attributes[$CellContext`show$119861] = {
+     Temporary}, $CellContext`show$119861[
       PatternTest[
        Pattern[$CellContext`cell$, 
-        Blank[]], $CellContext`clicked$135523]] := If[
-      $CellContext`mineQ$135523[$CellContext`cell$], "X", 
-      $CellContext`grid$135523[$CellContext`cell$]], $CellContext`show$135523[
+        Blank[]], $CellContext`clicked$119861]] := If[
+      $CellContext`mineQ$119861[$CellContext`cell$], "X", 
+      $CellContext`grid$119861[$CellContext`cell$]], $CellContext`show$119861[
      
       PatternTest[
        Pattern[$CellContext`cell$, 
-        Blank[]], $CellContext`marked$135523]] := If[
+        Blank[]], $CellContext`marked$119861]] := If[
       Or[
-       $CellContext`mineQ$135523[$CellContext`cell$], 
+       $CellContext`mineQ$119861[$CellContext`cell$], 
        Not[
-        Or[$CellContext`boomed$135523, $CellContext`success$135523]]], "m", 
-      "w"], $CellContext`show$135523[
+        Or[$CellContext`boomed$119861, $CellContext`success$119861]]], "m", 
+      "w"], $CellContext`show$119861[
       PatternTest[
        Pattern[$CellContext`cell$, 
-        Blank[]], $CellContext`mineQ$135523]] := 
-    If[$CellContext`boomed$135523, "x", 
-      If[$CellContext`success$135523, "m", " "]], $CellContext`show$135523[
+        Blank[]], $CellContext`mineQ$119861]] := 
+    If[$CellContext`boomed$119861, "x", 
+      If[$CellContext`success$119861, "m", " "]], $CellContext`show$119861[
       Blank[]] = " ", Attributes[$CellContext`cell$] = {Temporary}, 
-    Attributes[$CellContext`clicked$135523] = {
-     Temporary}, $CellContext`clicked$135523[
+    Attributes[$CellContext`clicked$119861] = {
+     Temporary}, $CellContext`clicked$119861[
       Blank[]] = False, 
-    Attributes[$CellContext`mineQ$135523] = {
-     Temporary}, $CellContext`mineQ$135523 = $CellContext`grid$135523[#] == 
-     "x"& , Attributes[$CellContext`grid$135523] = {
-     Temporary}, $CellContext`grid$135523[
+    Attributes[$CellContext`mineQ$119861] = {
+     Temporary}, $CellContext`mineQ$119861 = $CellContext`grid$119861[#] == 
+     "x"& , Attributes[$CellContext`grid$119861] = {
+     Temporary}, $CellContext`grid$119861[
       Blank[]] = 0, 
-    Attributes[$CellContext`marked$135523] = {
-     Temporary}, $CellContext`marked$135523[
+    Attributes[$CellContext`marked$119861] = {
+     Temporary}, $CellContext`marked$119861[
       Blank[]] = False, 
-    Attributes[$CellContext`boomed$135523] = {
-     Temporary}, $CellContext`boomed$135523 = False, 
-    Attributes[$CellContext`success$135523] = {
-     Temporary}, $CellContext`success$135523 := $CellContext`remaining$135523 == 
-     0, Attributes[$CellContext`remaining$135523] = {
-     Temporary}, $CellContext`remaining$135523 = 216, 
-    Attributes[$CellContext`startTime$135523] = {
-     Temporary}, $CellContext`startTime$135523 = 0, 
-    Attributes[$CellContext`minesRemaining$135523] = {
-     Temporary}, $CellContext`minesRemaining$135523 = 40, 
-    Attributes[$CellContext`stopTime$135523] = {
-     Temporary}, $CellContext`stopTime$135523 = 0, 
-    Attributes[$CellContext`mark$135523] = {
-     Temporary}, $CellContext`mark$135523[
-      Pattern[$CellContext`cell$, 
-       Blank[]]] := ($CellContext`start$135523[Nothing]; If[
-       And[
-        Not[
-         Or[$CellContext`boomed$135523, $CellContext`success$135523]], 
-        Not[
-         $CellContext`clicked$135523[$CellContext`cell$]]], 
-       If[$CellContext`marked$135523[$CellContext`cell$] = Not[
-          $CellContext`marked$135523[$CellContext`cell$]], 
-        Decrement[$CellContext`minesRemaining$135523], 
-        Increment[$CellContext`minesRemaining$135523]]]; $CellContext`cell$), 
-    Attributes[$CellContext`start$135523] = {
-     Temporary}, $CellContext`start$135523[
-      Pattern[$CellContext`init$, 
-       Blank[]]] := 
-    If[$CellContext`startTime$135523 == 
-      0, $CellContext`startTime$135523 = SessionTime[]; If[
-        Not[$CellContext`inited$135523], $CellContext`inited$135523 = True; 
-        With[{$CellContext`excludes$ = If[$CellContext`init$ =!= Nothing, 
-             Append[
-              $CellContext`neighbors$135523[$CellContext`init$, 
-               True& ], $CellContext`init$], {}]}, 
-          Do[$CellContext`grid$135523[
-             $CellContext`randomCell$135523[And[
-               Not[
-                $CellContext`mineQ$135523[#]], 
-               Not[
-                MemberQ[$CellContext`excludes$, #]]]& ]] = 
-           "x", $CellContext`mines$135523]]; \
-$CellContext`calcNeighbors$135523[]]], 
-    Attributes[$CellContext`init$] = {Temporary}, 
-    Attributes[$CellContext`inited$135523] = {
-     Temporary}, $CellContext`inited$135523 = False, 
-    Attributes[$CellContext`excludes$] = {Temporary}, 
-    Attributes[$CellContext`neighbors$135523] = {
-     Temporary}, $CellContext`neighbors$135523[
+    Attributes[$CellContext`boomed$119861] = {
+     Temporary}, $CellContext`boomed$119861 = False, 
+    Attributes[$CellContext`success$119861] = {
+     Temporary}, $CellContext`success$119861 := $CellContext`remaining$119861 == 
+     0, Attributes[$CellContext`remaining$119861] = {
+     Temporary}, $CellContext`remaining$119861 = 216, 
+    Attributes[$CellContext`startTime$119861] = {
+     Temporary}, $CellContext`startTime$119861 = 0, 
+    Attributes[$CellContext`minesRemaining$119861] = {
+     Temporary}, $CellContext`minesRemaining$119861 = 40, 
+    Attributes[$CellContext`stopTime$119861] = {
+     Temporary}, $CellContext`stopTime$119861 = 0, 
+    Attributes[$CellContext`alternative$] = {Temporary}, 
+    Attributes[$CellContext`neighbors$119861] = {
+     Temporary}, $CellContext`neighbors$119861[
       Pattern[$CellContext`cell$, 
        Blank[]], 
       Pattern[$CellContext`crit$, 
@@ -2734,96 +2759,132 @@ $CellContext`calcNeighbors$135523[]]],
        Tuples[{-1, 0, 1}, 2]], And[# != $CellContext`cell$, 
        Apply[And, 
         Thread[
-        1 <= # <= {$CellContext`rows$135523, $CellContext`cols$135523}]], 
+        1 <= # <= {$CellContext`rows$119861, $CellContext`cols$119861}]], 
        $CellContext`crit$[#]]& ], 
     Attributes[$CellContext`crit$] = {Temporary}, 
-    Attributes[$CellContext`randomCell$135523] = {
-     Temporary}, $CellContext`randomCell$135523[
+    Attributes[$CellContext`markRemains$119861] = {
+     Temporary}, $CellContext`markRemains$119861 = \
+$CellContext`grid$119861[#] - Length[
+      $CellContext`neighbors$119861[#, $CellContext`marked$119861]]& , 
+    Attributes[$CellContext`freeQ$119861] = {
+     Temporary}, $CellContext`freeQ$119861 = Not[
+      Or[
+       $CellContext`clicked$119861[#], 
+       $CellContext`marked$119861[#]]]& , 
+    Attributes[$CellContext`click$119861] = {
+     Temporary}, $CellContext`click$119861[
+      Pattern[$CellContext`cell$, 
+       Blank[]]] := ($CellContext`start$119861[$CellContext`cell$]; Which[
+       Or[$CellContext`boomed$119861, $CellContext`success$119861], Null, 
+       $CellContext`mineQ$119861[$CellContext`cell$], \
+$CellContext`clicked$119861[$CellContext`cell$] = 
+        True; $CellContext`boomed$119861 = True, 
+       $CellContext`marked$119861[$CellContext`cell$], \
+$CellContext`boomed$119861 = True, 
+       $CellContext`clicked$119861[$CellContext`cell$], 
+       If[$CellContext`markRemains$119861[$CellContext`cell$] == 0, 
+        Scan[$CellContext`click$119861, 
+         $CellContext`neighbors$119861[$CellContext`cell$, \
+$CellContext`freeQ$119861]]], 
+       True, $CellContext`clicked$119861[$CellContext`cell$] = True; 
+       Decrement[$CellContext`remaining$119861]; 
+       If[$CellContext`grid$119861[$CellContext`cell$] == 0, 
+         Scan[$CellContext`click$119861, 
+          $CellContext`neighbors$119861[$CellContext`cell$, \
+$CellContext`freeQ$119861]]]]; $CellContext`stop$119861[]; \
+$CellContext`cell$), 
+    Attributes[$CellContext`start$119861] = {
+     Temporary}, $CellContext`start$119861[
+      Pattern[$CellContext`init$, 
+       Blank[]]] := 
+    If[$CellContext`startTime$119861 == 
+      0, $CellContext`startTime$119861 = SessionTime[]; If[
+        Not[$CellContext`inited$119861], $CellContext`inited$119861 = True; 
+        With[{$CellContext`excludes$ = If[$CellContext`init$ =!= Nothing, 
+             Append[
+              $CellContext`neighbors$119861[$CellContext`init$, 
+               True& ], $CellContext`init$], {}]}, 
+          Do[$CellContext`grid$119861[
+             $CellContext`randomCell$119861[And[
+               Not[
+                $CellContext`mineQ$119861[#]], 
+               Not[
+                MemberQ[$CellContext`excludes$, #]]]& ]] = 
+           "x", $CellContext`mines$119861]]; \
+$CellContext`calcNeighbors$119861[]]], 
+    Attributes[$CellContext`init$] = {Temporary}, 
+    Attributes[$CellContext`inited$119861] = {
+     Temporary}, $CellContext`inited$119861 = False, 
+    Attributes[$CellContext`excludes$] = {Temporary}, 
+    Attributes[$CellContext`randomCell$119861] = {
+     Temporary}, $CellContext`randomCell$119861[
       Pattern[$CellContext`pred$, 
        Blank[]]] := Do[
       With[{$CellContext`cell$ = QuotientRemainder[
            
-           RandomInteger[$CellContext`rows$135523 $CellContext`cols$135523 - 
-            1], $CellContext`cols$135523] + {1, 1}}, 
+           RandomInteger[$CellContext`rows$119861 $CellContext`cols$119861 - 
+            1], $CellContext`cols$119861] + {1, 1}}, 
        If[
         $CellContext`pred$[$CellContext`cell$], 
         Return[$CellContext`cell$]]], Infinity], 
     Attributes[$CellContext`pred$] = {Temporary}, 
-    Attributes[$CellContext`calcNeighbors$135523] = {
-     Temporary}, $CellContext`calcNeighbors$135523[] := Do[
+    Attributes[$CellContext`calcNeighbors$119861] = {
+     Temporary}, $CellContext`calcNeighbors$119861[] := Do[
       With[{$CellContext`cell$ = {$CellContext`x, $CellContext`y}}, 
        If[
         Not[
-         $CellContext`mineQ$135523[$CellContext`cell$]], \
-$CellContext`grid$135523[$CellContext`cell$] = Length[
-          $CellContext`neighbors$135523[$CellContext`cell$, \
-$CellContext`mineQ$135523]]]], {$CellContext`x, 
-       1, $CellContext`rows$135523}, {$CellContext`y, 
-       1, $CellContext`cols$135523}], 
-    Attributes[$CellContext`click$135523] = {
-     Temporary}, $CellContext`click$135523[
+         $CellContext`mineQ$119861[$CellContext`cell$]], \
+$CellContext`grid$119861[$CellContext`cell$] = Length[
+          $CellContext`neighbors$119861[$CellContext`cell$, \
+$CellContext`mineQ$119861]]]], {$CellContext`x, 
+       1, $CellContext`rows$119861}, {$CellContext`y, 
+       1, $CellContext`cols$119861}], 
+    Attributes[$CellContext`stop$119861] = {
+     Temporary}, $CellContext`stop$119861[] := If[
+      And[$CellContext`stopTime$119861 == 0, 
+       Or[$CellContext`boomed$119861, $CellContext`success$119861]], \
+$CellContext`stopTime$119861 = SessionTime[]], 
+    Attributes[$CellContext`mark$119861] = {
+     Temporary}, $CellContext`mark$119861[
       Pattern[$CellContext`cell$, 
-       Blank[]]] := ($CellContext`start$135523[$CellContext`cell$]; Which[
-       Or[$CellContext`boomed$135523, $CellContext`success$135523], Null, 
-       $CellContext`mineQ$135523[$CellContext`cell$], \
-$CellContext`clicked$135523[$CellContext`cell$] = 
-        True; $CellContext`boomed$135523 = True, 
-       $CellContext`marked$135523[$CellContext`cell$], \
-$CellContext`boomed$135523 = True, 
-       $CellContext`clicked$135523[$CellContext`cell$], 
-       If[$CellContext`markRemains$135523[$CellContext`cell$] == 0, 
-        Scan[$CellContext`click$135523, 
-         $CellContext`neighbors$135523[$CellContext`cell$, \
-$CellContext`freeQ$135523]]], 
-       True, $CellContext`clicked$135523[$CellContext`cell$] = True; 
-       Decrement[$CellContext`remaining$135523]; 
-       If[$CellContext`grid$135523[$CellContext`cell$] == 0, 
-         Scan[$CellContext`click$135523, 
-          $CellContext`neighbors$135523[$CellContext`cell$, \
-$CellContext`freeQ$135523]]]]; $CellContext`stop$135523[]; \
-$CellContext`cell$), 
-    Attributes[$CellContext`markRemains$135523] = {
-     Temporary}, $CellContext`markRemains$135523 = \
-$CellContext`grid$135523[#] - Length[
-      $CellContext`neighbors$135523[#, $CellContext`marked$135523]]& , 
-    Attributes[$CellContext`freeQ$135523] = {
-     Temporary}, $CellContext`freeQ$135523 = Not[
-      Or[
-       $CellContext`clicked$135523[#], 
-       $CellContext`marked$135523[#]]]& , 
-    Attributes[$CellContext`stop$135523] = {
-     Temporary}, $CellContext`stop$135523[] := If[
-      And[$CellContext`stopTime$135523 == 0, 
-       Or[$CellContext`boomed$135523, $CellContext`success$135523]], \
-$CellContext`stopTime$135523 = SessionTime[]], 
-    Attributes[$CellContext`safe$135523] = {
-     Temporary}, $CellContext`safe$135523[
+       Blank[]]] := ($CellContext`start$119861[Nothing]; If[
+       And[
+        Not[
+         Or[$CellContext`boomed$119861, $CellContext`success$119861]], 
+        Not[
+         $CellContext`clicked$119861[$CellContext`cell$]]], 
+       If[$CellContext`marked$119861[$CellContext`cell$] = Not[
+          $CellContext`marked$119861[$CellContext`cell$]], 
+        Decrement[$CellContext`minesRemaining$119861], 
+        Increment[$CellContext`minesRemaining$119861]]]; $CellContext`cell$), 
+    Attributes[$CellContext`safe$119861] = {
+     Temporary}, $CellContext`safe$119861[
       Condition[
        Pattern[$CellContext`cell$, 
         Blank[]], 
-       Or[$CellContext`boomed$135523, $CellContext`success$135523, 
-        $CellContext`marked$135523[$CellContext`cell$]]]] = {}, \
-$CellContext`safe$135523[
+       Or[$CellContext`boomed$119861, $CellContext`success$119861, 
+        $CellContext`marked$119861[$CellContext`cell$]]]] = {}, \
+$CellContext`safe$119861[
       PatternTest[
        Pattern[$CellContext`cell$, 
-        Blank[]], $CellContext`clicked$135523]] := \
-$CellContext`neighbors$135523[$CellContext`cell$, $CellContext`freeQ$135523], \
-$CellContext`safe$135523[
+        Blank[]], $CellContext`clicked$119861]] := \
+$CellContext`neighbors$119861[$CellContext`cell$, $CellContext`freeQ$119861], \
+$CellContext`safe$119861[
       Pattern[$CellContext`cell, 
        Blank[]]] := {$CellContext`cell}, 
     Attributes[$CellContext`keep$] = {Temporary}, 
-    Attributes[$CellContext`restart$135523] = {
-     Temporary}, $CellContext`restart$135523[] := (
-     Clear[$CellContext`clicked$135523, $CellContext`marked$135523]; \
-$CellContext`clicked$135523[
-        Blank[]] = False; $CellContext`marked$135523[
-        Blank[]] = False; $CellContext`boomed$135523 = 
-      False; $CellContext`startTime$135523 = ($CellContext`stopTime$135523 = 
-       0); $CellContext`minesRemaining$135523 = $CellContext`mines$135523; \
-$CellContext`remaining$135523 = $CellContext`rows$135523 \
-$CellContext`cols$135523 - $CellContext`mines$135523; Null), 
-    Attributes[$CellContext`reset$135523] = {
-     Temporary}, $CellContext`reset$135523[
+    Attributes[$CellContext`restart$119861] = {
+     Temporary}, $CellContext`restart$119861[] := (
+     Clear[$CellContext`clicked$119861, $CellContext`marked$119861]; \
+$CellContext`clicked$119861[
+        Blank[]] = False; $CellContext`marked$119861[
+        Blank[]] = False; $CellContext`boomed$119861 = 
+      False; $CellContext`startTime$119861 = ($CellContext`stopTime$119861 = 
+       0); $CellContext`minesRemaining$119861 = $CellContext`mines$119861; \
+$CellContext`remaining$119861 = $CellContext`rows$119861 \
+$CellContext`cols$119861 - $CellContext`mines$119861; Null), 
+    Attributes[$CellContext`reset$119861] = {
+     Temporary}, $CellContext`reset$119861[
       Pattern[$CellContext`rows1$, 
        Blank[]], 
       Pattern[$CellContext`cols1$, 
@@ -2832,31 +2893,30 @@ $CellContext`cols$135523 - $CellContext`mines$135523; Null),
        Blank[]], 
       Optional[
        Pattern[$CellContext`sample$, 
-        Blank[]], {}]] := ({$CellContext`rows$135523, \
-$CellContext`cols$135523, $CellContext`mines$135523} = {$CellContext`rows1$, \
+        Blank[]], {}]] := ({$CellContext`rows$119861, \
+$CellContext`cols$119861, $CellContext`mines$119861} = {$CellContext`rows1$, \
 $CellContext`cols1$, $CellContext`mines1$}; 
-     Clear[$CellContext`grid$135523]; $CellContext`grid$135523[
-        Blank[]] = 0; $CellContext`inited$135523 = 
-      False; $CellContext`restart$135523[]; 
+     Clear[$CellContext`grid$119861]; $CellContext`grid$119861[
+        Blank[]] = 0; $CellContext`inited$119861 = 
+      False; $CellContext`restart$119861[]; 
      If[Length[$CellContext`sample$] != 
-       0, $CellContext`mines$135523 = ($CellContext`minesRemaining$135523 = 
-         Length[$CellContext`sample$]); $CellContext`remaining$135523 = \
-$CellContext`rows$135523 $CellContext`cols$135523 - $CellContext`mines$135523; 
-       Scan[($CellContext`grid$135523[#] = 
-         "x")& , $CellContext`sample$]; $CellContext`calcNeighbors$135523[]; \
-$CellContext`inited$135523 = True]; Null), 
+       0, $CellContext`mines$119861 = ($CellContext`minesRemaining$119861 = 
+         Length[$CellContext`sample$]); $CellContext`remaining$119861 = \
+$CellContext`rows$119861 $CellContext`cols$119861 - $CellContext`mines$119861; 
+       Scan[($CellContext`grid$119861[#] = 
+         "x")& , $CellContext`sample$]; $CellContext`calcNeighbors$119861[]; \
+$CellContext`inited$119861 = True]; Null), 
     Attributes[$CellContext`rows1$] = {Temporary}, 
     Attributes[$CellContext`cols1$] = {Temporary}, 
     Attributes[$CellContext`mines1$] = {Temporary}, 
     Attributes[$CellContext`sample$] = {Temporary}, 
-    Attributes[$CellContext`cheat$] = {Temporary}, 
     Attributes[$CellContext`reasoningMineQ$] = {Temporary}, 
     Attributes[$CellContext`clickOnly$] = {Temporary}, 
     Attributes[$CellContext`k$] = {Temporary}, 
     Attributes[$CellContext`clicks$] = {Temporary}, 
     Attributes[$CellContext`marks$] = {Temporary}, 
-    Attributes[$CellContext`solve$135523] = {
-     Temporary}, $CellContext`solve$135523[
+    Attributes[$CellContext`solve$119861] = {
+     Temporary}, $CellContext`solve$119861[
       Pattern[$CellContext`k$, 
        Blank[]], 
       Optional[
@@ -2864,28 +2924,28 @@ $CellContext`inited$135523 = True]; Null),
         Blank[]], False]][
       Pattern[$CellContext`cell$, 
        Blank[]]] := 
-    With[{$CellContext`v$ = $CellContext`neighbors$135523[$CellContext`cell$, \
-$CellContext`freeQ$135523]}, 
+    With[{$CellContext`v$ = $CellContext`neighbors$119861[$CellContext`cell$, \
+$CellContext`freeQ$119861]}, 
       Which[
        Or[
         Not[
-         $CellContext`clicked$135523[$CellContext`cell$]], 
+         $CellContext`clicked$119861[$CellContext`cell$]], 
         Length[$CellContext`v$] == 0], 
        $CellContext`k$[{}], 
        And[$CellContext`priori$, \
-$CellContext`markRemains$135523[$CellContext`cell$] == 0], 
+$CellContext`markRemains$119861[$CellContext`cell$] == 0], 
        $CellContext`k$[
         Thread[$CellContext`v$ -> 0]], 
        And[$CellContext`priori$, \
-$CellContext`markRemains$135523[$CellContext`cell$] == 
+$CellContext`markRemains$119861[$CellContext`cell$] == 
         Length[$CellContext`v$]], 
        $CellContext`k$[
         Thread[$CellContext`v$ -> 1]], True, 
-       $CellContext`solve0$135523[$CellContext`k$, $CellContext`v$, -1]]], 
+       $CellContext`solve0$119861[$CellContext`k$, $CellContext`v$, -1]]], 
     Attributes[$CellContext`priori$] = {Temporary}, 
     Attributes[$CellContext`v$] = {Temporary}, 
-    Attributes[$CellContext`solve0$135523] = {
-     Temporary}, $CellContext`solve0$135523[
+    Attributes[$CellContext`solve0$119861] = {
+     Temporary}, $CellContext`solve0$119861[
       Pattern[$CellContext`k$, 
        Blank[]], 
       Pattern[$CellContext`lst$, 
@@ -2893,19 +2953,19 @@ $CellContext`markRemains$135523[$CellContext`cell$] ==
       Pattern[$CellContext`remains$, 
        Blank[]]] := Block[{C}, 
       With[{$CellContext`involved$ = Fold[Union[#, 
-           $CellContext`neighbors$135523[#2, $CellContext`clicked$135523]]& , \
+           $CellContext`neighbors$119861[#2, $CellContext`clicked$119861]]& , \
 {}, $CellContext`lst$]}, 
        With[{$CellContext`vars$ = Map[C, 
            Union[
             Fold[Union[#, 
-              $CellContext`neighbors$135523[#2, $CellContext`freeQ$135523]]& \
+              $CellContext`neighbors$119861[#2, $CellContext`freeQ$119861]]& \
 , {}, $CellContext`involved$], $CellContext`lst$]]}, 
         With[{$CellContext`eqn$ = Append[
             Append[
              Map[Total[
                 Map[C, 
-                 $CellContext`neighbors$135523[#, \
-$CellContext`freeQ$135523]]] == $CellContext`markRemains$135523[#]& , \
+                 $CellContext`neighbors$119861[#, \
+$CellContext`freeQ$119861]]] == $CellContext`markRemains$119861[#]& , \
 $CellContext`involved$], 
              
              If[$CellContext`remains$ < 0, Nothing, 
@@ -2938,57 +2998,57 @@ $CellContext`involved$],
     Attributes[$CellContext`unify$] = {Temporary}, 
     Attributes[$CellContext`trace] = {HoldAll}, $CellContext`trace[
       Blank[]] = Null, Attributes[Subscript] = {NHoldRest}, 
-    Attributes[$CellContext`dispatch$135525] = {
-     Temporary}, $CellContext`dispatch$135525["MousePos"] := Floor[{Dot[
-          $CellContext`Dispatcher[$CellContext`dispatch$135523], \
+    Attributes[$CellContext`dispatch$119863] = {
+     Temporary}, $CellContext`dispatch$119863["MousePos"] := Floor[{Dot[
+          $CellContext`Dispatcher[$CellContext`dispatch$119861], \
 $CellContext`Rows] + 1, 1} + {-Dot[
-           $CellContext`Dispatcher[$CellContext`dispatch$135523], \
+           $CellContext`Dispatcher[$CellContext`dispatch$119861], \
 $CellContext`Rows], 
          Dot[
-          $CellContext`Dispatcher[$CellContext`dispatch$135523], \
+          $CellContext`Dispatcher[$CellContext`dispatch$119861], \
 $CellContext`Cols]} Reverse[
-         MousePosition["EventHandlerScaled"]]], $CellContext`dispatch$135525[
+         MousePosition["EventHandlerScaled"]]], $CellContext`dispatch$119863[
      "PlotBoard", 
       Optional[
        Pattern[$CellContext`highlights$, 
         Blank[]], {}]] := With[{$CellContext`board$ = Dot[
-         $CellContext`Dispatcher[$CellContext`dispatch$135523], 
+         $CellContext`Dispatcher[$CellContext`dispatch$119861], 
          Show], $CellContext`bg$ = \
-$CellContext`colorMap$135525[$CellContext`highlights$]}, 
+$CellContext`colorMap$119863[$CellContext`highlights$]}, 
       MouseAppearance[
        Grid[
         MapIndexed[Item[
-          $CellContext`item$135518[#], Background -> $CellContext`bg$[
+          $CellContext`item$119856[#], Background -> $CellContext`bg$[
             SlotSequence[1]]]& , $CellContext`board$, {2}], Frame -> All, 
         FrameStyle -> GrayLevel[GoldenRatio - 1], ItemSize -> {1.2, 1.2}, 
         Spacings -> {0.7, 0.7}, Alignment -> {Center, Center}], "Arrow"]], 
     Attributes[$CellContext`highlights$] = {Temporary}, 
-    Attributes[$CellContext`colorMap$135525] = {
-     Temporary}, $CellContext`colorMap$135525[
+    Attributes[$CellContext`colorMap$119863] = {
+     Temporary}, $CellContext`colorMap$119863[
       Pattern[$CellContext`highlights$, 
        Blank[]]] := With[{$CellContext`seq$ = Apply[Join, 
          Map[Thread, 
           ReplaceAll[$CellContext`highlights$, Pattern[$CellContext`x, 
              Blank[RGBColor]] :> ($CellContext`x& )]]]}, 
-      If[Length[$CellContext`seq$] == 0, $CellContext`bgcolor$135518[#]& , 
+      If[Length[$CellContext`seq$] == 0, $CellContext`bgcolor$119856[#]& , 
        With[{$CellContext`colorRules = SparseArray[$CellContext`seq$, {
             Dot[
-             $CellContext`Dispatcher[$CellContext`dispatch$135523], \
+             $CellContext`Dispatcher[$CellContext`dispatch$119861], \
 $CellContext`Rows], 
             Dot[
-             $CellContext`Dispatcher[$CellContext`dispatch$135523], \
-$CellContext`Cols]}, $CellContext`bgcolor$135518]}, 
+             $CellContext`Dispatcher[$CellContext`dispatch$119861], \
+$CellContext`Cols]}, $CellContext`bgcolor$119856]}, 
         Part[$CellContext`colorRules, 
          Apply[Sequence, #2]][#]& ]]], 
     Attributes[$CellContext`seq$] = {Temporary}, 
-    Attributes[$CellContext`bgcolor$135518] = {
-     Temporary}, $CellContext`bgcolor$135518["X"] = 
-    RGBColor[1, 0, 0], $CellContext`bgcolor$135518[
+    Attributes[$CellContext`bgcolor$119856] = {
+     Temporary}, $CellContext`bgcolor$119856["X"] = 
+    RGBColor[1, 0, 0], $CellContext`bgcolor$119856[
       Alternatives["x", "w", 
-       Blank[Integer]]] = RGBColor[0.87, 0.94, 1], $CellContext`bgcolor$135518[
+       Blank[Integer]]] = RGBColor[0.87, 0.94, 1], $CellContext`bgcolor$119856[
       Blank[]] = GrayLevel[0.85], 
-    Attributes[$CellContext`item$135518] = {
-     Temporary}, $CellContext`item$135518["m"] = Image[CompressedData["
+    Attributes[$CellContext`item$119856] = {
+     Temporary}, $CellContext`item$119856["m"] = Image[CompressedData["
 1:eJzt188rg3EcwPGv+XnAFFFOHJw4zEE5KTeu01PitGWWy1abEklJTm4OTq6E
 k4N/wM+zA4WVnNgUIQeKzftr3+VraXls++7g+dZr9Tz1fN7f5+nZau3+sHfc
 JYSI1vDh9U31RyK+6aEGDqxQdCIYCowNhiYDwUCk11/OyTalQjgrz9WtlGJ5
@@ -2999,7 +3059,7 @@ FmKlVH21LKfv9J2+sX4XFnCIE8S1flydO8A8OgvULMOImn0rvv/m5pJQ1wyr
 GX9ZTSJ9P082utkesY9Gm203TpHMo50hZ8hnUW+jvy7S/yvybWfIWWu/bFdj
 B0cFJmdW2XgG/2J9AD9hZlo=
       "], "Byte", ColorSpace -> "RGB", Interleaving -> 
-      True], $CellContext`item$135518["w"] = Image[CompressedData["
+      True], $CellContext`item$119856["w"] = Image[CompressedData["
 1:eJzFl01vUkEUhqcqrQsWbiD4GQ0Jv8FcQlK7c9Ok1aYJGEhBbKiFGmpihAVN
 IHHZuNNoXLh0axR/gMZ/RBcCx/NyL3iZztyZqVZO+kKZO3OeMzNnPu6d8sHm
 kwtCiMPL/LG58+Jes7nz8sEV/rHVOKztNqqP7zeeV3erzbvli1x4O9AlFvEf
@@ -3016,7 +3076,7 @@ dX4Ju/0H9v4MfTPVfWPJhuG+MXCc26gYkG9XHfhb8vnrsr405++j/8HWxRDc
 P0wx6O5fVnuDJOf715H+/plgvRZ+Dpu4aPNR+PNtff8ku/s31g/O0K8KLvaW
 PXF6jRnv37TA9w+ZLccWYf/k/YvEwt8/F/r+/Ru8/pqH
       "], "Byte", ColorSpace -> 
-      "RGB", Interleaving -> True], $CellContext`item$135518[
+      "RGB", Interleaving -> True], $CellContext`item$119856[
       Alternatives["x", "X"]] = Image[CompressedData["
 1:eJzFl89LAkEUx4dMCPTQxR+VRSH4N8SKUN26ViJoKIoWVlpZEunBg96jW1Fk
 dOxe9pfpIWOa77Zjy7Srs7qbD76y7s7O5+28NzNv1nKnOwczhJCLOfazk73a
@@ -3032,15 +3092,15 @@ flGCj/1b3LfsEPY0mfUH9ugA/06SDUO9YWc+oq8FC/w4sTcG2H/3LbDFGsgO
 9SV8MKu/xonFOPVX26A9akgf063kuGCsX8hPvK3Wn6Pqb8wf7KHvBlysLUfk
 7xyzUn9P+/xhxZw4f1mxaZ8/YROfv78BKw95gA==
       "], "Byte", ColorSpace -> 
-      "RGB", Interleaving -> True], $CellContext`item$135518[
+      "RGB", Interleaving -> True], $CellContext`item$119856[
       Condition[
        Pattern[$CellContext`n$, 
         Blank[Integer]], $CellContext`n$ != 0]] := Style[$CellContext`n$, 
-      $CellContext`fgcolor$135518[$CellContext`n$], FontFamily -> "Arial", 
-      FontSize -> 12, Bold], $CellContext`item$135518[
+      $CellContext`fgcolor$119856[$CellContext`n$], FontFamily -> "Arial", 
+      FontSize -> 12, Bold], $CellContext`item$119856[
       Blank[]] = " ", Attributes[$CellContext`n$] = {Temporary}, 
-    Attributes[$CellContext`fgcolor$135518] = {
-     Temporary}, $CellContext`fgcolor$135518 = 
+    Attributes[$CellContext`fgcolor$119856] = {
+     Temporary}, $CellContext`fgcolor$119856 = 
     Association[
      1 -> RGBColor[0, 0, 1], 2 -> RGBColor[0, 2/3, 0], 3 -> RGBColor[1, 0, 0],
        4 -> RGBColor[0, 0, 2/3], 5 -> RGBColor[1, 0, 1], 6 -> 
@@ -3089,8 +3149,10 @@ flGCj/1b3LfsEPY0mfUH9ugA/06SDUO9YWc+oq8FC/w4sTcG2H/3LbDFGsgO
    3.729168974311143*^9, {3.7291690478827677`*^9, 3.729169068290084*^9}, 
    3.7291691530938787`*^9, {3.729169249725112*^9, 3.729169274617546*^9}, 
    3.729169481626395*^9, {3.72916952320522*^9, 3.729169544408608*^9}, 
-   3.729169649372682*^9},ExpressionUUID->"8a284684-f483-459f-baa6-\
-ef6005a54827"]
+   3.729169649372682*^9, {3.729224494993176*^9, 3.729224495207922*^9}, 
+   3.729224527905579*^9, 3.729224663468623*^9, 
+   3.729224963241894*^9},ExpressionUUID->"4c109421-5da9-4862-b861-\
+009a1a1853b7"]
 }, {2}]]
 },
 InitializationCellEvaluation->Automatic,
@@ -3116,8 +3178,8 @@ Notebook[{
 Cell[400, 13, 9563, 219, 32, "Code",ExpressionUUID->"92c1e3c2-4019-4ba3-b9c0-0cdc66dd3c24",
  CellOpen->False],
 Cell[CellGroupData[{
-Cell[9988, 236, 110051, 2081, 10852, "Code",ExpressionUUID->"49ff5b48-8bca-44be-bbb8-04ef2b4e4699"],
-Cell[120042, 2319, 36550, 773, 611, "Output",ExpressionUUID->"8a284684-f483-459f-baa6-ef6005a54827"]
+Cell[9988, 236, 111959, 2126, 10910, "Code",ExpressionUUID->"49ff5b48-8bca-44be-bbb8-04ef2b4e4699"],
+Cell[121950, 2364, 37361, 790, 611, "Output",ExpressionUUID->"4c109421-5da9-4862-b861-009a1a1853b7"]
 }, {2}]]
 }
 ]
