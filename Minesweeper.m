@@ -1,21 +1,21 @@
 (* ::Package:: *)
 
-BeginPackage["Minesweeper`"]
+BeginPackage["Minesweeper`"];
 
-verbose::usage = "Print verbose expression value in a VerboseBlock."
-trace::usage = "Print verbose message in a VerboseBlock."
-VerboseBlock::usage = "Begin a verbose block."
+verbose::usage = "Print verbose expression value in a VerboseBlock.";
+trace::usage = "Print verbose message in a VerboseBlock.";
+VerboseBlock::usage = "Begin a verbose block.";
 
-Dispatcher::usage = "Simulate an object oriented dispatcher."
+Dispatcher::usage = "Simulate an object oriented dispatcher.";
 
-MakeMinesweeper::usage = "Make a new minesweeper board."
-MinesweeperPlotter::usage = "Create a minesweeper plotter."
-MinesweeperPlotter2::usage = "An alternate minesweeper plotter."
+MakeMinesweeper::usage = "Make a new minesweeper board.";
+MinesweeperPlotter::usage = "Create a minesweeper plotter.";
+MinesweeperPlotter2::usage = "An alternate minesweeper plotter.";
+Minesweeper::usage = "The default minesweeper game implementation.";
 
-Begin["`Private`"]
+Begin["`Private`"];
 
 SetAttributes[{verbose, trace, VerboseBlock}, HoldAll];
-
 verbose[val_] := val;
 verbose[_, val_] := val;
 trace[_] = Null;
@@ -28,8 +28,10 @@ VerboseBlock[expr_] := Block[{verbose, trace},
   expr
 ];
     
-Dispatcher /: Dot[Dispatcher[self_], msg_] := self[ToString@msg];
-Dispatcher /: Dot[Dispatcher[self_], msg_[args___]] := self[ToString@msg, args];
+Dispatcher /: Dot[Dispatcher[self_], msg_String] := self[msg];
+Dispatcher /: Dot[Dispatcher[self_], msg_String[args___]] := self[msg, args];
+Dispatcher /: Dot[Dispatcher[self_], msg_Symbol] := self[SymbolName[msg]];
+Dispatcher /: Dot[Dispatcher[self_], msg_Symbol[args___]] := self[SymbolName[msg], args];
 
 MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] := Module[{
 	rows, cols, mines,
@@ -296,11 +298,11 @@ PXF6jRnv37TA9w+ZLccWYf/k/YvEwt8/F/r+/Ru8/pqH
     colorMap[highlights_] :=
       With[{seq = Join@@Map[Thread, highlights /. x_RGBColor :> (x&)]},
         If[Length[seq] == 0, bgcolor[#1]&,
-           With[{colorRules = SparseArray[seq, {grid."Rows", grid."Cols"}, bgcolor]},
+           With[{colorRules = SparseArray[seq, {grid.Rows, grid.Cols}, bgcolor]},
              Function[colorRules[[Sequence@@#2]][#1]]]]];
       
     dispatch["PlotBoard", highlights_:{}] := 
-      With[{board = grid."Show", bg = colorMap[highlights]},
+      With[{board = grid.Show, bg = colorMap[highlights]},
         Grid[
           MapIndexed[Item[item[#1], Background -> bg[##]]&, board, {2}],
           Frame -> All,
@@ -312,32 +314,140 @@ PXF6jRnv37TA9w+ZLccWYf/k/YvEwt8/F/r+/Ru8/pqH
       ];
   
     dispatch["MousePos"] :=
-      Floor[{grid."Rows"+1, 1} + {-grid."Rows", grid."Cols"} * Reverse@MousePosition["EventHandlerScaled"]];
+      Floor[{grid.Rows+1, 1} + {-grid.Rows, grid.Cols} * Reverse@MousePosition["EventHandlerScaled"]];
   
     Dispatcher[dispatch]
   ];
   
   MinesweeperPlotter2[grid_] := Module[{coord, item, dispatch},
-    coord[cell_] := {-0.5, grid."Rows" + 0.5} + {1,-1}*Reverse[cell];
-    dispatch["MousePos"] := {grid."Rows", 1} + {-1,1}*Reverse@Floor@MousePosition["Graphics"];
+    coord[cell_] := {-0.5, grid.Rows + 0.5} + {1,-1}*Reverse[cell];
+    dispatch["MousePos"] := {grid.Rows, 1} + {-1,1}*Reverse@Floor@MousePosition["Graphics"];
   
     item[t:"x"|"X"|"m"|"w", cell_] := Inset[image[t], coord[cell], Center, 0.6];
     item[n_Integer /; n!=0, cell_] := Text[Style[n, fgcolor[n], Bold, Larger], coord[cell]];
     item[_,_] = Nothing;
 
-    dispatch["PlotBoard", highlights_:{}] := With[{board = grid."Show"},
+    dispatch["PlotBoard", highlights_:{}] := With[{board = grid.Show},
       ArrayPlot[
         MapIndexed[#2 /. Append[Join@@Map[Thread, highlights], _ -> #1]&, board, {2}],
         Epilog -> MapIndexed[item, board, {2}],
         ColorFunction -> bgcolor, ColorFunctionScaling -> False,
-        ImageSize -> 20{grid."Cols", grid."Rows"},
+        ImageSize -> 20{grid.Cols, grid.Rows},
         Mesh -> All
       ]];
 
     Dispatcher[dispatch]
   ];
-]
+];
 
-End[]
-EndPackage[]
+Minesweeper[] := DynamicModule[{
+    grid, plotter,
+    autoSolve = False, uncertain = "Guess", greedy = False, clickOnly = False, 
+    safe = {}, cheats = {}, solved = {},
+    reset, solve, step, options
+  },
+
+  grid = MakeMinesweeper[16, 16, 40];
+  plotter = MinesweeperPlotter[grid];
+
+  reset[args___] := (
+    grid.Reset[args];
+    autoSolve = False; 
+    safe = cheats = solved = {};
+  );
+
+  solve[] := (
+    Which[
+      grid.Boomed || grid.Success,
+        autoSolve = False,
+      grid."Solve"[Greedy -> greedy, ClickOnly -> clickOnly],
+        Null,
+      uncertain == "Cheat" || !grid.Started,
+        AppendTo[cheats, grid.RandomClick[True]],
+      uncertain == "Guess",
+        AppendTo[cheats, grid.RandomClick[False]],
+      True,
+        autoSolve = False
+    ];
+    plotter.PlotBoard[{cheats->LightRed}]
+  );
+
+  step[] := (
+    Which[
+      grid.Boomed || grid.Success,
+        Null,
+      First@Reap[grid."Solve"[Greedy -> greedy, ClickOnly -> clickOnly], _, (solved = Join@@#2)&],
+        Null,
+      True,
+        AppendTo[cheats, grid.RandomClick[True]]
+    ];
+  );
+  
+  options[] :=
+    CreateDialog[{
+      "When uncertain: ", RadioButtonBar[Dynamic@uncertain, {"Guess", "Cheat", "Pause"}],
+      Row[{Checkbox[Dynamic@greedy], " Greedy mode "}],
+      Row[{Checkbox[Dynamic@clickOnly], " No Flags "}],
+      DefaultButton[]
+    }, Modal->True, WindowTitle->"Options"];  
+    
+  Panel@Grid[{
+    {
+      Item[Row[{
+        Button["Restart", reset[CurrentValue["AltKey"]]], 
+        Button["Solve",   autoSolve = True; solved = {}],
+        Button["Step",    step[]],
+        Button["Options", options[]]
+      }], Alignment->Center],
+      SpanFromLeft
+    },
+
+    {
+      EventHandler[
+        Dynamic@If[autoSolve,
+          Refresh[solve[], UpdateInterval -> 0.1, TrackedSymbols -> {}],
+          plotter.PlotBoard[{safe->LightBlue, cheats->LightRed, solved->LightGreen}]
+        ], {
+          {"MouseDown", 1} :>
+            (safe = grid.Safe[plotter.MousePos]; autoSolve = False; solved = {}),
+          {"MouseDragged", 1} :>
+            (safe = grid.Safe[plotter.MousePos]),
+          {"MouseUp", 1} :>
+            (safe = {}; grid.Click[plotter.MousePos, CurrentValue["AltKey"]]),
+          {"MouseUp", 2} :>
+            (grid.Mark[plotter.MousePos]; autoSolve = False; solved = {})
+        }
+      ],
+      SpanFromLeft
+    },
+
+    {
+      Item[Dynamic@If[grid.Success, "Success!", grid.MinesRemaining], Alignment->Left, ItemSize->10],
+      Item[Dynamic@Which[
+        !grid.Started, 
+          0,
+        grid.Boomed || grid.Success,
+          NumberForm[grid.TimeUsed, {Infinity, 2}],
+        True,
+          Refresh[Round[grid.TimeUsed], UpdateInterval->0.5]
+      ]],
+      Item[Dynamic@If[Length@cheats > 1, "Guess: "<>ToString[Length[cheats]-1], ""], Alignment->Right, ItemSize->10]
+    },
+
+    {
+      Item[Row[{
+        Button["Beginner", reset[9, 9, 10]],
+        Button["Intermediate", reset[16, 16, 40]],
+        Button["Expert", reset[16, 30, 99]]
+      }], Alignment->Center],
+      SpanFromLeft
+    }
+  }],
+
+  SaveDefinitions -> True,
+  Deinitialization :> reset[]
+];
+
+End[];
+EndPackage[];
 

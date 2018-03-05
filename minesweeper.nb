@@ -3,10 +3,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[         0,          0]
-NotebookDataLength[     55242,       1220]
-NotebookOptionsPosition[     54543,       1193]
-NotebookOutlinePosition[     54999,       1212]
-CellTagsIndexPosition[     54956,       1209]
+NotebookDataLength[     43455,        958]
+NotebookOptionsPosition[     42762,        931]
+NotebookOutlinePosition[     43218,        950]
+CellTagsIndexPosition[     43175,        947]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -19,360 +19,40 @@ Cell[BoxData[{
    RowBox[{"NotebookDirectory", "[", "]"}], "]"}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
-  RowBox[{
-   RowBox[{"Needs", "[", "\"\<Minesweeper`\>\"", "]"}], ";"}], "\n"}], "\n", 
- RowBox[{"DynamicModule", "[", 
-  RowBox[{
-   RowBox[{"{", "\n", "    ", 
-    RowBox[{"grid", ",", " ", "plotter", ",", "\n", "    ", 
-     RowBox[{"autoSolve", " ", "=", " ", "False"}], ",", " ", 
-     RowBox[{"uncertain", " ", "=", " ", "\"\<Guess\>\""}], ",", " ", 
-     RowBox[{"greedy", " ", "=", " ", "False"}], ",", " ", 
-     RowBox[{"clickOnly", " ", "=", " ", "False"}], ",", " ", "\n", "    ", 
-     RowBox[{"safe", " ", "=", " ", 
-      RowBox[{"{", "}"}]}], ",", " ", 
-     RowBox[{"cheats", " ", "=", " ", 
-      RowBox[{"{", "}"}]}], ",", " ", 
-     RowBox[{"solved", " ", "=", " ", 
-      RowBox[{"{", "}"}]}], ",", "\n", "    ", "reset", ",", " ", "solve", 
-     ",", " ", "step", ",", " ", "options"}], "\n", "  ", "}"}], ",", "\n", 
-   "\n", "  ", 
-   RowBox[{
-    RowBox[{"grid", " ", "=", " ", 
-     RowBox[{"MakeMinesweeper", "[", 
-      RowBox[{"16", ",", " ", "16", ",", " ", "40"}], "]"}]}], ";", "\n", 
-    "  ", 
-    RowBox[{"plotter", " ", "=", " ", 
-     RowBox[{"MinesweeperPlotter", "[", "grid", "]"}]}], ";", "\n", "\n", 
-    "  ", 
-    RowBox[{
-     RowBox[{"reset", "[", "args___", "]"}], " ", ":=", " ", 
-     RowBox[{"(", "\n", "    ", 
-      RowBox[{
-       RowBox[{"grid", ".", 
-        RowBox[{"Reset", "[", "args", "]"}]}], ";", "\n", "    ", 
-       RowBox[{"autoSolve", " ", "=", " ", "False"}], ";", " ", "\n", "    ", 
-       
-       RowBox[{"safe", " ", "=", " ", 
-        RowBox[{"cheats", " ", "=", " ", 
-         RowBox[{"solved", " ", "=", " ", 
-          RowBox[{"{", "}"}]}]}]}], ";"}], "\n", "  ", ")"}]}], ";", "\n", 
-    "\n", "  ", 
-    RowBox[{
-     RowBox[{"solve", "[", "]"}], " ", ":=", " ", 
-     RowBox[{"(", "\n", "    ", 
-      RowBox[{
-       RowBox[{"Which", "[", "\n", "      ", 
-        RowBox[{
-         RowBox[{
-          RowBox[{"grid", ".", "Boomed"}], " ", "||", " ", 
-          RowBox[{"grid", ".", "Success"}]}], ",", "\n", "        ", 
-         RowBox[{"autoSolve", " ", "=", " ", "False"}], ",", "\n", "      ", 
-         RowBox[{"grid", ".", 
-          RowBox[{"\"\<Solve\>\"", "[", 
-           RowBox[{
-            RowBox[{"Greedy", " ", "->", " ", "greedy"}], ",", " ", 
-            RowBox[{"ClickOnly", " ", "->", " ", "clickOnly"}]}], "]"}]}], 
-         ",", "\n", "        ", "Null", ",", "\n", "      ", 
-         RowBox[{
-          RowBox[{"uncertain", " ", "==", " ", "\"\<Cheat\>\""}], " ", "||", 
-          " ", 
-          RowBox[{"!", 
-           RowBox[{"grid", ".", "Started"}]}]}], ",", "\n", "        ", 
-         RowBox[{"AppendTo", "[", 
-          RowBox[{"cheats", ",", " ", 
-           RowBox[{"grid", ".", 
-            RowBox[{"RandomClick", "[", "True", "]"}]}]}], "]"}], ",", "\n", 
-         "      ", 
-         RowBox[{"uncertain", " ", "==", " ", "\"\<Guess\>\""}], ",", "\n", 
-         "        ", 
-         RowBox[{"AppendTo", "[", 
-          RowBox[{"cheats", ",", " ", 
-           RowBox[{"grid", ".", 
-            RowBox[{"RandomClick", "[", "False", "]"}]}]}], "]"}], ",", "\n", 
-         "      ", "True", ",", "\n", "        ", 
-         RowBox[{"autoSolve", " ", "=", " ", "False"}]}], "\n", "    ", "]"}],
-        ";", "\n", "    ", 
-       RowBox[{"plotter", ".", 
-        RowBox[{"PlotBoard", "[", 
-         RowBox[{"{", 
-          RowBox[{"cheats", "->", "LightRed"}], "}"}], "]"}]}]}], "\n", "  ", 
-      ")"}]}], ";", "\n", "\n", "  ", 
-    RowBox[{
-     RowBox[{"step", "[", "]"}], " ", ":=", " ", 
-     RowBox[{"(", "\n", "    ", 
-      RowBox[{
-       RowBox[{"Which", "[", "\n", "      ", 
-        RowBox[{
-         RowBox[{
-          RowBox[{"grid", ".", "Boomed"}], " ", "||", " ", 
-          RowBox[{"grid", ".", "Success"}]}], ",", "\n", "        ", "Null", 
-         ",", "\n", "      ", 
-         RowBox[{"First", "@", 
-          RowBox[{"Reap", "[", 
-           RowBox[{
-            RowBox[{"grid", ".", 
-             RowBox[{"\"\<Solve\>\"", "[", 
-              RowBox[{
-               RowBox[{"Greedy", " ", "->", " ", "greedy"}], ",", " ", 
-               RowBox[{"ClickOnly", " ", "->", " ", "clickOnly"}]}], "]"}]}], 
-            ",", " ", "_", ",", " ", 
-            RowBox[{
-             RowBox[{"(", 
-              RowBox[{"solved", " ", "=", " ", 
-               RowBox[{"Join", "@@", "#2"}]}], ")"}], "&"}]}], "]"}]}], ",", 
-         "\n", "        ", "Null", ",", "\n", "      ", "True", ",", "\n", 
-         "        ", 
-         RowBox[{"AppendTo", "[", 
-          RowBox[{"cheats", ",", " ", 
-           RowBox[{"grid", ".", 
-            RowBox[{"RandomClick", "[", "True", "]"}]}]}], "]"}]}], "\n", 
-        "    ", "]"}], ";"}], "\n", "  ", ")"}]}], ";", "\n", "  ", "\n", 
-    "  ", 
-    RowBox[{
-     RowBox[{"options", "[", "]"}], " ", ":=", "\n", "    ", 
-     RowBox[{"CreateDialog", "[", 
-      RowBox[{
-       RowBox[{"{", "\n", "      ", 
-        RowBox[{"\"\<When uncertain: \>\"", ",", " ", 
-         RowBox[{"RadioButtonBar", "[", 
-          RowBox[{
-           RowBox[{"Dynamic", "@", "uncertain"}], ",", " ", 
-           RowBox[{"{", 
-            RowBox[{
-            "\"\<Guess\>\"", ",", " ", "\"\<Cheat\>\"", ",", " ", 
-             "\"\<Pause\>\""}], "}"}]}], "]"}], ",", "\n", "      ", 
-         RowBox[{"Row", "[", 
-          RowBox[{"{", 
-           RowBox[{
-            RowBox[{"Checkbox", "[", 
-             RowBox[{"Dynamic", "@", "greedy"}], "]"}], ",", " ", 
-            "\"\< Greedy mode \>\""}], "}"}], "]"}], ",", "\n", "      ", 
-         RowBox[{"Row", "[", 
-          RowBox[{"{", 
-           RowBox[{
-            RowBox[{"Checkbox", "[", 
-             RowBox[{"Dynamic", "@", "clickOnly"}], "]"}], ",", " ", 
-            "\"\< No Flags \>\""}], "}"}], "]"}], ",", "\n", "      ", 
-         RowBox[{"DefaultButton", "[", "]"}]}], "\n", "    ", "}"}], ",", " ", 
-       RowBox[{"Modal", "->", "True"}], ",", " ", 
-       RowBox[{"WindowTitle", "->", "\"\<Options\>\""}]}], "]"}]}], ";", "  ",
-     "\n", "    ", "\n", "  ", 
-    RowBox[{"Panel", "@", 
-     RowBox[{"Grid", "[", 
-      RowBox[{"{", "\n", "    ", 
-       RowBox[{
-        RowBox[{"{", "\n", "      ", 
-         RowBox[{
-          RowBox[{"Item", "[", 
-           RowBox[{
-            RowBox[{"Row", "[", 
-             RowBox[{"{", "\n", "        ", 
-              RowBox[{
-               RowBox[{"Button", "[", 
-                RowBox[{"\"\<Restart\>\"", ",", " ", 
-                 RowBox[{"reset", "[", 
-                  RowBox[{"CurrentValue", "[", "\"\<AltKey\>\"", "]"}], 
-                  "]"}]}], "]"}], ",", " ", "\n", "        ", 
-               RowBox[{"Button", "[", 
-                RowBox[{"\"\<Solve\>\"", ",", "   ", 
-                 RowBox[{
-                  RowBox[{"autoSolve", " ", "=", " ", "True"}], ";", " ", 
-                  RowBox[{"solved", " ", "=", " ", 
-                   RowBox[{"{", "}"}]}]}]}], "]"}], ",", "\n", "        ", 
-               RowBox[{"Button", "[", 
-                RowBox[{"\"\<Step\>\"", ",", "    ", 
-                 RowBox[{"step", "[", "]"}]}], "]"}], ",", "\n", "        ", 
-               RowBox[{"Button", "[", 
-                RowBox[{"\"\<Options\>\"", ",", " ", 
-                 RowBox[{"options", "[", "]"}]}], "]"}]}], "\n", "      ", 
-              "}"}], "]"}], ",", " ", 
-            RowBox[{"Alignment", "->", "Center"}]}], "]"}], ",", "\n", 
-          "      ", "SpanFromLeft"}], "\n", "    ", "}"}], ",", "\n", "\n", 
-        "    ", 
-        RowBox[{"{", "\n", "      ", 
-         RowBox[{
-          RowBox[{"EventHandler", "[", "\n", "        ", 
-           RowBox[{
-            RowBox[{"Dynamic", "@", 
-             RowBox[{"If", "[", 
-              RowBox[{"autoSolve", ",", "\n", "          ", 
-               RowBox[{"Refresh", "[", 
-                RowBox[{
-                 RowBox[{"solve", "[", "]"}], ",", " ", 
-                 RowBox[{"UpdateInterval", " ", "->", " ", "0.1"}], ",", " ", 
-                 
-                 RowBox[{"TrackedSymbols", " ", "->", " ", 
-                  RowBox[{"{", "}"}]}]}], "]"}], ",", "\n", "          ", 
-               RowBox[{"plotter", ".", 
-                RowBox[{"PlotBoard", "[", 
-                 RowBox[{"{", 
-                  RowBox[{
-                   RowBox[{"safe", "->", "LightBlue"}], ",", " ", 
-                   RowBox[{"cheats", "->", "LightRed"}], ",", " ", 
-                   RowBox[{"solved", "->", "LightGreen"}]}], "}"}], "]"}]}]}],
-               "\n", "        ", "]"}]}], ",", " ", 
-            RowBox[{"{", "\n", "          ", 
-             RowBox[{
-              RowBox[{
-               RowBox[{"{", 
-                RowBox[{"\"\<MouseDown\>\"", ",", " ", "1"}], "}"}], " ", ":>",
-                "\n", "            ", 
-               RowBox[{"(", 
-                RowBox[{
-                 RowBox[{"safe", " ", "=", " ", 
-                  RowBox[{"grid", ".", 
-                   RowBox[{"Safe", "[", 
-                    RowBox[{"plotter", ".", "MousePos"}], "]"}]}]}], ";", " ", 
-                 RowBox[{"autoSolve", " ", "=", " ", "False"}], ";", " ", 
-                 RowBox[{"solved", " ", "=", " ", 
-                  RowBox[{"{", "}"}]}]}], ")"}]}], ",", "\n", "          ", 
-              RowBox[{
-               RowBox[{"{", 
-                RowBox[{"\"\<MouseDragged\>\"", ",", " ", "1"}], "}"}], " ", ":>",
-                "\n", "            ", 
-               RowBox[{"(", 
-                RowBox[{"safe", " ", "=", " ", 
-                 RowBox[{"grid", ".", 
-                  RowBox[{"Safe", "[", 
-                   RowBox[{"plotter", ".", "MousePos"}], "]"}]}]}], ")"}]}], 
-              ",", "\n", "          ", 
-              RowBox[{
-               RowBox[{"{", 
-                RowBox[{"\"\<MouseUp\>\"", ",", " ", "1"}], "}"}], " ", ":>", 
-               "\n", "            ", 
-               RowBox[{"(", 
-                RowBox[{
-                 RowBox[{"safe", " ", "=", " ", 
-                  RowBox[{"{", "}"}]}], ";", " ", 
-                 RowBox[{"grid", ".", 
-                  RowBox[{"Click", "[", 
-                   RowBox[{
-                    RowBox[{"plotter", ".", "MousePos"}], ",", " ", 
-                    RowBox[{"CurrentValue", "[", "\"\<AltKey\>\"", "]"}]}], 
-                   "]"}]}]}], ")"}]}], ",", "\n", "          ", 
-              RowBox[{
-               RowBox[{"{", 
-                RowBox[{"\"\<MouseUp\>\"", ",", " ", "2"}], "}"}], " ", ":>", 
-               "\n", "            ", 
-               RowBox[{"(", 
-                RowBox[{
-                 RowBox[{"grid", ".", 
-                  RowBox[{"Mark", "[", 
-                   RowBox[{"plotter", ".", "MousePos"}], "]"}]}], ";", " ", 
-                 RowBox[{"autoSolve", " ", "=", " ", "False"}], ";", " ", 
-                 RowBox[{"solved", " ", "=", " ", 
-                  RowBox[{"{", "}"}]}]}], ")"}]}]}], "\n", "        ", 
-             "}"}]}], "\n", "      ", "]"}], ",", "\n", "      ", 
-          "SpanFromLeft"}], "\n", "    ", "}"}], ",", "\n", "\n", "    ", 
-        RowBox[{"{", "\n", "      ", 
-         RowBox[{
-          RowBox[{"Item", "[", 
-           RowBox[{
-            RowBox[{"Dynamic", "@", 
-             RowBox[{"If", "[", 
-              RowBox[{
-               RowBox[{"grid", ".", "Success"}], ",", " ", "\"\<Success!\>\"",
-                ",", " ", 
-               RowBox[{"grid", ".", "MinesRemaining"}]}], "]"}]}], ",", " ", 
-            RowBox[{"Alignment", "->", "Left"}], ",", " ", 
-            RowBox[{"ItemSize", "->", "10"}]}], "]"}], ",", "\n", "      ", 
-          RowBox[{"Item", "[", 
-           RowBox[{"Dynamic", "@", 
-            RowBox[{"Which", "[", "\n", "        ", 
-             RowBox[{
-              RowBox[{"!", 
-               RowBox[{"grid", ".", "Started"}]}], ",", " ", "\n", 
-              "          ", "0", ",", "\n", "        ", 
-              RowBox[{
-               RowBox[{"grid", ".", "Boomed"}], " ", "||", " ", 
-               RowBox[{"grid", ".", "Success"}]}], ",", "\n", "          ", 
-              RowBox[{"NumberForm", "[", 
-               RowBox[{
-                RowBox[{"grid", ".", "TimeUsed"}], ",", " ", 
-                RowBox[{"{", 
-                 RowBox[{"Infinity", ",", " ", "2"}], "}"}]}], "]"}], ",", 
-              "\n", "        ", "True", ",", "\n", "          ", 
-              RowBox[{"Refresh", "[", 
-               RowBox[{
-                RowBox[{"Round", "[", 
-                 RowBox[{"grid", ".", "TimeUsed"}], "]"}], ",", " ", 
-                RowBox[{"UpdateInterval", "->", "0.5"}]}], "]"}]}], "\n", 
-             "      ", "]"}]}], "]"}], ",", "\n", "      ", 
-          RowBox[{"Item", "[", 
-           RowBox[{
-            RowBox[{"Dynamic", "@", 
-             RowBox[{"If", "[", 
-              RowBox[{
-               RowBox[{
-                RowBox[{"Length", "@", "cheats"}], " ", ">", " ", "1"}], ",", 
-               " ", 
-               RowBox[{"\"\<Guess: \>\"", "<>", 
-                RowBox[{"ToString", "[", 
-                 RowBox[{
-                  RowBox[{"Length", "[", "cheats", "]"}], "-", "1"}], "]"}]}],
-                ",", " ", "\"\<\>\""}], "]"}]}], ",", " ", 
-            RowBox[{"Alignment", "->", "Right"}], ",", " ", 
-            RowBox[{"ItemSize", "->", "10"}]}], "]"}]}], "\n", "    ", "}"}], 
-        ",", "\n", "\n", "    ", 
-        RowBox[{"{", "\n", "      ", 
-         RowBox[{
-          RowBox[{"Item", "[", 
-           RowBox[{
-            RowBox[{"Row", "[", 
-             RowBox[{"{", "\n", "        ", 
-              RowBox[{
-               RowBox[{"Button", "[", 
-                RowBox[{"\"\<Beginner\>\"", ",", " ", 
-                 RowBox[{"reset", "[", 
-                  RowBox[{"9", ",", " ", "9", ",", " ", "10"}], "]"}]}], 
-                "]"}], ",", "\n", "        ", 
-               RowBox[{"Button", "[", 
-                RowBox[{"\"\<Intermediate\>\"", ",", " ", 
-                 RowBox[{"reset", "[", 
-                  RowBox[{"16", ",", " ", "16", ",", " ", "40"}], "]"}]}], 
-                "]"}], ",", "\n", "        ", 
-               RowBox[{"Button", "[", 
-                RowBox[{"\"\<Expert\>\"", ",", " ", 
-                 RowBox[{"reset", "[", 
-                  RowBox[{"16", ",", " ", "30", ",", " ", "99"}], "]"}]}], 
-                "]"}]}], "\n", "      ", "}"}], "]"}], ",", " ", 
-            RowBox[{"Alignment", "->", "Center"}]}], "]"}], ",", "\n", 
-          "      ", "SpanFromLeft"}], "\n", "    ", "}"}]}], "\n", "  ", 
-       "}"}], "]"}]}]}], ",", "\n", "\n", "  ", 
-   RowBox[{"SaveDefinitions", " ", "->", " ", "True"}], ",", "\n", "  ", 
-   RowBox[{"Deinitialization", " ", ":>", " ", 
-    RowBox[{"reset", "[", "]"}]}]}], "\n", "]"}]}], "Code",
+  RowBox[{"Needs", "[", "\"\<Minesweeper`\>\"", "]"}], ";"}], "\n", 
+ RowBox[{"Minesweeper", "[", "]"}]}], "Input",
  CellChangeTimes->{
-  3.729241058513691*^9},ExpressionUUID->"2221c1e8-436a-4c42-84b4-\
+  3.729241058513691*^9, {3.729279161163044*^9, 
+   3.729279165721704*^9}},ExpressionUUID->"2221c1e8-436a-4c42-84b4-\
 1a6deb88142a"],
 
 Cell[BoxData[
- DynamicModuleBox[{$CellContext`grid$$ = Minesweeper`Dispatcher[
-  Minesweeper`Private`dispatch$2095], $CellContext`plotter$$ = 
-  Minesweeper`Dispatcher[
-  Minesweeper`Private`dispatch$2097], $CellContext`autoSolve$$ = 
-  False, $CellContext`uncertain$$ = "Guess", $CellContext`greedy$$ = 
-  False, $CellContext`clickOnly$$ = 
-  False, $CellContext`safe$$ = {}, $CellContext`cheats$$ = {}, \
-$CellContext`solved$$ = {}, $CellContext`reset$$, $CellContext`solve$$, \
-$CellContext`step$$, $CellContext`options$$}, 
+ DynamicModuleBox[{Minesweeper`Private`grid$$ = Minesweeper`Dispatcher[
+  Minesweeper`Private`dispatch$4038], Minesweeper`Private`plotter$$ = 
+  Minesweeper`Dispatcher[Minesweeper`Private`dispatch$4040], 
+  Minesweeper`Private`autoSolve$$ = False, Minesweeper`Private`uncertain$$ = 
+  "Guess", Minesweeper`Private`greedy$$ = False, 
+  Minesweeper`Private`clickOnly$$ = False, Minesweeper`Private`safe$$ = {}, 
+  Minesweeper`Private`cheats$$ = {}, Minesweeper`Private`solved$$ = {}, 
+  Minesweeper`Private`reset$$, Minesweeper`Private`solve$$, 
+  Minesweeper`Private`step$$, Minesweeper`Private`options$$}, 
   PanelBox[
    TagBox[GridBox[{
       {
        ItemBox[
         TemplateBox[{
-         ButtonBox["\"Restart\"", ButtonFunction :> $CellContext`reset$$[
+         ButtonBox[
+          "\"Restart\"", ButtonFunction :> Minesweeper`Private`reset$$[
              CurrentValue["AltKey"]], Appearance -> Automatic, Evaluator -> 
            Automatic, Method -> "Preemptive"],ButtonBox[
           "\"Solve\"", 
-           ButtonFunction :> ($CellContext`autoSolve$$ = 
-             True; $CellContext`solved$$ = {}), Appearance -> Automatic, 
+           ButtonFunction :> (Minesweeper`Private`autoSolve$$ = True; 
+            Minesweeper`Private`solved$$ = {}), Appearance -> Automatic, 
            Evaluator -> Automatic, Method -> "Preemptive"],ButtonBox[
-          "\"Step\"", ButtonFunction :> $CellContext`step$$[], Appearance -> 
-           Automatic, Evaluator -> Automatic, Method -> "Preemptive"],
-          ButtonBox[
-          "\"Options\"", ButtonFunction :> $CellContext`options$$[], 
+          "\"Step\"", ButtonFunction :> Minesweeper`Private`step$$[], 
+           Appearance -> Automatic, Evaluator -> Automatic, Method -> 
+           "Preemptive"],ButtonBox[
+          "\"Options\"", ButtonFunction :> Minesweeper`Private`options$$[], 
            Appearance -> Automatic, Evaluator -> Automatic, Method -> 
            "Preemptive"]},
          "RowDefault"],
@@ -381,44 +61,50 @@ $CellContext`step$$, $CellContext`options$$},
       {
        TagBox[
         DynamicBox[ToBoxes[
-          If[$CellContext`autoSolve$$, 
+          If[Minesweeper`Private`autoSolve$$, 
            Refresh[
-            $CellContext`solve$$[], UpdateInterval -> 0.1, 
+            Minesweeper`Private`solve$$[], UpdateInterval -> 0.1, 
             TrackedSymbols -> {}], 
-           Dot[$CellContext`plotter$$, 
-            $CellContext`PlotBoard[{$CellContext`safe$$ -> 
-              LightBlue, $CellContext`cheats$$ -> 
-              LightRed, $CellContext`solved$$ -> LightGreen}]]], StandardForm],
+           Dot[Minesweeper`Private`plotter$$, 
+            
+            Minesweeper`Private`PlotBoard[{
+             Minesweeper`Private`safe$$ -> LightBlue, 
+              Minesweeper`Private`cheats$$ -> LightRed, 
+              Minesweeper`Private`solved$$ -> LightGreen}]]], StandardForm],
          ImageSizeCache->{433., {220.62548828125, 228.37451171875}}],
-        EventHandlerTag[{{
-           "MouseDown", 1} :> ($CellContext`safe$$ = 
-            Dot[$CellContext`grid$$, 
-              $CellContext`Safe[
-               
-               Dot[$CellContext`plotter$$, $CellContext`MousePos]]]; \
-$CellContext`autoSolve$$ = False; $CellContext`solved$$ = {}), {
-           "MouseDragged", 1} :> ($CellContext`safe$$ = 
-           Dot[$CellContext`grid$$, 
-             $CellContext`Safe[
-              Dot[$CellContext`plotter$$, $CellContext`MousePos]]]), {
-           "MouseUp", 1} :> ($CellContext`safe$$ = {}; 
-           Dot[$CellContext`grid$$, 
-             $CellContext`Click[
-              Dot[$CellContext`plotter$$, $CellContext`MousePos], 
+        EventHandlerTag[{{"MouseDown", 1} :> (
+           Minesweeper`Private`safe$$ = Dot[Minesweeper`Private`grid$$, 
+              Minesweeper`Private`Safe[
+               Dot[
+               Minesweeper`Private`plotter$$, Minesweeper`Private`MousePos]]]; 
+           Minesweeper`Private`autoSolve$$ = False; 
+           Minesweeper`Private`solved$$ = {}), {"MouseDragged", 1} :> (
+           Minesweeper`Private`safe$$ = Dot[Minesweeper`Private`grid$$, 
+             Minesweeper`Private`Safe[
+              Dot[
+              Minesweeper`Private`plotter$$, 
+               Minesweeper`Private`MousePos]]]), {"MouseUp", 1} :> (
+           Minesweeper`Private`safe$$ = {}; Dot[Minesweeper`Private`grid$$, 
+             Minesweeper`Private`Click[
+              Dot[
+              Minesweeper`Private`plotter$$, Minesweeper`Private`MousePos], 
               CurrentValue["AltKey"]]]), {"MouseUp", 2} :> (
-           Dot[$CellContext`grid$$, 
-             $CellContext`Mark[
-              
-              Dot[$CellContext`plotter$$, $CellContext`MousePos]]]; \
-$CellContext`autoSolve$$ = False; $CellContext`solved$$ = {}), Method -> 
-          "Preemptive", PassEventsDown -> Automatic, PassEventsUp -> True}]], 
+           Dot[Minesweeper`Private`grid$$, 
+             Minesweeper`Private`Mark[
+              Dot[
+              Minesweeper`Private`plotter$$, Minesweeper`Private`MousePos]]]; 
+           Minesweeper`Private`autoSolve$$ = False; 
+           Minesweeper`Private`solved$$ = {}), Method -> "Preemptive", 
+          PassEventsDown -> Automatic, PassEventsUp -> True}]], 
        "\[SpanFromLeft]", "\[SpanFromLeft]"},
       {
        ItemBox[
         DynamicBox[ToBoxes[
           If[
-           Dot[$CellContext`grid$$, $CellContext`Success], "Success!", 
-           Dot[$CellContext`grid$$, $CellContext`MinesRemaining]], 
+           Dot[Minesweeper`Private`grid$$, Minesweeper`Private`Success], 
+           "Success!", 
+           Dot[
+           Minesweeper`Private`grid$$, Minesweeper`Private`MinesRemaining]], 
           StandardForm],
          ImageSizeCache->{19., {1., 11.}}],
         Alignment->Left,
@@ -428,23 +114,25 @@ $CellContext`autoSolve$$ = False; $CellContext`solved$$ = {}), Method ->
         DynamicBox[ToBoxes[
           Which[
            Not[
-            Dot[$CellContext`grid$$, $CellContext`Started]], 0, 
+            Dot[Minesweeper`Private`grid$$, Minesweeper`Private`Started]], 0, 
+           
            Or[
-            Dot[$CellContext`grid$$, $CellContext`Boomed], 
-            Dot[$CellContext`grid$$, $CellContext`Success]], 
+            Dot[Minesweeper`Private`grid$$, Minesweeper`Private`Boomed], 
+            Dot[Minesweeper`Private`grid$$, Minesweeper`Private`Success]], 
            NumberForm[
-            Dot[$CellContext`grid$$, TimeUsed], {Infinity, 2}], True, 
+            Dot[Minesweeper`Private`grid$$, TimeUsed], {Infinity, 2}], True, 
            Refresh[
             Round[
-             Dot[$CellContext`grid$$, TimeUsed]], UpdateInterval -> 0.5]], 
-          StandardForm],
+             Dot[Minesweeper`Private`grid$$, TimeUsed]], UpdateInterval -> 
+            0.5]], StandardForm],
          ImageSizeCache->{9., {1., 11.}}],
         StripOnInput->False], 
        ItemBox[
         DynamicBox[ToBoxes[
-          If[Length[$CellContext`cheats$$] > 1, 
+          If[Length[Minesweeper`Private`cheats$$] > 1, 
            StringJoin["Guess: ", 
-            ToString[Length[$CellContext`cheats$$] - 1]], ""], StandardForm],
+            ToString[Length[Minesweeper`Private`cheats$$] - 1]], ""], 
+          StandardForm],
          ImageSizeCache->{0., {0., 8.}}],
         Alignment->Right,
         ItemSize->10,
@@ -453,16 +141,15 @@ $CellContext`autoSolve$$ = False; $CellContext`solved$$ = {}), Method ->
        ItemBox[
         TemplateBox[{
          ButtonBox[
-          "\"Beginner\"", ButtonFunction :> $CellContext`reset$$[9, 9, 10], 
-           Appearance -> Automatic, Evaluator -> Automatic, Method -> 
-           "Preemptive"],ButtonBox[
-          "\"Intermediate\"", 
-           ButtonFunction :> $CellContext`reset$$[16, 16, 40], Appearance -> 
-           Automatic, Evaluator -> Automatic, Method -> "Preemptive"],
-          ButtonBox[
-          "\"Expert\"", ButtonFunction :> $CellContext`reset$$[16, 30, 99], 
-           Appearance -> Automatic, Evaluator -> Automatic, Method -> 
-           "Preemptive"]},
+          "\"Beginner\"", ButtonFunction :> 
+           Minesweeper`Private`reset$$[9, 9, 10], Appearance -> Automatic, 
+           Evaluator -> Automatic, Method -> "Preemptive"],ButtonBox[
+          "\"Intermediate\"", ButtonFunction :> 
+           Minesweeper`Private`reset$$[16, 16, 40], Appearance -> Automatic, 
+           Evaluator -> Automatic, Method -> "Preemptive"],ButtonBox[
+          "\"Expert\"", ButtonFunction :> 
+           Minesweeper`Private`reset$$[16, 30, 99], Appearance -> Automatic, 
+           Evaluator -> Automatic, Method -> "Preemptive"]},
          "RowDefault"],
         Alignment->Center,
         StripOnInput->False], "\[SpanFromLeft]", "\[SpanFromLeft]"}
@@ -470,65 +157,95 @@ $CellContext`autoSolve$$ = False; $CellContext`solved$$ = {}), Method ->
      AutoDelete->False,
      GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}}],
     "Grid"]],
-  Deinitialization:>$CellContext`reset$$[],
-  DynamicModuleValues:>{{DownValues[$CellContext`reset$$] = {HoldPattern[
-         $CellContext`reset$$[
-          Pattern[$CellContext`args$, 
-           BlankNullSequence[]]]] :> (Dot[$CellContext`grid$$, 
-          $CellContext`Reset[$CellContext`args$]]; $CellContext`autoSolve$$ = 
-         False; $CellContext`safe$$ = ($CellContext`cheats$$ = \
-($CellContext`solved$$ = {})); Null)}}, {
-    DownValues[$CellContext`solve$$] = {HoldPattern[
-         $CellContext`solve$$[]] :> (Which[
+  Deinitialization:>Minesweeper`Private`reset$$[],
+  DynamicModuleValues:>{{
+    DownValues[Minesweeper`Private`reset$$] = {HoldPattern[
+         Minesweeper`Private`reset$$[
+          Pattern[Minesweeper`Private`args$, 
+           BlankNullSequence[]]]] :> (Dot[Minesweeper`Private`grid$$, 
+          Minesweeper`Private`Reset[Minesweeper`Private`args$]]; 
+        Minesweeper`Private`autoSolve$$ = False; 
+        Minesweeper`Private`safe$$ = (
+          Minesweeper`Private`cheats$$ = (Minesweeper`Private`solved$$ = {})); 
+        Null)}}, {DownValues[Minesweeper`Private`solve$$] = {HoldPattern[
+         Minesweeper`Private`solve$$[]] :> (Which[
           Or[
-           Dot[$CellContext`grid$$, $CellContext`Boomed], 
-           
-           Dot[$CellContext`grid$$, $CellContext`Success]], \
-$CellContext`autoSolve$$ = False, 
-          Dot[$CellContext`grid$$, 
-           
-           "Solve"[$CellContext`Greedy -> $CellContext`greedy$$, \
-$CellContext`ClickOnly -> $CellContext`clickOnly$$]], Null, 
-          Or[$CellContext`uncertain$$ == "Cheat", 
+           Dot[Minesweeper`Private`grid$$, Minesweeper`Private`Boomed], 
+           Dot[Minesweeper`Private`grid$$, Minesweeper`Private`Success]], 
+          Minesweeper`Private`autoSolve$$ = False, 
+          Dot[Minesweeper`Private`grid$$, 
+           "Solve"[
+           Minesweeper`Private`Greedy -> Minesweeper`Private`greedy$$, 
+            Minesweeper`Private`ClickOnly -> 
+            Minesweeper`Private`clickOnly$$]], Null, 
+          Or[Minesweeper`Private`uncertain$$ == "Cheat", 
            Not[
-            Dot[$CellContext`grid$$, $CellContext`Started]]], 
-          AppendTo[$CellContext`cheats$$, 
-           Dot[$CellContext`grid$$, 
-            $CellContext`RandomClick[True]]], $CellContext`uncertain$$ == 
-          "Guess", 
-          AppendTo[$CellContext`cheats$$, 
-           Dot[$CellContext`grid$$, 
-            $CellContext`RandomClick[False]]], True, $CellContext`autoSolve$$ = 
-          False]; Dot[$CellContext`plotter$$, 
-          $CellContext`PlotBoard[{$CellContext`cheats$$ -> LightRed}]])}}, {
-    DownValues[$CellContext`step$$] = {HoldPattern[
-         $CellContext`step$$[]] :> (Which[
+            Dot[Minesweeper`Private`grid$$, Minesweeper`Private`Started]]], 
+          AppendTo[Minesweeper`Private`cheats$$, 
+           Dot[Minesweeper`Private`grid$$, 
+            Minesweeper`Private`RandomClick[True]]], 
+          Minesweeper`Private`uncertain$$ == "Guess", 
+          AppendTo[Minesweeper`Private`cheats$$, 
+           Dot[Minesweeper`Private`grid$$, 
+            Minesweeper`Private`RandomClick[False]]], True, 
+          Minesweeper`Private`autoSolve$$ = False]; 
+        Dot[Minesweeper`Private`plotter$$, 
+          
+          Minesweeper`Private`PlotBoard[{
+           Minesweeper`Private`cheats$$ -> LightRed}]])}}, {
+    DownValues[Minesweeper`Private`step$$] = {HoldPattern[
+         Minesweeper`Private`step$$[]] :> (Which[
           Or[
-           Dot[$CellContext`grid$$, $CellContext`Boomed], 
-           Dot[$CellContext`grid$$, $CellContext`Success]], Null, 
+           Dot[Minesweeper`Private`grid$$, Minesweeper`Private`Boomed], 
+           Dot[Minesweeper`Private`grid$$, Minesweeper`Private`Success]], 
+          Null, 
           First[
            Reap[
-            Dot[$CellContext`grid$$, 
-             
-             "Solve"[$CellContext`Greedy -> $CellContext`greedy$$, \
-$CellContext`ClickOnly -> $CellContext`clickOnly$$]], 
-            Blank[], ($CellContext`solved$$ = Apply[Join, #2])& ]], Null, 
-          True, 
-          AppendTo[$CellContext`cheats$$, 
-           Dot[$CellContext`grid$$, 
-            $CellContext`RandomClick[True]]]]; Null)}}, {
-    DownValues[$CellContext`options$$] = {HoldPattern[
-         $CellContext`options$$[]] :> CreateDialog[{"When uncertain: ", 
+            Dot[Minesweeper`Private`grid$$, 
+             "Solve"[
+             Minesweeper`Private`Greedy -> Minesweeper`Private`greedy$$, 
+              Minesweeper`Private`ClickOnly -> 
+              Minesweeper`Private`clickOnly$$]], 
+            Blank[], (Minesweeper`Private`solved$$ = Apply[Join, #2])& ]], 
+          Null, True, 
+          AppendTo[Minesweeper`Private`cheats$$, 
+           Dot[Minesweeper`Private`grid$$, 
+            Minesweeper`Private`RandomClick[True]]]]; Null)}}, {
+    DownValues[Minesweeper`Private`options$$] = {HoldPattern[
+         Minesweeper`Private`options$$[]] :> CreateDialog[{"When uncertain: ", 
           RadioButtonBar[
-           Dynamic[$CellContext`uncertain$$], {"Guess", "Cheat", "Pause"}], 
+           Dynamic[Minesweeper`Private`uncertain$$], {
+           "Guess", "Cheat", "Pause"}], 
           Row[{
             Checkbox[
-             Dynamic[$CellContext`greedy$$]], " Greedy mode "}], 
+             Dynamic[Minesweeper`Private`greedy$$]], " Greedy mode "}], 
           Row[{
             Checkbox[
-             Dynamic[$CellContext`clickOnly$$]], " No Flags "}], 
+             Dynamic[Minesweeper`Private`clickOnly$$]], " No Flags "}], 
           DefaultButton[]}, Modal -> True, WindowTitle -> "Options"]}}},
   Initialization:>{
+    TagSetDelayed[Minesweeper`Dispatcher, 
+     Dot[
+      Minesweeper`Dispatcher[
+       Pattern[Minesweeper`Private`self, 
+        Blank[]]], 
+      Pattern[Minesweeper`Private`msg, 
+       Blank[String]][
+       Pattern[Minesweeper`Private`args, 
+        BlankNullSequence[]]]], 
+     Minesweeper`Private`self[
+     Minesweeper`Private`msg, Minesweeper`Private`args]], 
+    TagSetDelayed[Minesweeper`Dispatcher, 
+     Dot[
+      Minesweeper`Dispatcher[
+       Pattern[Minesweeper`Private`self, 
+        Blank[]]], 
+      Pattern[Minesweeper`Private`msg, 
+       Blank[Symbol]][
+       Pattern[Minesweeper`Private`args, 
+        BlankNullSequence[]]]], 
+     Minesweeper`Private`self[
+      SymbolName[Minesweeper`Private`msg], Minesweeper`Private`args]], 
     UpSetDelayed[
      Dot[
       Minesweeper`Dispatcher[
@@ -540,6 +257,23 @@ $CellContext`ClickOnly -> $CellContext`clickOnly$$]],
         BlankNullSequence[]]]], 
      Minesweeper`Private`self[
       ToString[Minesweeper`Private`msg], Minesweeper`Private`args]], 
+    TagSetDelayed[Minesweeper`Dispatcher, 
+     Dot[
+      Minesweeper`Dispatcher[
+       Pattern[Minesweeper`Private`self, 
+        Blank[]]], 
+      Pattern[Minesweeper`Private`msg, 
+       Blank[String]]], 
+     Minesweeper`Private`self[Minesweeper`Private`msg]], 
+    TagSetDelayed[Minesweeper`Dispatcher, 
+     Dot[
+      Minesweeper`Dispatcher[
+       Pattern[Minesweeper`Private`self, 
+        Blank[]]], 
+      Pattern[Minesweeper`Private`msg, 
+       Blank[Symbol]]], 
+     Minesweeper`Private`self[
+      SymbolName[Minesweeper`Private`msg]]], 
     UpSetDelayed[
      Dot[
       Minesweeper`Dispatcher[
@@ -552,106 +286,106 @@ $CellContext`ClickOnly -> $CellContext`clickOnly$$]],
     TagSet[Minesweeper`Dispatcher, 
      MessageName[Minesweeper`Dispatcher, "usage"], 
      "Simulate an object oriented dispatcher."], 
-    Attributes[Minesweeper`Private`dispatch$2095] = {Temporary}, 
-    Minesweeper`Private`dispatch$2095["Boomed"] := 
-    Minesweeper`Private`boomed$2095, 
-    Minesweeper`Private`dispatch$2095["Cols"] := 
-    Minesweeper`Private`cols$2095, Minesweeper`Private`dispatch$2095["Mines"] := 
-    Minesweeper`Private`mines$2095, 
-    Minesweeper`Private`dispatch$2095["MinesRemaining"] := 
-    If[Minesweeper`Private`success$2095, 0, 
-      Minesweeper`Private`minesRemaining$2095], 
-    Minesweeper`Private`dispatch$2095["Remaining"] := 
-    Minesweeper`Private`remaining$2095, 
-    Minesweeper`Private`dispatch$2095["Rows"] := 
-    Minesweeper`Private`rows$2095, Minesweeper`Private`dispatch$2095["Show"] := 
+    Attributes[Minesweeper`Private`dispatch$4038] = {Temporary}, 
+    Minesweeper`Private`dispatch$4038["Boomed"] := 
+    Minesweeper`Private`boomed$4038, 
+    Minesweeper`Private`dispatch$4038["Cols"] := 
+    Minesweeper`Private`cols$4038, Minesweeper`Private`dispatch$4038["Mines"] := 
+    Minesweeper`Private`mines$4038, 
+    Minesweeper`Private`dispatch$4038["MinesRemaining"] := 
+    If[Minesweeper`Private`success$4038, 0, 
+      Minesweeper`Private`minesRemaining$4038], 
+    Minesweeper`Private`dispatch$4038["Remaining"] := 
+    Minesweeper`Private`remaining$4038, 
+    Minesweeper`Private`dispatch$4038["Rows"] := 
+    Minesweeper`Private`rows$4038, Minesweeper`Private`dispatch$4038["Show"] := 
     Array[
-      Composition[Minesweeper`Private`show$2095, List], {
-      Minesweeper`Private`rows$2095, Minesweeper`Private`cols$2095}], 
-    Minesweeper`Private`dispatch$2095["Started"] := 
-    Minesweeper`Private`startTime$2095 != 0, 
-    Minesweeper`Private`dispatch$2095["Success"] := 
-    Minesweeper`Private`success$2095, 
-    Minesweeper`Private`dispatch$2095["TimeUsed"] := 
-    Which[Minesweeper`Private`startTime$2095 == 0, 0, 
-      Minesweeper`Private`stopTime$2095 != 0, 
-      Minesweeper`Private`stopTime$2095 - Minesweeper`Private`startTime$2095, 
-      True, SessionTime[] - Minesweeper`Private`startTime$2095], 
-    Minesweeper`Private`dispatch$2095["RandomClick", True] := 
+      Composition[Minesweeper`Private`show$4038, List], {
+      Minesweeper`Private`rows$4038, Minesweeper`Private`cols$4038}], 
+    Minesweeper`Private`dispatch$4038["Started"] := 
+    Minesweeper`Private`startTime$4038 != 0, 
+    Minesweeper`Private`dispatch$4038["Success"] := 
+    Minesweeper`Private`success$4038, 
+    Minesweeper`Private`dispatch$4038["TimeUsed"] := 
+    Which[Minesweeper`Private`startTime$4038 == 0, 0, 
+      Minesweeper`Private`stopTime$4038 != 0, 
+      Minesweeper`Private`stopTime$4038 - Minesweeper`Private`startTime$4038, 
+      True, SessionTime[] - Minesweeper`Private`startTime$4038], 
+    Minesweeper`Private`dispatch$4038["RandomClick", True] := 
     With[{Minesweeper`Private`alternative$ = AnyTrue[
-         Minesweeper`Private`neighbors$2095[#, 
-          Minesweeper`Private`clicked$2095], And[
-         Minesweeper`Private`markRemains$2095[#] == 1, Length[
+         Minesweeper`Private`neighbors$4038[#, 
+          Minesweeper`Private`clicked$4038], And[
+         Minesweeper`Private`markRemains$4038[#] == 1, Length[
             
-            Minesweeper`Private`neighbors$2095[#, 
-             Minesweeper`Private`freeQ$2095]] == 2]& ]& }, 
-      Minesweeper`Private`click$2095[
+            Minesweeper`Private`neighbors$4038[#, 
+             Minesweeper`Private`freeQ$4038]] == 2]& ]& }, 
+      Minesweeper`Private`click$4038[
        SelectFirst[
         Apply[Join, 
          Array[
-         List, {Minesweeper`Private`rows$2095, 
-           Minesweeper`Private`cols$2095}]], And[
-         Minesweeper`Private`freeQ$2095[#], 
+         List, {Minesweeper`Private`rows$4038, 
+           Minesweeper`Private`cols$4038}]], And[
+         Minesweeper`Private`freeQ$4038[#], 
          Not[
-          Minesweeper`Private`mineQ$2095[#]], 
+          Minesweeper`Private`mineQ$4038[#]], 
          Minesweeper`Private`alternative$[#]]& , 
-        Minesweeper`Private`randomCell$2095[And[
-          Minesweeper`Private`freeQ$2095[#], 
+        Minesweeper`Private`randomCell$4038[And[
+          Minesweeper`Private`freeQ$4038[#], 
           Not[
-           Minesweeper`Private`mineQ$2095[#]]]& ]]]], 
-    Minesweeper`Private`dispatch$2095["Click", 
+           Minesweeper`Private`mineQ$4038[#]]]& ]]]], 
+    Minesweeper`Private`dispatch$4038["Click", 
       Pattern[Minesweeper`Private`cell$, 
        Blank[]], True] := If[
-      Minesweeper`Private`mineQ$2095[Minesweeper`Private`cell$], 
-      Minesweeper`Private`mark$2095[Minesweeper`Private`cell$], 
-      Minesweeper`Private`click$2095[Minesweeper`Private`cell$]], 
-    Minesweeper`Private`dispatch$2095["Click", 
+      Minesweeper`Private`mineQ$4038[Minesweeper`Private`cell$], 
+      Minesweeper`Private`mark$4038[Minesweeper`Private`cell$], 
+      Minesweeper`Private`click$4038[Minesweeper`Private`cell$]], 
+    Minesweeper`Private`dispatch$4038["Click", 
       Pattern[Minesweeper`Private`cell$, 
        Blank[]], 
       Optional[
        Blank[], False]] := If[
       Not[
-       Minesweeper`Private`marked$2095[Minesweeper`Private`cell$]], 
-      Minesweeper`Private`click$2095[Minesweeper`Private`cell$]], 
-    Minesweeper`Private`dispatch$2095["Mark", 
+       Minesweeper`Private`marked$4038[Minesweeper`Private`cell$]], 
+      Minesweeper`Private`click$4038[Minesweeper`Private`cell$]], 
+    Minesweeper`Private`dispatch$4038["Mark", 
       Pattern[Minesweeper`Private`cell$, 
-       Blank[]]] := Minesweeper`Private`mark$2095[Minesweeper`Private`cell$], 
-    Minesweeper`Private`dispatch$2095["Safe", 
+       Blank[]]] := Minesweeper`Private`mark$4038[Minesweeper`Private`cell$], 
+    Minesweeper`Private`dispatch$4038["Safe", 
       Pattern[Minesweeper`Private`cell$, 
-       Blank[]]] := Minesweeper`Private`safe$2095[Minesweeper`Private`cell$], 
-    Minesweeper`Private`dispatch$2095["Reset", 
+       Blank[]]] := Minesweeper`Private`safe$4038[Minesweeper`Private`cell$], 
+    Minesweeper`Private`dispatch$4038["Reset", 
       Optional[
        Pattern[Minesweeper`Private`keep$, 
         Blank[]], False]] := If[Minesweeper`Private`keep$, 
-      Minesweeper`Private`restart$2095[], 
-      Minesweeper`Private`reset$2095[
-      Minesweeper`Private`rows$2095, Minesweeper`Private`cols$2095, 
-       Minesweeper`Private`mines$2095]], 
-    Minesweeper`Private`dispatch$2095["Reset", 
+      Minesweeper`Private`restart$4038[], 
+      Minesweeper`Private`reset$4038[
+      Minesweeper`Private`rows$4038, Minesweeper`Private`cols$4038, 
+       Minesweeper`Private`mines$4038]], 
+    Minesweeper`Private`dispatch$4038["Reset", 
       Pattern[Minesweeper`Private`rows1$, 
        Blank[Integer]], 
       Pattern[Minesweeper`Private`cols1$, 
        Blank[Integer]], 
       Pattern[Minesweeper`Private`mines1$, 
        Blank[Integer]]] := 
-    Minesweeper`Private`reset$2095[
+    Minesweeper`Private`reset$4038[
      Minesweeper`Private`rows1$, Minesweeper`Private`cols1$, 
       Minesweeper`Private`mines1$], 
-    Minesweeper`Private`dispatch$2095["RandomClick", 
+    Minesweeper`Private`dispatch$4038["RandomClick", 
       Optional[
        Blank[], False]] := With[{Minesweeper`Private`reasoningMineQ$ = AnyTrue[
-         Minesweeper`Private`neighbors$2095[#, 
-          Minesweeper`Private`clicked$2095], 
-         Minesweeper`Private`markRemains$2095[#] == Length[
+         Minesweeper`Private`neighbors$4038[#, 
+          Minesweeper`Private`clicked$4038], 
+         Minesweeper`Private`markRemains$4038[#] == Length[
            
-           Minesweeper`Private`neighbors$2095[#, 
-            Minesweeper`Private`freeQ$2095]]& ]& }, 
-      Minesweeper`Private`click$2095[
-       Minesweeper`Private`randomCell$2095[And[
-         Minesweeper`Private`freeQ$2095[#], 
+           Minesweeper`Private`neighbors$4038[#, 
+            Minesweeper`Private`freeQ$4038]]& ]& }, 
+      Minesweeper`Private`click$4038[
+       Minesweeper`Private`randomCell$4038[And[
+         Minesweeper`Private`freeQ$4038[#], 
          Not[
           Minesweeper`Private`reasoningMineQ$[#]]]& ]]], 
-    Minesweeper`Private`dispatch$2095["Solve", 
+    Minesweeper`Private`dispatch$4038["Solve", 
       OptionsPattern[{
        Minesweeper`Private`Greedy -> False, Minesweeper`Private`ClickOnly -> 
         False}]] := 
@@ -665,9 +399,10 @@ $CellContext`ClickOnly -> $CellContext`clickOnly$$]],
                  Blank[]] -> 0) :> Minesweeper`Private`pos]}, 
            And[
            Length[Minesweeper`Private`clicks$] != 0, 
-            Scan[Minesweeper`Private`click$2095, 
+            Scan[Minesweeper`Private`click$4038, 
               Sow[Minesweeper`Private`clicks$]]; True]]& , 
-          With[{Minesweeper`Private`clicks$ = 
+          With[{
+           Minesweeper`Private`clicks$ = 
             Cases[#, (Pattern[Minesweeper`Private`pos, 
                  Blank[]] -> 0) :> Minesweeper`Private`pos], 
             Minesweeper`Private`marks$ = 
@@ -676,9 +411,9 @@ $CellContext`ClickOnly -> $CellContext`clickOnly$$]],
            And[
            Length[Minesweeper`Private`clicks$] + 
              Length[Minesweeper`Private`marks$] != 0, 
-            Scan[Minesweeper`Private`click$2095, 
+            Scan[Minesweeper`Private`click$4038, 
               Sow[Minesweeper`Private`clicks$]]; 
-            Scan[Minesweeper`Private`mark$2095, 
+            Scan[Minesweeper`Private`mark$4038, 
               Sow[Minesweeper`Private`marks$]]; True]]& ]}, 
        Or[
         If[
@@ -686,86 +421,86 @@ $CellContext`ClickOnly -> $CellContext`clickOnly$$]],
          AnyTrue[
           Array[
            Composition[
-            Minesweeper`Private`solve$2095[
+            Minesweeper`Private`solve$4038[
             Minesweeper`Private`k$, Minesweeper`Private`clickOnly$], List], {
-           Minesweeper`Private`rows$2095, Minesweeper`Private`cols$2095}], 
+           Minesweeper`Private`rows$4038, Minesweeper`Private`cols$4038}], 
           Identity, 2], 
          AnyTrue[
           Array[
-          List, {Minesweeper`Private`rows$2095, 
-            Minesweeper`Private`cols$2095}], 
-          Minesweeper`Private`solve$2095[
+          List, {Minesweeper`Private`rows$4038, 
+            Minesweeper`Private`cols$4038}], 
+          Minesweeper`Private`solve$4038[
           Minesweeper`Private`k$, Minesweeper`Private`clickOnly$], 2]], 
-        And[Minesweeper`Private`minesRemaining$2095 < 5, 
-         Minesweeper`Private`solve0$2095[Minesweeper`Private`k$, 
+        And[Minesweeper`Private`minesRemaining$4038 < 5, 
+         Minesweeper`Private`solve0$4038[Minesweeper`Private`k$, 
           Apply[Join, 
            Array[If[
-             Minesweeper`Private`freeQ$2095[{
+             Minesweeper`Private`freeQ$4038[{
                SlotSequence[1]}], {
               SlotSequence[1]}, Nothing]& , {
-            Minesweeper`Private`rows$2095, Minesweeper`Private`cols$2095}]], 
-          Minesweeper`Private`minesRemaining$2095]]]]], 
-    Minesweeper`Private`dispatch$2095["Solve", 
+            Minesweeper`Private`rows$4038, Minesweeper`Private`cols$4038}]], 
+          Minesweeper`Private`minesRemaining$4038]]]]], 
+    Minesweeper`Private`dispatch$4038["Solve", 
       Pattern[Minesweeper`Private`cell$, 
        Blank[]]] := 
-    Minesweeper`Private`solve$2095[Identity][Minesweeper`Private`cell$], 
-    Attributes[Minesweeper`Private`rows$2095] = {Temporary}, 
-    Minesweeper`Private`rows$2095 = 16, 
-    Attributes[Minesweeper`Private`cols$2095] = {Temporary}, 
-    Minesweeper`Private`cols$2095 = 16, 
-    Attributes[Minesweeper`Private`mines$2095] = {Temporary}, 
-    Minesweeper`Private`mines$2095 = 40, 
-    Attributes[Minesweeper`Private`show$2095] = {Temporary}, 
-    Minesweeper`Private`show$2095[
+    Minesweeper`Private`solve$4038[Identity][Minesweeper`Private`cell$], 
+    Attributes[Minesweeper`Private`rows$4038] = {Temporary}, 
+    Minesweeper`Private`rows$4038 = 16, 
+    Attributes[Minesweeper`Private`cols$4038] = {Temporary}, 
+    Minesweeper`Private`cols$4038 = 16, 
+    Attributes[Minesweeper`Private`mines$4038] = {Temporary}, 
+    Minesweeper`Private`mines$4038 = 40, 
+    Attributes[Minesweeper`Private`show$4038] = {Temporary}, 
+    Minesweeper`Private`show$4038[
       PatternTest[
        Pattern[Minesweeper`Private`cell$, 
-        Blank[]], Minesweeper`Private`clicked$2095]] := If[
-      Minesweeper`Private`mineQ$2095[Minesweeper`Private`cell$], "X", 
-      Minesweeper`Private`grid$2095[Minesweeper`Private`cell$]], 
-    Minesweeper`Private`show$2095[
+        Blank[]], Minesweeper`Private`clicked$4038]] := If[
+      Minesweeper`Private`mineQ$4038[Minesweeper`Private`cell$], "X", 
+      Minesweeper`Private`grid$4038[Minesweeper`Private`cell$]], 
+    Minesweeper`Private`show$4038[
       PatternTest[
        Pattern[Minesweeper`Private`cell$, 
-        Blank[]], Minesweeper`Private`marked$2095]] := If[
+        Blank[]], Minesweeper`Private`marked$4038]] := If[
       Or[
-       Minesweeper`Private`mineQ$2095[Minesweeper`Private`cell$], 
+       Minesweeper`Private`mineQ$4038[Minesweeper`Private`cell$], 
        Not[
         Or[
-        Minesweeper`Private`boomed$2095, Minesweeper`Private`success$2095]]], 
-      "m", "w"], Minesweeper`Private`show$2095[
+        Minesweeper`Private`boomed$4038, Minesweeper`Private`success$4038]]], 
+      "m", "w"], Minesweeper`Private`show$4038[
       PatternTest[
        Pattern[Minesweeper`Private`cell$, 
-        Blank[]], Minesweeper`Private`mineQ$2095]] := 
-    If[Minesweeper`Private`boomed$2095, "x", 
-      If[Minesweeper`Private`success$2095, "m", " "]], 
-    Minesweeper`Private`show$2095[
+        Blank[]], Minesweeper`Private`mineQ$4038]] := 
+    If[Minesweeper`Private`boomed$4038, "x", 
+      If[Minesweeper`Private`success$4038, "m", " "]], 
+    Minesweeper`Private`show$4038[
       Blank[]] = " ", Attributes[Minesweeper`Private`cell$] = {Temporary}, 
-    Attributes[Minesweeper`Private`clicked$2095] = {Temporary}, 
-    Minesweeper`Private`clicked$2095[
+    Attributes[Minesweeper`Private`clicked$4038] = {Temporary}, 
+    Minesweeper`Private`clicked$4038[
       Blank[]] = False, 
-    Attributes[Minesweeper`Private`mineQ$2095] = {Temporary}, 
-    Minesweeper`Private`mineQ$2095 = 
-    Minesweeper`Private`grid$2095[#] == "x"& , 
-    Attributes[Minesweeper`Private`grid$2095] = {Temporary}, 
-    Minesweeper`Private`grid$2095[
-      Blank[]] = 0, Attributes[Minesweeper`Private`marked$2095] = {Temporary},
-     Minesweeper`Private`marked$2095[
+    Attributes[Minesweeper`Private`mineQ$4038] = {Temporary}, 
+    Minesweeper`Private`mineQ$4038 = 
+    Minesweeper`Private`grid$4038[#] == "x"& , 
+    Attributes[Minesweeper`Private`grid$4038] = {Temporary}, 
+    Minesweeper`Private`grid$4038[
+      Blank[]] = 0, Attributes[Minesweeper`Private`marked$4038] = {Temporary},
+     Minesweeper`Private`marked$4038[
       Blank[]] = False, 
-    Attributes[Minesweeper`Private`boomed$2095] = {Temporary}, 
-    Minesweeper`Private`boomed$2095 = False, 
-    Attributes[Minesweeper`Private`success$2095] = {Temporary}, 
-    Minesweeper`Private`success$2095 := 
-    Minesweeper`Private`remaining$2095 == 0, 
-    Attributes[Minesweeper`Private`remaining$2095] = {Temporary}, 
-    Minesweeper`Private`remaining$2095 = 216, 
-    Attributes[Minesweeper`Private`startTime$2095] = {Temporary}, 
-    Minesweeper`Private`startTime$2095 = 0, 
-    Attributes[Minesweeper`Private`minesRemaining$2095] = {Temporary}, 
-    Minesweeper`Private`minesRemaining$2095 = 40, 
-    Attributes[Minesweeper`Private`stopTime$2095] = {Temporary}, 
-    Minesweeper`Private`stopTime$2095 = 0, 
+    Attributes[Minesweeper`Private`boomed$4038] = {Temporary}, 
+    Minesweeper`Private`boomed$4038 = False, 
+    Attributes[Minesweeper`Private`success$4038] = {Temporary}, 
+    Minesweeper`Private`success$4038 := 
+    Minesweeper`Private`remaining$4038 == 0, 
+    Attributes[Minesweeper`Private`remaining$4038] = {Temporary}, 
+    Minesweeper`Private`remaining$4038 = 216, 
+    Attributes[Minesweeper`Private`startTime$4038] = {Temporary}, 
+    Minesweeper`Private`startTime$4038 = 0, 
+    Attributes[Minesweeper`Private`minesRemaining$4038] = {Temporary}, 
+    Minesweeper`Private`minesRemaining$4038 = 40, 
+    Attributes[Minesweeper`Private`stopTime$4038] = {Temporary}, 
+    Minesweeper`Private`stopTime$4038 = 0, 
     Attributes[Minesweeper`Private`alternative$] = {Temporary}, 
-    Attributes[Minesweeper`Private`neighbors$2095] = {Temporary}, 
-    Minesweeper`Private`neighbors$2095[
+    Attributes[Minesweeper`Private`neighbors$4038] = {Temporary}, 
+    Minesweeper`Private`neighbors$4038[
       Pattern[Minesweeper`Private`cell$, 
        Blank[]], 
       Pattern[Minesweeper`Private`crit$, 
@@ -775,147 +510,147 @@ $CellContext`ClickOnly -> $CellContext`clickOnly$$]],
        Apply[And, 
         Thread[
         1 <= # <= {
-          Minesweeper`Private`rows$2095, Minesweeper`Private`cols$2095}]], 
+          Minesweeper`Private`rows$4038, Minesweeper`Private`cols$4038}]], 
        Minesweeper`Private`crit$[#]]& ], 
     Attributes[Minesweeper`Private`crit$] = {Temporary}, 
-    Attributes[Minesweeper`Private`markRemains$2095] = {Temporary}, 
-    Minesweeper`Private`markRemains$2095 = 
-    Minesweeper`Private`grid$2095[#] - Length[
-      Minesweeper`Private`neighbors$2095[#, 
-       Minesweeper`Private`marked$2095]]& , 
-    Attributes[Minesweeper`Private`freeQ$2095] = {Temporary}, 
-    Minesweeper`Private`freeQ$2095 = Not[
+    Attributes[Minesweeper`Private`markRemains$4038] = {Temporary}, 
+    Minesweeper`Private`markRemains$4038 = 
+    Minesweeper`Private`grid$4038[#] - Length[
+      Minesweeper`Private`neighbors$4038[#, 
+       Minesweeper`Private`marked$4038]]& , 
+    Attributes[Minesweeper`Private`freeQ$4038] = {Temporary}, 
+    Minesweeper`Private`freeQ$4038 = Not[
       Or[
-       Minesweeper`Private`clicked$2095[#], 
-       Minesweeper`Private`marked$2095[#]]]& , 
-    Attributes[Minesweeper`Private`click$2095] = {Temporary}, 
-    Minesweeper`Private`click$2095[
+       Minesweeper`Private`clicked$4038[#], 
+       Minesweeper`Private`marked$4038[#]]]& , 
+    Attributes[Minesweeper`Private`click$4038] = {Temporary}, 
+    Minesweeper`Private`click$4038[
       Pattern[Minesweeper`Private`cell$, 
        Blank[]]] := (
-     Minesweeper`Private`start$2095[Minesweeper`Private`cell$]; Which[
-       Or[Minesweeper`Private`boomed$2095, Minesweeper`Private`success$2095], 
+     Minesweeper`Private`start$4038[Minesweeper`Private`cell$]; Which[
+       Or[Minesweeper`Private`boomed$4038, Minesweeper`Private`success$4038], 
        Null, 
-       Minesweeper`Private`mineQ$2095[Minesweeper`Private`cell$], 
-       Minesweeper`Private`clicked$2095[Minesweeper`Private`cell$] = True; 
-       Minesweeper`Private`boomed$2095 = True, 
-       Minesweeper`Private`marked$2095[Minesweeper`Private`cell$], 
-       Minesweeper`Private`boomed$2095 = True, 
-       Minesweeper`Private`clicked$2095[Minesweeper`Private`cell$], 
+       Minesweeper`Private`mineQ$4038[Minesweeper`Private`cell$], 
+       Minesweeper`Private`clicked$4038[Minesweeper`Private`cell$] = True; 
+       Minesweeper`Private`boomed$4038 = True, 
+       Minesweeper`Private`marked$4038[Minesweeper`Private`cell$], 
+       Minesweeper`Private`boomed$4038 = True, 
+       Minesweeper`Private`clicked$4038[Minesweeper`Private`cell$], 
        If[
-       Minesweeper`Private`markRemains$2095[Minesweeper`Private`cell$] == 0, 
-        Scan[Minesweeper`Private`click$2095, 
-         Minesweeper`Private`neighbors$2095[
-         Minesweeper`Private`cell$, Minesweeper`Private`freeQ$2095]]], True, 
-       Minesweeper`Private`clicked$2095[Minesweeper`Private`cell$] = True; 
-       Decrement[Minesweeper`Private`remaining$2095]; 
-       If[Minesweeper`Private`grid$2095[Minesweeper`Private`cell$] == 0, 
-         Scan[Minesweeper`Private`click$2095, 
-          Minesweeper`Private`neighbors$2095[
-          Minesweeper`Private`cell$, Minesweeper`Private`freeQ$2095]]]]; 
-     Minesweeper`Private`stop$2095[]; Minesweeper`Private`cell$), 
-    Attributes[Minesweeper`Private`start$2095] = {Temporary}, 
-    Minesweeper`Private`start$2095[
+       Minesweeper`Private`markRemains$4038[Minesweeper`Private`cell$] == 0, 
+        Scan[Minesweeper`Private`click$4038, 
+         Minesweeper`Private`neighbors$4038[
+         Minesweeper`Private`cell$, Minesweeper`Private`freeQ$4038]]], True, 
+       Minesweeper`Private`clicked$4038[Minesweeper`Private`cell$] = True; 
+       Decrement[Minesweeper`Private`remaining$4038]; 
+       If[Minesweeper`Private`grid$4038[Minesweeper`Private`cell$] == 0, 
+         Scan[Minesweeper`Private`click$4038, 
+          Minesweeper`Private`neighbors$4038[
+          Minesweeper`Private`cell$, Minesweeper`Private`freeQ$4038]]]]; 
+     Minesweeper`Private`stop$4038[]; Minesweeper`Private`cell$), 
+    Attributes[Minesweeper`Private`start$4038] = {Temporary}, 
+    Minesweeper`Private`start$4038[
       Pattern[Minesweeper`Private`init$, 
        Blank[]]] := 
-    If[Minesweeper`Private`startTime$2095 == 0, 
-      Minesweeper`Private`startTime$2095 = SessionTime[]; If[
-        Not[Minesweeper`Private`inited$2095], 
-        Minesweeper`Private`inited$2095 = True; 
+    If[Minesweeper`Private`startTime$4038 == 0, 
+      Minesweeper`Private`startTime$4038 = SessionTime[]; If[
+        Not[Minesweeper`Private`inited$4038], 
+        Minesweeper`Private`inited$4038 = True; 
         With[{Minesweeper`Private`excludes$ = 
            If[Minesweeper`Private`init$ =!= Nothing, 
              Append[
-              Minesweeper`Private`neighbors$2095[
+              Minesweeper`Private`neighbors$4038[
               Minesweeper`Private`init$, True& ], 
               Minesweeper`Private`init$], {}]}, 
-          Do[Minesweeper`Private`grid$2095[
-             Minesweeper`Private`randomCell$2095[And[
+          Do[Minesweeper`Private`grid$4038[
+             Minesweeper`Private`randomCell$4038[And[
                Not[
-                Minesweeper`Private`mineQ$2095[#]], 
+                Minesweeper`Private`mineQ$4038[#]], 
                Not[
                 MemberQ[Minesweeper`Private`excludes$, #]]]& ]] = "x", 
-           Minesweeper`Private`mines$2095]]; 
-        Minesweeper`Private`calcNeighbors$2095[]]], 
+           Minesweeper`Private`mines$4038]]; 
+        Minesweeper`Private`calcNeighbors$4038[]]], 
     Attributes[Minesweeper`Private`init$] = {Temporary}, 
-    Attributes[Minesweeper`Private`inited$2095] = {Temporary}, 
-    Minesweeper`Private`inited$2095 = False, 
+    Attributes[Minesweeper`Private`inited$4038] = {Temporary}, 
+    Minesweeper`Private`inited$4038 = False, 
     Attributes[Minesweeper`Private`excludes$] = {Temporary}, 
-    Attributes[Minesweeper`Private`randomCell$2095] = {Temporary}, 
-    Minesweeper`Private`randomCell$2095[
+    Attributes[Minesweeper`Private`randomCell$4038] = {Temporary}, 
+    Minesweeper`Private`randomCell$4038[
       Pattern[Minesweeper`Private`pred$, 
        Blank[]]] := Do[
       With[{Minesweeper`Private`cell$ = QuotientRemainder[
            RandomInteger[
-           Minesweeper`Private`rows$2095 Minesweeper`Private`cols$2095 - 1], 
-           Minesweeper`Private`cols$2095] + {1, 1}}, 
+           Minesweeper`Private`rows$4038 Minesweeper`Private`cols$4038 - 1], 
+           Minesweeper`Private`cols$4038] + {1, 1}}, 
        If[
         Minesweeper`Private`pred$[Minesweeper`Private`cell$], 
         Return[Minesweeper`Private`cell$]]], Infinity], 
     Attributes[Minesweeper`Private`pred$] = {Temporary}, 
-    Attributes[Minesweeper`Private`calcNeighbors$2095] = {Temporary}, 
-    Minesweeper`Private`calcNeighbors$2095[] := Do[
+    Attributes[Minesweeper`Private`calcNeighbors$4038] = {Temporary}, 
+    Minesweeper`Private`calcNeighbors$4038[] := Do[
       With[{
        Minesweeper`Private`cell$ = {
          Minesweeper`Private`x, Minesweeper`Private`y}}, 
        If[
         Not[
-         Minesweeper`Private`mineQ$2095[Minesweeper`Private`cell$]], 
-        Minesweeper`Private`grid$2095[Minesweeper`Private`cell$] = Length[
-          Minesweeper`Private`neighbors$2095[
-          Minesweeper`Private`cell$, Minesweeper`Private`mineQ$2095]]]], {
-      Minesweeper`Private`x, 1, Minesweeper`Private`rows$2095}, {
-      Minesweeper`Private`y, 1, Minesweeper`Private`cols$2095}], 
-    Attributes[Minesweeper`Private`stop$2095] = {Temporary}, 
-    Minesweeper`Private`stop$2095[] := If[
-      And[Minesweeper`Private`stopTime$2095 == 0, 
-       Or[Minesweeper`Private`boomed$2095, Minesweeper`Private`success$2095]],
-       Minesweeper`Private`stopTime$2095 = SessionTime[]], 
-    Attributes[Minesweeper`Private`mark$2095] = {Temporary}, 
-    Minesweeper`Private`mark$2095[
+         Minesweeper`Private`mineQ$4038[Minesweeper`Private`cell$]], 
+        Minesweeper`Private`grid$4038[Minesweeper`Private`cell$] = Length[
+          Minesweeper`Private`neighbors$4038[
+          Minesweeper`Private`cell$, Minesweeper`Private`mineQ$4038]]]], {
+      Minesweeper`Private`x, 1, Minesweeper`Private`rows$4038}, {
+      Minesweeper`Private`y, 1, Minesweeper`Private`cols$4038}], 
+    Attributes[Minesweeper`Private`stop$4038] = {Temporary}, 
+    Minesweeper`Private`stop$4038[] := If[
+      And[Minesweeper`Private`stopTime$4038 == 0, 
+       Or[Minesweeper`Private`boomed$4038, Minesweeper`Private`success$4038]],
+       Minesweeper`Private`stopTime$4038 = SessionTime[]], 
+    Attributes[Minesweeper`Private`mark$4038] = {Temporary}, 
+    Minesweeper`Private`mark$4038[
       Pattern[Minesweeper`Private`cell$, 
-       Blank[]]] := (Minesweeper`Private`start$2095[Nothing]; If[
+       Blank[]]] := (Minesweeper`Private`start$4038[Nothing]; If[
        And[
         Not[
          Or[
-         Minesweeper`Private`boomed$2095, Minesweeper`Private`success$2095]], 
+         Minesweeper`Private`boomed$4038, Minesweeper`Private`success$4038]], 
         
         Not[
-         Minesweeper`Private`clicked$2095[Minesweeper`Private`cell$]]], 
-       If[Minesweeper`Private`marked$2095[Minesweeper`Private`cell$] = Not[
-          Minesweeper`Private`marked$2095[Minesweeper`Private`cell$]], 
-        Decrement[Minesweeper`Private`minesRemaining$2095], 
-        Increment[Minesweeper`Private`minesRemaining$2095]]]; 
+         Minesweeper`Private`clicked$4038[Minesweeper`Private`cell$]]], 
+       If[Minesweeper`Private`marked$4038[Minesweeper`Private`cell$] = Not[
+          Minesweeper`Private`marked$4038[Minesweeper`Private`cell$]], 
+        Decrement[Minesweeper`Private`minesRemaining$4038], 
+        Increment[Minesweeper`Private`minesRemaining$4038]]]; 
      Minesweeper`Private`cell$), 
-    Attributes[Minesweeper`Private`safe$2095] = {Temporary}, 
-    Minesweeper`Private`safe$2095[
+    Attributes[Minesweeper`Private`safe$4038] = {Temporary}, 
+    Minesweeper`Private`safe$4038[
       Condition[
        Pattern[Minesweeper`Private`cell$, 
         Blank[]], 
-       Or[Minesweeper`Private`boomed$2095, Minesweeper`Private`success$2095, 
-        Minesweeper`Private`marked$2095[Minesweeper`Private`cell$]]]] = {}, 
-    Minesweeper`Private`safe$2095[
+       Or[Minesweeper`Private`boomed$4038, Minesweeper`Private`success$4038, 
+        Minesweeper`Private`marked$4038[Minesweeper`Private`cell$]]]] = {}, 
+    Minesweeper`Private`safe$4038[
       PatternTest[
        Pattern[Minesweeper`Private`cell$, 
-        Blank[]], Minesweeper`Private`clicked$2095]] := 
-    Minesweeper`Private`neighbors$2095[
-     Minesweeper`Private`cell$, Minesweeper`Private`freeQ$2095], 
-    Minesweeper`Private`safe$2095[
+        Blank[]], Minesweeper`Private`clicked$4038]] := 
+    Minesweeper`Private`neighbors$4038[
+     Minesweeper`Private`cell$, Minesweeper`Private`freeQ$4038], 
+    Minesweeper`Private`safe$4038[
       Pattern[Minesweeper`Private`cell, 
        Blank[]]] := {Minesweeper`Private`cell}, 
     Attributes[Minesweeper`Private`keep$] = {Temporary}, 
-    Attributes[Minesweeper`Private`restart$2095] = {Temporary}, 
-    Minesweeper`Private`restart$2095[] := (
-     Clear[Minesweeper`Private`clicked$2095, Minesweeper`Private`marked$2095]; 
-     Minesweeper`Private`clicked$2095[
-        Blank[]] = False; Minesweeper`Private`marked$2095[
-        Blank[]] = False; Minesweeper`Private`boomed$2095 = False; 
-     Minesweeper`Private`startTime$2095 = (Minesweeper`Private`stopTime$2095 = 
-       0); Minesweeper`Private`minesRemaining$2095 = 
-      Minesweeper`Private`mines$2095; 
-     Minesweeper`Private`remaining$2095 = 
-      Minesweeper`Private`rows$2095 Minesweeper`Private`cols$2095 - 
-       Minesweeper`Private`mines$2095; Null), 
-    Attributes[Minesweeper`Private`reset$2095] = {Temporary}, 
-    Minesweeper`Private`reset$2095[
+    Attributes[Minesweeper`Private`restart$4038] = {Temporary}, 
+    Minesweeper`Private`restart$4038[] := (
+     Clear[Minesweeper`Private`clicked$4038, Minesweeper`Private`marked$4038]; 
+     Minesweeper`Private`clicked$4038[
+        Blank[]] = False; Minesweeper`Private`marked$4038[
+        Blank[]] = False; Minesweeper`Private`boomed$4038 = False; 
+     Minesweeper`Private`startTime$4038 = (Minesweeper`Private`stopTime$4038 = 
+       0); Minesweeper`Private`minesRemaining$4038 = 
+      Minesweeper`Private`mines$4038; 
+     Minesweeper`Private`remaining$4038 = 
+      Minesweeper`Private`rows$4038 Minesweeper`Private`cols$4038 - 
+       Minesweeper`Private`mines$4038; Null), 
+    Attributes[Minesweeper`Private`reset$4038] = {Temporary}, 
+    Minesweeper`Private`reset$4038[
       Pattern[Minesweeper`Private`rows1$, 
        Blank[]], 
       Pattern[Minesweeper`Private`cols1$, 
@@ -925,24 +660,24 @@ $CellContext`ClickOnly -> $CellContext`clickOnly$$]],
       Optional[
        Pattern[Minesweeper`Private`sample$, 
         Blank[]], {}]] := ({
-       Minesweeper`Private`rows$2095, Minesweeper`Private`cols$2095, 
-        Minesweeper`Private`mines$2095} = {
+       Minesweeper`Private`rows$4038, Minesweeper`Private`cols$4038, 
+        Minesweeper`Private`mines$4038} = {
        Minesweeper`Private`rows1$, Minesweeper`Private`cols1$, 
-        Minesweeper`Private`mines1$}; Clear[Minesweeper`Private`grid$2095]; 
-     Minesweeper`Private`grid$2095[
-        Blank[]] = 0; Minesweeper`Private`inited$2095 = False; 
-     Minesweeper`Private`restart$2095[]; 
+        Minesweeper`Private`mines1$}; Clear[Minesweeper`Private`grid$4038]; 
+     Minesweeper`Private`grid$4038[
+        Blank[]] = 0; Minesweeper`Private`inited$4038 = False; 
+     Minesweeper`Private`restart$4038[]; 
      If[Length[Minesweeper`Private`sample$] != 0, 
-       Minesweeper`Private`mines$2095 = (
-         Minesweeper`Private`minesRemaining$2095 = 
+       Minesweeper`Private`mines$4038 = (
+         Minesweeper`Private`minesRemaining$4038 = 
          Length[Minesweeper`Private`sample$]); 
-       Minesweeper`Private`remaining$2095 = 
-        Minesweeper`Private`rows$2095 Minesweeper`Private`cols$2095 - 
-         Minesweeper`Private`mines$2095; 
-       Scan[(Minesweeper`Private`grid$2095[#] = "x")& , 
+       Minesweeper`Private`remaining$4038 = 
+        Minesweeper`Private`rows$4038 Minesweeper`Private`cols$4038 - 
+         Minesweeper`Private`mines$4038; 
+       Scan[(Minesweeper`Private`grid$4038[#] = "x")& , 
          Minesweeper`Private`sample$]; 
-       Minesweeper`Private`calcNeighbors$2095[]; 
-       Minesweeper`Private`inited$2095 = True]; Null), 
+       Minesweeper`Private`calcNeighbors$4038[]; 
+       Minesweeper`Private`inited$4038 = True]; Null), 
     Attributes[Minesweeper`Private`rows1$] = {Temporary}, 
     Attributes[Minesweeper`Private`cols1$] = {Temporary}, 
     Attributes[Minesweeper`Private`mines1$] = {Temporary}, 
@@ -952,8 +687,8 @@ $CellContext`ClickOnly -> $CellContext`clickOnly$$]],
     Attributes[Minesweeper`Private`k$] = {Temporary}, 
     Attributes[Minesweeper`Private`clicks$] = {Temporary}, 
     Attributes[Minesweeper`Private`marks$] = {Temporary}, 
-    Attributes[Minesweeper`Private`solve$2095] = {Temporary}, 
-    Minesweeper`Private`solve$2095[
+    Attributes[Minesweeper`Private`solve$4038] = {Temporary}, 
+    Minesweeper`Private`solve$4038[
       Pattern[Minesweeper`Private`k$, 
        Blank[]], 
       Optional[
@@ -962,31 +697,31 @@ $CellContext`ClickOnly -> $CellContext`clickOnly$$]],
       Pattern[Minesweeper`Private`cell$, 
        Blank[]]] := 
     With[{Minesweeper`Private`v$ = 
-       Minesweeper`Private`neighbors$2095[
-        Minesweeper`Private`cell$, Minesweeper`Private`freeQ$2095]}, 
+       Minesweeper`Private`neighbors$4038[
+        Minesweeper`Private`cell$, Minesweeper`Private`freeQ$4038]}, 
       Which[
        Or[
         Not[
-         Minesweeper`Private`clicked$2095[Minesweeper`Private`cell$]], 
+         Minesweeper`Private`clicked$4038[Minesweeper`Private`cell$]], 
         Length[Minesweeper`Private`v$] == 0], 
        Minesweeper`Private`k$[{}], 
        And[
        Minesweeper`Private`priori$, 
-        Minesweeper`Private`markRemains$2095[Minesweeper`Private`cell$] == 0], 
+        Minesweeper`Private`markRemains$4038[Minesweeper`Private`cell$] == 0], 
        Minesweeper`Private`k$[
         Thread[Minesweeper`Private`v$ -> 0]], 
        And[
        Minesweeper`Private`priori$, 
-        Minesweeper`Private`markRemains$2095[Minesweeper`Private`cell$] == 
+        Minesweeper`Private`markRemains$4038[Minesweeper`Private`cell$] == 
         Length[Minesweeper`Private`v$]], 
        Minesweeper`Private`k$[
         Thread[Minesweeper`Private`v$ -> 1]], True, 
-       Minesweeper`Private`solve0$2095[
+       Minesweeper`Private`solve0$4038[
        Minesweeper`Private`k$, Minesweeper`Private`v$, -1]]], 
     Attributes[Minesweeper`Private`priori$] = {Temporary}, 
     Attributes[Minesweeper`Private`v$] = {Temporary}, 
-    Attributes[Minesweeper`Private`solve0$2095] = {Temporary}, 
-    Minesweeper`Private`solve0$2095[
+    Attributes[Minesweeper`Private`solve0$4038] = {Temporary}, 
+    Minesweeper`Private`solve0$4038[
       Pattern[Minesweeper`Private`k$, 
        Blank[]], 
       Pattern[Minesweeper`Private`lst$, 
@@ -995,24 +730,24 @@ $CellContext`ClickOnly -> $CellContext`clickOnly$$]],
        Blank[]]] := Block[{C}, 
       With[{Minesweeper`Private`involved$ = Fold[Union[#, 
            
-           Minesweeper`Private`neighbors$2095[#2, 
-            Minesweeper`Private`clicked$2095]]& , {}, 
+           Minesweeper`Private`neighbors$4038[#2, 
+            Minesweeper`Private`clicked$4038]]& , {}, 
           Minesweeper`Private`lst$]}, 
        With[{Minesweeper`Private`vars$ = Map[C, 
            Union[
             Fold[Union[#, 
               
-              Minesweeper`Private`neighbors$2095[#2, 
-               Minesweeper`Private`freeQ$2095]]& , {}, 
+              Minesweeper`Private`neighbors$4038[#2, 
+               Minesweeper`Private`freeQ$4038]]& , {}, 
              Minesweeper`Private`involved$], Minesweeper`Private`lst$]]}, 
         With[{Minesweeper`Private`eqn$ = Append[
             Append[
              Map[Total[
                 Map[C, 
                  
-                 Minesweeper`Private`neighbors$2095[#, 
-                  Minesweeper`Private`freeQ$2095]]] == 
-              Minesweeper`Private`markRemains$2095[#]& , 
+                 Minesweeper`Private`neighbors$4038[#, 
+                  Minesweeper`Private`freeQ$4038]]] == 
+              Minesweeper`Private`markRemains$4038[#]& , 
               Minesweeper`Private`involved$], 
              If[
              Minesweeper`Private`remains$ < 0, Nothing, 
@@ -1059,26 +794,27 @@ $CellContext`ClickOnly -> $CellContext`clickOnly$$]],
      MessageName[Minesweeper`trace, "usage"], 
      "Print verbose message in a VerboseBlock."], 
     Attributes[Subscript] = {NHoldRest}, 
-    Attributes[Minesweeper`Private`dispatch$2097] = {Temporary}, 
-    Minesweeper`Private`dispatch$2097["MousePos"] := Floor[{Dot[
-          Minesweeper`Dispatcher[Minesweeper`Private`dispatch$2095], "Rows"] + 
-        1, 1} + {-Dot[
-           Minesweeper`Dispatcher[Minesweeper`Private`dispatch$2095], "Rows"], 
+    Attributes[Minesweeper`Private`dispatch$4040] = {Temporary}, 
+    Minesweeper`Private`dispatch$4040["MousePos"] := Floor[{Dot[
+          Minesweeper`Dispatcher[Minesweeper`Private`dispatch$4038], 
+          Minesweeper`Private`Rows] + 1, 1} + {-Dot[
+           Minesweeper`Dispatcher[Minesweeper`Private`dispatch$4038], 
+           Minesweeper`Private`Rows], 
          Dot[
-          Minesweeper`Dispatcher[Minesweeper`Private`dispatch$2095], "Cols"]} 
-       Reverse[
+          Minesweeper`Dispatcher[Minesweeper`Private`dispatch$4038], 
+          Minesweeper`Private`Cols]} Reverse[
          MousePosition["EventHandlerScaled"]]], 
-    Minesweeper`Private`dispatch$2097["PlotBoard", 
+    Minesweeper`Private`dispatch$4040["PlotBoard", 
       Optional[
        Pattern[Minesweeper`Private`highlights$, 
         Blank[]], {}]] := With[{Minesweeper`Private`board$ = Dot[
-         Minesweeper`Dispatcher[Minesweeper`Private`dispatch$2095], "Show"], 
+         Minesweeper`Dispatcher[Minesweeper`Private`dispatch$4038], Show], 
        Minesweeper`Private`bg$ = 
-       Minesweeper`Private`colorMap$2097[Minesweeper`Private`highlights$]}, 
+       Minesweeper`Private`colorMap$4040[Minesweeper`Private`highlights$]}, 
       MouseAppearance[
        Grid[
         MapIndexed[Item[
-          Minesweeper`Private`item$2097[#], Background -> 
+          Minesweeper`Private`item$4040[#], Background -> 
           Minesweeper`Private`bg$[
             SlotSequence[1]]]& , Minesweeper`Private`board$, {2}], Frame -> 
         All, FrameStyle -> GrayLevel[GoldenRatio - 1], ItemSize -> {1.2, 1.2},
@@ -1086,8 +822,8 @@ $CellContext`ClickOnly -> $CellContext`clickOnly$$]],
     Attributes[Minesweeper`Private`highlights$] = {Temporary}, 
     Attributes[Minesweeper`Private`board$] = {Temporary}, 
     Attributes[Minesweeper`Private`bg$] = {Temporary}, 
-    Attributes[Minesweeper`Private`colorMap$2097] = {Temporary}, 
-    Minesweeper`Private`colorMap$2097[
+    Attributes[Minesweeper`Private`colorMap$4040] = {Temporary}, 
+    Minesweeper`Private`colorMap$4040[
       Pattern[Minesweeper`Private`highlights$, 
        Blank[]]] := With[{Minesweeper`Private`seq$ = Apply[Join, 
          Map[Thread, 
@@ -1095,41 +831,41 @@ $CellContext`ClickOnly -> $CellContext`clickOnly$$]],
           Minesweeper`Private`highlights$, Pattern[Minesweeper`Private`x, 
              Blank[RGBColor]] :> (Minesweeper`Private`x& )]]]}, 
       If[Length[Minesweeper`Private`seq$] == 0, 
-       Minesweeper`Private`bgcolor$2033[#]& , 
+       Minesweeper`Private`bgcolor$2895[#]& , 
        With[{
         Minesweeper`Private`colorRules = 
          SparseArray[Minesweeper`Private`seq$, {
             Dot[
-             Minesweeper`Dispatcher[Minesweeper`Private`dispatch$2095], 
-             "Rows"], 
+             Minesweeper`Dispatcher[Minesweeper`Private`dispatch$4038], 
+             Minesweeper`Private`Rows], 
             Dot[
-             Minesweeper`Dispatcher[Minesweeper`Private`dispatch$2095], 
-             "Cols"]}, Minesweeper`Private`bgcolor$2033]}, Part[
-        Minesweeper`Private`colorRules, 
+             Minesweeper`Dispatcher[Minesweeper`Private`dispatch$4038], 
+             Minesweeper`Private`Cols]}, Minesweeper`Private`bgcolor$2895]}, 
+        Part[Minesweeper`Private`colorRules, 
          Apply[Sequence, #2]][#]& ]]], 
     Attributes[Minesweeper`Private`seq$] = {Temporary}, 
-    Attributes[Minesweeper`Private`bgcolor$2033] = {Temporary}, 
-    Minesweeper`Private`bgcolor$2033["X"] = RGBColor[1, 0, 0], 
-    Minesweeper`Private`bgcolor$2033[
+    Attributes[Minesweeper`Private`bgcolor$2895] = {Temporary}, 
+    Minesweeper`Private`bgcolor$2895["X"] = RGBColor[1, 0, 0], 
+    Minesweeper`Private`bgcolor$2895[
       Alternatives["x", "w", 
        Blank[Integer]]] = RGBColor[0.87, 0.94, 1], 
-    Minesweeper`Private`bgcolor$2033[
+    Minesweeper`Private`bgcolor$2895[
       Blank[]] = GrayLevel[0.85], 
-    Attributes[Minesweeper`Private`item$2097] = {Temporary}, 
-    Minesweeper`Private`item$2097[
+    Attributes[Minesweeper`Private`item$4040] = {Temporary}, 
+    Minesweeper`Private`item$4040[
       Pattern[Minesweeper`Private`t$, 
        Alternatives["x", "X", "m", "w"]]] := 
-    Minesweeper`Private`image$2033[Minesweeper`Private`t$], 
-    Minesweeper`Private`item$2097[
+    Minesweeper`Private`image$2895[Minesweeper`Private`t$], 
+    Minesweeper`Private`item$4040[
       Condition[
        Pattern[Minesweeper`Private`n$, 
         Blank[Integer]], Minesweeper`Private`n$ != 0]] := 
     Style[Minesweeper`Private`n$, 
-      Minesweeper`Private`fgcolor$2033[Minesweeper`Private`n$], FontFamily -> 
-      "Arial", FontSize -> 12, Bold], Minesweeper`Private`item$2097[
+      Minesweeper`Private`fgcolor$2895[Minesweeper`Private`n$], FontFamily -> 
+      "Arial", FontSize -> 12, Bold], Minesweeper`Private`item$4040[
       Blank[]] = " ", Attributes[Minesweeper`Private`t$] = {Temporary}, 
-    Attributes[Minesweeper`Private`image$2033] = {Temporary}, 
-    Minesweeper`Private`image$2033["m"] = Image[CompressedData["
+    Attributes[Minesweeper`Private`image$2895] = {Temporary}, 
+    Minesweeper`Private`image$2895["m"] = Image[CompressedData["
 1:eJzt188rg3EcwPGv+XnAFFFOHJw4zEE5KTeu01PitGWWy1abEklJTm4OTq6E
 k4N/wM+zA4WVnNgUIQeKzftr3+VraXls++7g+dZr9Tz1fN7f5+nZau3+sHfc
 JYSI1vDh9U31RyK+6aEGDqxQdCIYCowNhiYDwUCk11/OyTalQjgrz9WtlGJ5
@@ -1140,7 +876,7 @@ FmKlVH21LKfv9J2+sX4XFnCIE8S1flydO8A8OgvULMOImn0rvv/m5pJQ1wyr
 GX9ZTSJ9P082utkesY9Gm203TpHMo50hZ8hnUW+jvy7S/yvybWfIWWu/bFdj
 B0cFJmdW2XgG/2J9AD9hZlo=
       "], "Byte", ColorSpace -> "RGB", Interleaving -> 
-      True], Minesweeper`Private`image$2033["w"] = Image[CompressedData["
+      True], Minesweeper`Private`image$2895["w"] = Image[CompressedData["
 1:eJzFl01vUkEUhqcqrQsWbiD4GQ0Jv8FcQlK7c9Ok1aYJGEhBbKiFGmpihAVN
 IHHZuNNoXLh0axR/gMZ/RBcCx/NyL3iZztyZqVZO+kKZO3OeMzNnPu6d8sHm
 kwtCiMPL/LG58+Jes7nz8sEV/rHVOKztNqqP7zeeV3erzbvli1x4O9AlFvEf
@@ -1157,7 +893,7 @@ dX4Ju/0H9v4MfTPVfWPJhuG+MXCc26gYkG9XHfhb8vnrsr405++j/8HWxRDc
 P0wx6O5fVnuDJOf715H+/plgvRZ+Dpu4aPNR+PNtff8ku/s31g/O0K8KLvaW
 PXF6jRnv37TA9w+ZLccWYf/k/YvEwt8/F/r+/Ru8/pqH
       "], "Byte", ColorSpace -> 
-      "RGB", Interleaving -> True], Minesweeper`Private`image$2033[
+      "RGB", Interleaving -> True], Minesweeper`Private`image$2895[
       Alternatives["x", "X"]] = Image[CompressedData["
 1:eJzFl89LAkEUx4dMCPTQxR+VRSH4N8SKUN26ViJoKIoWVlpZEunBg96jW1Fk
 dOxe9pfpIWOa77Zjy7Srs7qbD76y7s7O5+28NzNv1nKnOwczhJCLOfazk73a
@@ -1175,20 +911,22 @@ flGCj/1b3LfsEPY0mfUH9ugA/06SDUO9YWc+oq8FC/w4sTcG2H/3LbDFGsgO
       "], "Byte", ColorSpace -> 
       "RGB", Interleaving -> True], 
     Attributes[Minesweeper`Private`n$] = {Temporary}, 
-    Attributes[Minesweeper`Private`fgcolor$2033] = {Temporary}, 
-    Minesweeper`Private`fgcolor$2033 = 
+    Attributes[Minesweeper`Private`fgcolor$2895] = {Temporary}, 
+    Minesweeper`Private`fgcolor$2895 = 
     Association[
      1 -> RGBColor[0, 0, 1], 2 -> RGBColor[0, 2/3, 0], 3 -> RGBColor[1, 0, 0],
        4 -> RGBColor[0, 0, 2/3], 5 -> RGBColor[1, 0, 1], 6 -> 
       RGBColor[0, 2/3, 2/3], 7 -> RGBColor[2/3, 2/3, 0], 8 -> 
       GrayLevel[0]]}]], "Output",
  CellChangeTimes->{{3.729241077746839*^9, 3.729241077983251*^9}, {
-  3.729242105549857*^9, 3.729242105913463*^9}, {3.729242200569435*^9, 
-  3.729242200898293*^9}, {3.729242717781855*^9, 3.729242718144368*^9}, {
-  3.729242786495029*^9, 3.72924278681301*^9}, {3.729243080886176*^9, 
-  3.7292430812845573`*^9}, {3.729243382813806*^9, 
-  3.729243383108418*^9}},ExpressionUUID->"1b76e511-9e2d-4b08-8faa-\
-8b958cbfc3d0"]
+   3.729242105549857*^9, 3.729242105913463*^9}, {3.729242200569435*^9, 
+   3.729242200898293*^9}, {3.729242717781855*^9, 3.729242718144368*^9}, {
+   3.729242786495029*^9, 3.72924278681301*^9}, {3.729243080886176*^9, 
+   3.7292430812845573`*^9}, {3.729243382813806*^9, 3.729243383108418*^9}, {
+   3.729250771239193*^9, 3.72925077158766*^9}, {3.7292508371056957`*^9, 
+   3.729250837452738*^9}, 3.7292791809693537`*^9, 
+   3.729279929608698*^9},ExpressionUUID->"30238d42-54e1-4e94-9b44-\
+1add8b5744f5"]
 }, {2}]]
 },
 InitializationCellEvaluation->Automatic,
@@ -1212,8 +950,8 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[422, 15, 14898, 332, 3240, "Code",ExpressionUUID->"2221c1e8-436a-4c42-84b4-1a6deb88142a"],
-Cell[15323, 349, 39207, 841, 611, "Output",ExpressionUUID->"1b76e511-9e2d-4b08-8faa-8b958cbfc3d0"]
+Cell[422, 15, 419, 11, 109, "Input",ExpressionUUID->"2221c1e8-436a-4c42-84b4-1a6deb88142a"],
+Cell[844, 28, 41905, 900, 645, "Output",ExpressionUUID->"30238d42-54e1-4e94-9b44-1add8b5744f5"]
 }, {2}]]
 }
 ]
