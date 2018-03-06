@@ -34,7 +34,7 @@ Dispatcher /: Dot[Dispatcher[self_], msg_Symbol] := self[SymbolName[msg]];
 Dispatcher /: Dot[Dispatcher[self_], msg_Symbol[args___]] := self[SymbolName[msg], args];
 
 MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] := Module[{
-	rows, cols, mines,
+	  rows, cols, mines,
     grid, clicked, marked, boomed, success, remaining, minesRemaining,
     mineQ, freeQ, markRemains, neighbors, calcNeighbors, randomCell, 
     click, mark, safe, show,
