@@ -195,7 +195,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
                     ~Append~ If[remains < 0, Nothing, Total[vars] == remains]
                     ~Append~ (0 <= vars <= 1)},
           With[{sol = Solve[eqn, vars, Integers]},
-            With[{unify = If[Length[sol] == 0, {}, Normal[Total[Association/@sol] / Length[sol]]]},
+            With[{unify = If[Length[sol] == 0, {}, Normal[Merge[sol, Total] / Length[sol]]]},
               trace[If[Count[unify, _->0|1] > 0, {eqn, unify} /. C[{x_,y_}] :> Subscript[C,x,y] // Column]];
               k[unify /. C[pos_] :> pos]
             ]]]]]];
@@ -327,14 +327,14 @@ PXF6jRnv37TA9w+ZLccWYf/k/YvEwt8/F/r+/Ru8/pqH
     item[n_Integer /; n!=0, cell_] := Text[Style[n, fgcolor[n], Bold, Larger], coord[cell]];
     item[_,_] = Nothing;
 
-    dispatch["PlotBoard", highlights_:{}] := With[{board = grid.Show},
-      ArrayPlot[
-        MapIndexed[#2 /. Append[Join@@Map[Thread, highlights], _ -> #1]&, board, {2}],
-        Epilog -> MapIndexed[item, board, {2}],
-        ColorFunction -> bgcolor, ColorFunctionScaling -> False,
-        ImageSize -> 20{grid.Cols, grid.Rows},
-        Mesh -> All
-      ]];
+    dispatch["PlotBoard", highlights_:{}] :=
+      With[{board = grid.Show, colorRules = Dispatch[Join@@Map[Thread, highlights]]},
+        ArrayPlot[
+          MapIndexed[#2 /. colorRules /. {_,_} -> bgcolor[#1] &, board, {2}],
+          Epilog -> MapIndexed[item, board, {2}],
+          ImageSize -> 20{grid.Cols, grid.Rows},
+          Mesh -> All
+        ]];
 
     Dispatcher[dispatch]
   ];
