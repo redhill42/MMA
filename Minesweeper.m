@@ -1,37 +1,15 @@
 (* ::Package:: *)
 
-BeginPackage["Minesweeper`"];
-
-verbose::usage = "Print verbose expression value in a VerboseBlock.";
-trace::usage = "Print verbose message in a VerboseBlock.";
-VerboseBlock::usage = "Begin a verbose block.";
-
-Dispatcher::usage = "Simulate an object oriented dispatcher.";
+BeginPackage["Minesweeper`"]
 
 MakeMinesweeper::usage = "Make a new minesweeper board.";
 MinesweeperPlotter::usage = "Create a minesweeper plotter.";
 MinesweeperPlotter2::usage = "An alternate minesweeper plotter.";
 Minesweeper::usage = "The default minesweeper game implementation.";
 
-Begin["`Private`"];
+Begin["`Private`"]
 
-SetAttributes[{verbose, trace, VerboseBlock}, HoldAll];
-verbose[val_] := val;
-verbose[_, val_] := val;
-trace[_] = Null;
-
-VerboseBlock[expr_] := Block[{verbose, trace},
-  verbose[val_] := (Print[val]; val);
-  verbose[text_, val_] := (Print[ToString@text <> " = " <> ToString@val]; val);
-  trace[Null] = Null;
-  trace[val_] := Print[val];
-  expr
-];
-    
-Dispatcher /: Dot[Dispatcher[self_], msg_String] := self[msg];
-Dispatcher /: Dot[Dispatcher[self_], msg_String[args___]] := self[msg, args];
-Dispatcher /: Dot[Dispatcher[self_], msg_Symbol] := self[SymbolName[msg]];
-Dispatcher /: Dot[Dispatcher[self_], msg_Symbol[args___]] := self[SymbolName[msg], args];
+Needs["Common`"];
 
 MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] := Module[{
 	  rows, cols, mines,
@@ -179,27 +157,33 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
       True,           SessionTime[] - startTime];
 
   dispatch["RandomClick", True] :=
-    With[{alternative = Function[AnyTrue[neighbors[#, clicked], Function[markRemains[#] == 1 && Length@neighbors[#, freeQ] == 2]]]},
+    With[{alternative =
+        Function[AnyTrue[neighbors[#, clicked],
+                         markRemains[#] == 1 && Length@neighbors[#, freeQ] == 2 &]]},
       click@SelectFirst[Join@@Array[List, {rows,cols}],
                         freeQ[#] && !mineQ[#] && alternative[#] &,
                         randomCell[freeQ[#] && !mineQ[#] &]]];
                         
   dispatch["RandomClick", _:False] :=
-    With[{reasoningMineQ = Function[AnyTrue[neighbors[#, clicked], Function[markRemains[#] == Length@neighbors[#, freeQ]]]]},
+    With[{reasoningMineQ =
+        Function[AnyTrue[neighbors[#, clicked],
+                         markRemains[#] == Length@neighbors[#, freeQ] &]]},
       click@randomCell[freeQ[#] && !reasoningMineQ[#] &]];
 
   solve0[k_, lst_, remains_] := Block[{C},
-    With[{involved = Fold[Union[#1, neighbors[#2, clicked]]&, {}, lst]},
-      With[{vars = C /@ (Fold[Union[#1, neighbors[#2, freeQ]]&, {}, involved] ~Union~ lst)},
-        With[{eqn = Map[Total[C/@neighbors[#, freeQ]] == markRemains[#]&, involved]
-                    ~Append~ If[remains < 0, Nothing, Total[vars] == remains]
-                    ~Append~ (0 <= vars <= 1)},
-          With[{sol = Solve[eqn, vars, Integers]},
-            With[{unify = If[Length[sol] == 0, {}, Normal[Merge[sol, Total] / Length[sol]]]},
-              trace[If[Count[unify, _->0|1] > 0, {eqn, unify} /. C[{x_,y_}] :> Subscript[C,x,y] // Column]];
-              k[unify /. C[pos_] :> pos]
-            ]]]]]];
-  
+    Let[{
+        involved = Fold[Union[#1, neighbors[#2, clicked]]&, {}, lst],
+        vars     = C /@ (Fold[Union[#1, neighbors[#2, freeQ]]&, {}, involved] ~Union~ lst),
+        eqn      = Map[Total[C/@neighbors[#, freeQ]] == markRemains[#]&, involved]
+                   ~Append~ If[remains < 0, Nothing, Total[vars] == remains]
+                   ~Append~ (0 <= vars <= 1),
+        sol      = Solve[eqn, vars, Integers],
+        unify    = If[Length[sol] == 0, {}, Normal[Merge[sol, Total] / Length[sol]]]
+      },
+      verbose[If[Count[unify, _->0|1] > 0, {eqn, unify} /. C[{x_,y_}] :> Subscript[C,x,y] // Column]];
+      k[unify /. C[pos_] :> pos]
+    ]];
+
   solve[k_, priori_:False][cell_] := With[{v = neighbors[cell, freeQ]},
     Which[
       !clicked[cell] || Length[v] == 0,
@@ -448,6 +432,6 @@ Minesweeper[] := DynamicModule[{
   Deinitialization :> reset[]
 ];
 
-End[];
-EndPackage[];
+End[]
+EndPackage[]
 
