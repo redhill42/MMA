@@ -4,6 +4,8 @@ verbose::usage = "Print verbose expression value in a VerboseBlock.";
 VerboseBlock::usage = "Begin a verbose block.";
 Dispatcher::usage = "Simulate an object oriented dispatcher.";
 Let::usage = "Consecuitive bindings for With scoping construct.";
+Unload::usage = "Unload a package.";
+Reload::usage = "Reload a package.";
 
 Begin["`Private`"]
 
@@ -30,6 +32,20 @@ Let[{head_}, expr_] := With[{head}, expr];
 Let[{head_, tail__}, expr_] :=
   Block[{With}, Attributes[With] = {HoldAll};
     With[{head}, Evaluate[Let[{tail}, expr]]]];
+
+Attributes[Unload] = {Listable};
+Unload::nonun = "The System` and Global` contexts cannot be removed.";
+Unload["System`" | "Global`"] := Message[Unload::nonun];
+Unload[pkg_String] := (
+  Scan[(Unprotect[#]; Quiet@Remove[#])&, {pkg<>"*", pkg<>"Private`*"}];
+  Unprotect[$Packages];
+  $Packages = DeleteCases[$Packages, pkg];
+  Protect[$Packages];
+  $ContextPath = DeleteCases[$ContextPath, pkg];
+);
+
+Attributes[Reload] = {Listable};
+Reload[pkg_String] := (Unload[pkg]; Get[pkg]);
 
 End[]
 
