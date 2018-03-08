@@ -17,7 +17,7 @@ clean[s_Symbol] := SymbolName@Unevaluated[s] // StringDelete@RegularExpression["
 MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] := Module[{
 	  rows, cols, mines,
     coords, board, clicked, marked, boomed, success, remaining, minesRemaining,
-    mineQ, freeQ, markRemains, neighbors, calcNeighbors, randomCell,
+    mineQ, freeQ, markRemains, neighbors, calcNeighbors,
     click, mark, safe, show,
     startTime, stopTime, inited, start, stop,
     reset, restart, solve, solve0, dispatch, self
@@ -34,11 +34,6 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
       #!=cell && And@@Thread[1<=#<={rows,cols}] && crit[#] &
     ];
 
-  randomCell[pred_] := 
-    Do[With[{cell = RandomInteger[rows*cols-1] ~QuotientRemainder~ cols + {1,1}},
-      If[pred[cell], Return[cell]]],
-      Infinity];
-  
   reset[rows1_, cols1_, mines1_, sample_:{}] := (
     {rows, cols, mines} = {rows1, cols1, mines1};
 
@@ -81,7 +76,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
         ];
         calcNeighbors[];
         inited = True;
-     ]
+      ]
     ];
   
   stop[] := If[stopTime==0 && (boomed||success), stopTime = SessionTime[]];
@@ -151,23 +146,29 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
   dispatch["reset", rows1_Integer, cols1_Integer, mines1_Integer] := reset[rows1, cols1, mines1];
   
   dispatch["timeUsed"] := Which[
-      startTime == 0, 0,
-      stopTime  != 0, stopTime - startTime,
-      True,           SessionTime[] - startTime];
+    startTime == 0, 0,
+    stopTime  != 0, stopTime - startTime,
+    True,           SessionTime[] - startTime];
 
   dispatch["randomClick", True] :=
-    With[{alternative =
-        Function[AnyTrue[neighbors[#, clicked],
-                         markRemains[#] == 1 && Length@neighbors[#, freeQ] == 2 &]]},
-      click@SelectFirst[coords,
-                        freeQ[#] && !mineQ[#] && alternative[#] &,
-                        randomCell[freeQ[#] && !mineQ[#] &]]];
-                        
+    With[{
+        alternative =
+          Function[AnyTrue[neighbors[#, clicked],
+                           markRemains[#] == 1 && Length@neighbors[#, freeQ] == 2 &]],
+        choices = RandomSample@Select[coords, freeQ[#] && !mineQ[#] &]
+      },
+      click@SelectFirst[choices, alternative, First[choices]]
+    ];
+
   dispatch["randomClick", _:False] :=
-    With[{reasoningMineQ =
-        Function[AnyTrue[neighbors[#, clicked],
-                         markRemains[#] == Length@neighbors[#, freeQ] &]]},
-      click@randomCell[freeQ[#] && !reasoningMineQ[#] &]];
+    With[{
+        alternative =
+          Function[AnyTrue[neighbors[#, clicked],
+                           markRemains[#] != Length@neighbors[#, freeQ] &]],
+        choices = RandomSample@Select[coords, freeQ]
+      },
+      click@SelectFirst[choices, alternative, First[choices]]
+    ];
 
   solve0[k_, lst_, remains_] := Block[{C},
     Let[{
