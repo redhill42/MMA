@@ -16,16 +16,16 @@ clean[s_Symbol] := SymbolName@Unevaluated[s] // StringDelete@RegularExpression["
 
 MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] := Module[{
 	  rows, cols, mines,
-    grid, clicked, marked, boomed, success, remaining, minesRemaining,
-    mineQ, freeQ, markRemains, neighbors, calcNeighbors, randomCell, 
+    coords, board, clicked, marked, boomed, success, remaining, minesRemaining,
+    mineQ, freeQ, markRemains, neighbors, calcNeighbors, randomCell,
     click, mark, safe, show,
     startTime, stopTime, inited, start, stop,
     reset, restart, solve, solve0, dispatch, self
   },
 
-  mineQ = grid[#] == "x" &;
+  mineQ = board[#] == "x" &;
   freeQ = !(clicked[#] || marked[#])&;
-  markRemains = grid[#] - Length@neighbors[#, marked]&;
+  markRemains = board[#] - Length@neighbors[#, marked]&;
   success := remaining == 0;
 
   neighbors[cell_, crit_] :=
@@ -42,8 +42,9 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
   reset[rows1_, cols1_, mines1_, sample_:{}] := (
     {rows, cols, mines} = {rows1, cols1, mines1};
 
-    Clear[grid];
-    grid[_] = 0;
+    Clear[board];
+    board[_] = 0;
+    coords = Catenate@CoordinateBoundsArray[{{1,rows}, {1,cols}}];
     inited = False;
     restart[];
 
@@ -51,7 +52,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
       (* Fill grid with sample data. *)
       mines = minesRemaining = Length[sample];
       remaining = rows*cols-mines;
-      Scan[(grid[#] = "x")&, sample];
+      Scan[(board[#] = "x")&, sample];
       calcNeighbors[];
       inited = True
     ];
@@ -68,19 +69,15 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
   );
   
   calcNeighbors[] :=
-    Do[With[{cell = {x,y}},
-      If[!mineQ[cell], grid[cell] = Length@neighbors[cell, mineQ]]],
-      {x, 1, rows}, {y, 1, cols}
-    ];
+    Scan[If[!mineQ[#], board[#] = Length@neighbors[#, mineQ]]&, coords];
 
   start[init_] := 
     If[startTime == 0,
       startTime = SessionTime[];
-
       If[!inited,
-        (* Generate a random mine grid. *)
+        (* Generate a random mine board. *)
         With[{excludes = If[init =!= Nothing, neighbors[init, True&] ~Append~ init, {}]},
-          Do[grid[randomCell[!mineQ[#] && !MemberQ[excludes, #] &]] = "x", mines]
+          Scan[(board[#] = "x")&, RandomSample[coords ~Complement~ excludes, mines]];
         ];
         calcNeighbors[];
         inited = True;
@@ -114,7 +111,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
       True,
         clicked[cell] = True;
         remaining--;
-        If[grid[cell] == 0, Scan[click, neighbors[cell, freeQ]]]
+        If[board[cell] == 0, Scan[click, neighbors[cell, freeQ]]]
     ];
     stop[];
     cell
@@ -131,7 +128,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
   safe[cell_ ? clicked] := neighbors[cell, freeQ];
   safe[cell_] := {cell};
   
-  show[cell_ ? clicked] := If[mineQ[cell], "X", grid[cell]];
+  show[cell_ ? clicked] := If[mineQ[cell], "X", board[cell]];
   show[cell_ ? marked]  := If[mineQ[cell] || !(boomed||success), "m", "w"];
   show[cell_ ? mineQ]   := If[boomed, "x", If[success, "m", " "]];
   show[_] = " ";
@@ -162,7 +159,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
     With[{alternative =
         Function[AnyTrue[neighbors[#, clicked],
                          markRemains[#] == 1 && Length@neighbors[#, freeQ] == 2 &]]},
-      click@SelectFirst[Catenate@Array[List, {rows,cols}],
+      click@SelectFirst[coords,
                         freeQ[#] && !mineQ[#] && alternative[#] &,
                         randomCell[freeQ[#] && !mineQ[#] &]]];
                         
@@ -210,10 +207,10 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
             ]
         },
         If[OptionValue[Greedy],
-          AnyTrue[Array[solve[k, clickOnly]@*List, {rows, cols}], Identity, 2],
-          AnyTrue[Array[List, {rows, cols}], solve[k, clickOnly], 2]
+          AnyTrue[solve[k, clickOnly] /@ coords, Identity],
+          AnyTrue[coords, solve[k, clickOnly]]
         ]
-        || (minesRemaining < 5 && solve0[k, Select[Catenate@Array[List, {rows,cols}], freeQ], minesRemaining])
+        || (minesRemaining < 5 && solve0[k, Select[coords, freeQ], minesRemaining])
       ]
     ];
 
