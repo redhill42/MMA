@@ -2,6 +2,7 @@ BeginPackage["Common`"]
 
 verbose::usage = "Print verbose expression value in a VerboseBlock.";
 VerboseBlock::usage = "Begin a verbose block.";
+Dispatcher::usage = "Simulate an object oriented dispatcher.";
 Let::usage = "Consecuitive bindings for With scoping construct.";
 Unload::usage = "Unload a package.";
 Reload::usage = "Reload a package.";
@@ -16,6 +17,16 @@ VerboseBlock[expr_] := Block[{verbose},
   verbose[val_] := (Print[val]; val);
   expr
 ];
+
+SetAttributes[clean, HoldFirst];
+clean[s_Symbol] := SymbolName@Unevaluated[s] // StringDelete@RegularExpression["\\$.*$"];
+
+Dispatcher[dispatch_] := (
+  SetAttributes[dispatch, HoldFirst];
+  dispatch[s_Symbol] := dispatch[Evaluate@clean[s]];
+  dispatch[s_Symbol[args___]] := dispatch[Evaluate@clean[s], args];
+  dispatch
+);
 
 SetAttributes[Let, HoldAll];
 Let /: Verbatim[SetDelayed][lhs_, rhs:Let[{__}, _]] :=

@@ -11,16 +11,13 @@ Begin["`Private`"]
 
 Needs["Common`"];
 
-SetAttributes[clean, HoldFirst];
-clean[s_Symbol] := SymbolName@Unevaluated[s] // StringDelete@RegularExpression["\$.*$"];
-
 MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] := Module[{
 	  rows, cols, mines,
     coords, board, clicked, marked, boomed, success, remaining, minesRemaining,
     mineQ, freeQ, markRemains, neighbors, calcNeighbors,
     click, mark, safe, show,
     startTime, stopTime, inited, start, stop,
-    reset, restart, solve, solve0, dispatch, self
+    reset, restart, solve, solve0, dispatch
   },
 
   mineQ = board[#] == "x" &;
@@ -132,6 +129,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
   dispatch["cols"] := cols;
   dispatch["mines"] := mines;
   dispatch["show"] := Array[show@*List, {rows, cols}];
+  dispatch["plot", args___] := MinesweeperPlotter2[dispatch][plotBoard[args]];
   dispatch["click", cell_, True] := If[mineQ[cell], mark[cell], click[cell]];
   dispatch["click", cell_, _:False] := If[!marked[cell], click[cell]];
   dispatch["mark", cell_] := mark[cell];
@@ -217,12 +215,8 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
 
   dispatch["solve", cell_] := solve[Identity][cell];
 
-  SetAttributes[self, HoldFirst];
-  self[s_Symbol] := dispatch[clean[s]];
-  self[s_Symbol[args___]] := dispatch[clean[s], args];
-
   reset[rows0, cols0, mines0, sample0];
-  self
+  Dispatcher[dispatch]
 ]
 
 Module[{fgcolor, bgcolor, image},
@@ -278,7 +272,7 @@ P0wx6O5fVnuDJOf715H+/plgvRZ+Dpu4aPNR+PNtff8ku/s31g/O0K8KLvaW
 PXF6jRnv37TA9w+ZLccWYf/k/YvEwt8/F/r+/Ru8/pqH
 "], "Byte", ColorSpace -> "RGB", Interleaving -> True];
 
-  MinesweeperPlotter[grid_] := Module[{item, colorMap, dispatch, self},
+  MinesweeperPlotter[grid_] := Module[{item, colorMap, dispatch},
     item[t:"x"|"X"|"m"|"w"] := image[t];
     item[n_Integer /; n!=0] := Style[n, fgcolor[n], FontFamily->"Arial", FontSize->12, Bold];
     item[_] = " ";
@@ -304,13 +298,10 @@ PXF6jRnv37TA9w+ZLccWYf/k/YvEwt8/F/r+/Ru8/pqH
     dispatch["mousePos"] :=
       Floor[{grid@rows+1, 1} + {-grid@rows, grid@cols} * Reverse@MousePosition["EventHandlerScaled"]];
 
-    SetAttributes[self, HoldFirst];
-    self[s_Symbol] := dispatch[clean[s]];
-    self[s_Symbol[args___]] := dispatch[clean[s], args];
-    self
+    Dispatcher[dispatch]
   ];
   
-  MinesweeperPlotter2[grid_] := Module[{coord, item, dispatch, self},
+  MinesweeperPlotter2[grid_] := Module[{coord, item, dispatch},
     coord[cell_] := {-0.5, grid@rows + 0.5} + {1,-1}*Reverse[cell];
     dispatch["mousePos"] := {grid@rows, 1} + {-1,1}*Reverse@Floor@MousePosition["Graphics"];
   
@@ -327,10 +318,7 @@ PXF6jRnv37TA9w+ZLccWYf/k/YvEwt8/F/r+/Ru8/pqH
           Mesh -> All
         ]];
 
-    SetAttributes[self, HoldFirst];
-    self[s_Symbol] := dispatch[clean[s]];
-    self[s_Symbol[args___]] := dispatch[clean[s], args];
-    self
+    Dispatcher[dispatch]
   ];
 ];
 
