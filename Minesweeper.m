@@ -339,9 +339,10 @@ PXF6jRnv37TA9w+ZLccWYf/k/YvEwt8/F/r+/Ru8/pqH
 
 Minesweeper[] := DynamicModule[{
     grid, plotter,
-    autoSolve = False, uncertain = "Guess", greedy = False, clickOnly = False, 
-    safe = {}, cheats = {}, solved = {},
-    reset, solve, step, options
+    uncertain = "Guess", greedy = False, clickOnly = False,
+    autoSolve = False, safe = {}, cheats = {}, solved = {},
+    reset, solve, step, options,
+    update = False, Updater, refresh
   },
 
   grid = MakeMinesweeper[16, 16, 40];
@@ -351,7 +352,13 @@ Minesweeper[] := DynamicModule[{
     grid@reset[args];
     autoSolve = False;
     safe = cheats = solved = {};
+    refresh[];
   );
+
+  (* Manually refresh the board when some change has happended *)
+  SetAttributes[Updater, HoldFirst];
+  Updater[expr_] := Dynamic[update; expr];
+  refresh[] := update = !update;
 
   solve[] := (
     Which[
@@ -366,6 +373,7 @@ Minesweeper[] := DynamicModule[{
       True,
         autoSolve = False
     ];
+    refresh[];
     plotter@plotBoard[{cheats->LightRed}]
   );
 
@@ -378,6 +386,7 @@ Minesweeper[] := DynamicModule[{
       True,
         AppendTo[cheats, grid@randomClick[True]]
     ];
+    refresh[];
   );
   
   options[] :=
@@ -401,26 +410,26 @@ Minesweeper[] := DynamicModule[{
 
     {
       EventHandler[
-        Dynamic@If[autoSolve,
+        Updater@If[autoSolve,
           Refresh[solve[], UpdateInterval -> 0.1, TrackedSymbols -> {}],
           plotter@plotBoard[{safe->LightBlue, cheats->LightRed, solved->LightGreen}]
         ], {
           {"MouseDown", 1} :>
-            (safe = grid@safe[plotter@mousePos]; autoSolve = False; solved = {}),
+            (safe = grid@safe[plotter@mousePos]; autoSolve = False; solved = {}; refresh[]),
           {"MouseDragged", 1} :>
-            (safe = grid@safe[plotter@mousePos]),
+            (safe = grid@safe[plotter@mousePos]; refresh[]),
           {"MouseUp", 1} :>
-            (safe = {}; grid@click[plotter@mousePos, CurrentValue["AltKey"]]),
+            (safe = {}; grid@click[plotter@mousePos, CurrentValue["AltKey"]]; refresh[]),
           {"MouseUp", 2} :>
-            (grid@mark[plotter@mousePos]; autoSolve = False; solved = {})
+            (grid@mark[plotter@mousePos]; autoSolve = False; solved = {}; refresh[])
         }
       ],
       SpanFromLeft
     },
 
     {
-      Item[Dynamic@If[grid@success, "Success!", grid@minesRemaining], Alignment->Left, ItemSize->10],
-      Item[Dynamic@Which[
+      Item[Updater@If[grid@success, "Success!", grid@minesRemaining], Alignment->Left, ItemSize->10],
+      Item[Updater@Which[
         !grid@started,
           0,
         grid@boomed || grid@success,
@@ -428,7 +437,7 @@ Minesweeper[] := DynamicModule[{
         True,
           Refresh[Round[grid@timeUsed], UpdateInterval->0.5]
       ]],
-      Item[Dynamic@If[Length@cheats > 1, "Guess: "<>ToString[Length[cheats]-1], ""], Alignment->Right, ItemSize->10]
+      Item[Updater@If[Length@cheats > 1, "Guess: "<>ToString[Length[cheats]-1], ""], Alignment->Right, ItemSize->10]
     },
 
     {
@@ -439,10 +448,7 @@ Minesweeper[] := DynamicModule[{
       }], Alignment->Center],
       SpanFromLeft
     }
-  }],
-
-  SaveDefinitions -> True,
-  Deinitialization :> reset[]
+  }]
 ];
 
 End[]
