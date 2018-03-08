@@ -78,14 +78,13 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
       startTime = SessionTime[];
 
       If[!inited,
-        inited = True;
-        
         (* Generate a random mine grid. *)
         With[{excludes = If[init =!= Nothing, neighbors[init, True&] ~Append~ init, {}]},
           Do[grid[randomCell[!mineQ[#] && !MemberQ[excludes, #] &]] = "x", mines]
         ];
-        calcNeighbors[]
-      ]
+        calcNeighbors[];
+        inited = True;
+     ]
     ];
   
   stop[] := If[stopTime==0 && (boomed||success), stopTime = SessionTime[]];
@@ -163,7 +162,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
     With[{alternative =
         Function[AnyTrue[neighbors[#, clicked],
                          markRemains[#] == 1 && Length@neighbors[#, freeQ] == 2 &]]},
-      click@SelectFirst[Join@@Array[List, {rows,cols}],
+      click@SelectFirst[Catenate@Array[List, {rows,cols}],
                         freeQ[#] && !mineQ[#] && alternative[#] &,
                         randomCell[freeQ[#] && !mineQ[#] &]]];
                         
@@ -214,7 +213,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
           AnyTrue[Array[solve[k, clickOnly]@*List, {rows, cols}], Identity, 2],
           AnyTrue[Array[List, {rows, cols}], solve[k, clickOnly], 2]
         ]
-        || (minesRemaining < 5 && solve0[k, Join@@Array[If[freeQ[{##}], {##}, Nothing]&, {rows, cols}], minesRemaining])
+        || (minesRemaining < 5 && solve0[k, Select[Catenate@Array[List, {rows,cols}], freeQ], minesRemaining])
       ]
     ];
 
@@ -287,7 +286,7 @@ PXF6jRnv37TA9w+ZLccWYf/k/YvEwt8/F/r+/Ru8/pqH
     item[_] = " ";
   
     colorMap[highlights_] :=
-      With[{seq = Join@@Map[Thread, highlights /. x_RGBColor :> (x&)]},
+      With[{seq = Catenate@Map[Thread, highlights /. x_RGBColor :> (x&)]},
         If[Length[seq] == 0, bgcolor[#1]&,
            With[{colorRules = SparseArray[seq, {grid@rows, grid@cols}, bgcolor]},
              Function[colorRules[[Sequence@@#2]][#1]]]]];
@@ -322,7 +321,7 @@ PXF6jRnv37TA9w+ZLccWYf/k/YvEwt8/F/r+/Ru8/pqH
     item[_,_] = Nothing;
 
     dispatch["plotBoard", highlights_:{}] :=
-      With[{board = grid@show, colorRules = Dispatch[Join@@Map[Thread, highlights]]},
+      With[{board = grid@show, colorRules = Dispatch[Catenate@Map[Thread, highlights]]},
         ArrayPlot[
           MapIndexed[#2 /. colorRules /. {_,_} -> bgcolor[#1] &, board, {2}],
           Epilog -> MapIndexed[item, board, {2}],
@@ -381,7 +380,7 @@ Minesweeper[] := DynamicModule[{
     Which[
       grid@boomed || grid@success,
         Null,
-      First@Reap[grid@solve[Greedy -> greedy, ClickOnly -> clickOnly], _, (solved = Join@@#2)&],
+      First@Reap[grid@solve[Greedy -> greedy, ClickOnly -> clickOnly], _, (solved = Catenate[#2])&],
         Null,
       True,
         AppendTo[cheats, grid@randomClick[True]]
@@ -415,13 +414,13 @@ Minesweeper[] := DynamicModule[{
           plotter@plotBoard[{safe->LightBlue, cheats->LightRed, solved->LightGreen}]
         ], {
           {"MouseDown", 1} :>
-            (safe = grid@safe[plotter@mousePos]; autoSolve = False; solved = {}; refresh[]),
+            (safe = grid@safe@plotter@mousePos; autoSolve = False; solved = {}; refresh[]),
           {"MouseDragged", 1} :>
-            (safe = grid@safe[plotter@mousePos]; refresh[]),
+            (safe = grid@safe@plotter@mousePos; refresh[]),
           {"MouseUp", 1} :>
             (safe = {}; grid@click[plotter@mousePos, CurrentValue["AltKey"]]; refresh[]),
           {"MouseUp", 2} :>
-            (grid@mark[plotter@mousePos]; autoSolve = False; solved = {}; refresh[])
+            (grid@mark@plotter@mousePos; autoSolve = False; solved = {}; refresh[])
         }
       ],
       SpanFromLeft
