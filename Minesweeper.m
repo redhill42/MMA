@@ -272,7 +272,7 @@ P0wx6O5fVnuDJOf715H+/plgvRZ+Dpu4aPNR+PNtff8ku/s31g/O0K8KLvaW
 PXF6jRnv37TA9w+ZLccWYf/k/YvEwt8/F/r+/Ru8/pqH
 "], "Byte", ColorSpace -> "RGB", Interleaving -> True];
 
-  MinesweeperPlotter[grid_] := Module[{item, colorMap, dispatch},
+  MinesweeperPlotter[board_] := Module[{item, colorMap, dispatch},
     item[t:"x"|"X"|"m"|"w"] := image[t];
     item[n_Integer /; n!=0] := Style[n, fgcolor[n], FontFamily->"Arial", FontSize->12, Bold];
     item[_] = " ";
@@ -280,13 +280,13 @@ PXF6jRnv37TA9w+ZLccWYf/k/YvEwt8/F/r+/Ru8/pqH
     colorMap[highlights_] :=
       With[{seq = Catenate@Map[Thread, highlights /. x_RGBColor :> (x&)]},
         If[Length[seq] == 0, bgcolor[#1]&,
-           With[{colorRules = SparseArray[seq, {grid@rows, grid@cols}, bgcolor]},
+           With[{colorRules = SparseArray[seq, {board@rows, board@cols}, bgcolor]},
              Function[colorRules[[Sequence@@#2]][#1]]]]];
       
     dispatch["plotBoard", highlights_:{}] :=
-      With[{board = grid@show, bg = colorMap[highlights]},
+      With[{grid = board@show, bg = colorMap[highlights]},
         Grid[
-          MapIndexed[Item[item[#1], Background -> bg[##]]&, board, {2}],
+          MapIndexed[Item[item[#1], Background -> bg[##]]&, grid, {2}],
           Frame -> All,
           FrameStyle -> GrayLevel[GoldenRatio-1],
           ItemSize -> {1.2, 1.2},
@@ -296,25 +296,25 @@ PXF6jRnv37TA9w+ZLccWYf/k/YvEwt8/F/r+/Ru8/pqH
       ];
   
     dispatch["mousePos"] :=
-      Floor[{grid@rows+1, 1} + {-grid@rows, grid@cols} * Reverse@MousePosition["EventHandlerScaled"]];
+      Floor[{board@rows+1, 1} + {-board@rows, board@cols} * Reverse@MousePosition["EventHandlerScaled"]];
 
     Dispatcher[dispatch]
   ];
   
-  MinesweeperPlotter2[grid_] := Module[{coord, item, dispatch},
-    coord[cell_] := {-0.5, grid@rows + 0.5} + {1,-1}*Reverse[cell];
-    dispatch["mousePos"] := {grid@rows, 1} + {-1,1}*Reverse@Floor@MousePosition["Graphics"];
+  MinesweeperPlotter2[board_] := Module[{coord, item, dispatch},
+    coord[cell_] := {-0.5, board@rows + 0.5} + {1,-1}*Reverse[cell];
+    dispatch["mousePos"] := {board@rows, 1} + {-1,1}*Reverse@Floor@MousePosition["Graphics"];
   
     item[t:"x"|"X"|"m"|"w", cell_] := Inset[image[t], coord[cell], Center, 0.6];
     item[n_Integer /; n!=0, cell_] := Text[Style[n, fgcolor[n], Bold, Larger], coord[cell]];
     item[_,_] = Nothing;
 
     dispatch["plotBoard", highlights_:{}] :=
-      With[{board = grid@show, colorRules = Dispatch[Catenate@Map[Thread, highlights]]},
+      With[{grid = board@show, colorRules = Dispatch[Catenate@Map[Thread, highlights]]},
         ArrayPlot[
-          MapIndexed[#2 /. colorRules /. {_,_} -> bgcolor[#1] &, board, {2}],
-          Epilog -> MapIndexed[item, board, {2}],
-          ImageSize -> 20{grid@cols, grid@rows},
+          MapIndexed[#2 /. colorRules /. {_,_} -> bgcolor[#1] &, grid, {2}],
+          Epilog -> MapIndexed[item, grid, {2}],
+          ImageSize -> 20{board@cols, board@rows},
           Mesh -> All
         ]];
 
@@ -323,18 +323,18 @@ PXF6jRnv37TA9w+ZLccWYf/k/YvEwt8/F/r+/Ru8/pqH
 ];
 
 Minesweeper[] := DynamicModule[{
-    grid, plotter,
+    board, plotter,
     uncertain = "Guess", greedy = False, clickOnly = False,
     autoSolve = False, safe = {}, cheats = {}, solved = {},
     reset, solve, step, options,
     update = False, Updater, refresh
   },
 
-  grid = MakeMinesweeper[16, 16, 40];
-  plotter = MinesweeperPlotter[grid];
+  board = MakeMinesweeper[16, 16, 40];
+  plotter = MinesweeperPlotter[board];
 
   reset[args___] := (
-    grid@reset[args];
+    board@reset[args];
     autoSolve = False;
     safe = cheats = solved = {};
     refresh[];
@@ -347,14 +347,14 @@ Minesweeper[] := DynamicModule[{
 
   solve[] := (
     Which[
-      grid@boomed || grid@success,
+      board@boomed || board@success,
         autoSolve = False,
-      grid@solve[Greedy -> greedy, ClickOnly -> clickOnly],
+      board@solve[Greedy -> greedy, ClickOnly -> clickOnly],
         Null,
-      uncertain == "Cheat" || !grid@started,
-        AppendTo[cheats, grid@randomClick[True]],
+      uncertain == "Cheat" || !board@started,
+        AppendTo[cheats, board@randomClick[True]],
       uncertain == "Guess",
-        AppendTo[cheats, grid@randomClick[False]],
+        AppendTo[cheats, board@randomClick[False]],
       True,
         autoSolve = False
     ];
@@ -364,12 +364,12 @@ Minesweeper[] := DynamicModule[{
 
   step[] := (
     Which[
-      grid@boomed || grid@success,
+      board@boomed || board@success,
         Null,
-      First@Reap[grid@solve[Greedy -> greedy, ClickOnly -> clickOnly], _, (solved = Catenate[#2])&],
+      First@Reap[board@solve[Greedy -> greedy, ClickOnly -> clickOnly], _, (solved = Catenate[#2])&],
         Null,
       True,
-        AppendTo[cheats, grid@randomClick[True]]
+        AppendTo[cheats, board@randomClick[True]]
     ];
     refresh[];
   );
@@ -400,27 +400,27 @@ Minesweeper[] := DynamicModule[{
           plotter@plotBoard[{safe->LightBlue, cheats->LightRed, solved->LightGreen}]
         ], {
           {"MouseDown", 1} :>
-            (safe = grid@safe@plotter@mousePos; autoSolve = False; solved = {}; refresh[]),
+            (safe = board@safe@plotter@mousePos; autoSolve = False; solved = {}; refresh[]),
           {"MouseDragged", 1} :>
-            (safe = grid@safe@plotter@mousePos; refresh[]),
+            (safe = board@safe@plotter@mousePos; refresh[]),
           {"MouseUp", 1} :>
-            (safe = {}; grid@click[plotter@mousePos, CurrentValue["AltKey"]]; refresh[]),
+            (safe = {}; board@click[plotter@mousePos, CurrentValue["AltKey"]]; refresh[]),
           {"MouseUp", 2} :>
-            (grid@mark@plotter@mousePos; autoSolve = False; solved = {}; refresh[])
+            (board@mark@plotter@mousePos; autoSolve = False; solved = {}; refresh[])
         }
       ],
       SpanFromLeft
     },
 
     {
-      Item[Updater@If[grid@success, "Success!", grid@minesRemaining], Alignment->Left, ItemSize->10],
+      Item[Updater@If[board@success, "Success!", board@minesRemaining], Alignment->Left, ItemSize->10],
       Item[Updater@Which[
-        !grid@started,
+        !board@started,
           0,
-        grid@boomed || grid@success,
-          NumberForm[grid@timeUsed, {Infinity, 2}],
+        board@boomed || board@success,
+          NumberForm[board@timeUsed, {Infinity, 2}],
         True,
-          Refresh[Round[grid@timeUsed], UpdateInterval->0.5]
+          Refresh[Round[board@timeUsed], UpdateInterval->0.5]
       ]],
       Item[Updater@If[Length@cheats > 1, "Guess: "<>ToString[Length[cheats]-1], ""], Alignment->Right, ItemSize->10]
     },
