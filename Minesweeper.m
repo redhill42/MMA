@@ -3,6 +3,7 @@
 BeginPackage["Minesweeper`"]
 
 MakeMinesweeper::usage = "Make a new minesweeper board.";
+MinesweeperSolver::usage = "Create a minesweeper solver";
 MinesweeperPlotter::usage = "Create a minesweeper plotter.";
 MinesweeperPlotter2::usage = "An alternate minesweeper plotter.";
 Minesweeper::usage = "The default minesweeper game implementation.";
@@ -11,6 +12,46 @@ Begin["`Private`"]
 
 Needs["Common`"];
 
+AbstractSolver[disp_] :=
+  With[{
+      neighbors   = disp["neighbors"],
+      freeQ       = disp["freeQ"],
+      clicked     = disp["clicked"],
+      markRemains = disp["markRemains"]
+    },
+
+    Module[{solver},
+      solver[k_, lst_, remains_] := Block[{C},
+        Let[{
+            involved = Fold[Union[#1, neighbors[#2, clicked]]&, {}, lst],
+            vars     = C /@ (Fold[Union[#1, neighbors[#2, freeQ]]&, {}, involved] ~Union~ lst),
+            eqn      = Map[Total[C/@neighbors[#, freeQ]] == markRemains[#]&, involved]
+                       ~Append~ If[remains < 0, Nothing, Total[vars] == remains]
+                       ~Append~ (0 <= vars <= 1),
+            sol      = Solve[eqn, vars, Integers],
+            unify    = If[Length[sol] == 0, {}, Normal[Merge[sol, Total] / Length[sol]]]
+          },
+          verbose[If[Count[unify, _->0|1] > 0, {eqn, unify} /. C[{x_,y_}] :> Subscript[C,x,y] // Column]];
+          k[unify /. C[pos_] :> pos]
+        ]];
+
+      solver[k_, priori_:False][cell_?clicked] :=
+        With[{v = neighbors[cell, freeQ]},
+          Which[
+            Length[v] == 0,
+              k[{}],
+            priori && markRemains[cell] == 0,
+              k@Thread[v -> 0],
+            priori && markRemains[cell] == Length[v],
+              k@Thread[v -> 1],
+            True,
+              solver[k, v, -1]
+          ]];
+      solver[k_, _:False][_] := k[{}];
+
+      solver
+  ]];
+
 MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] := Module[{
 	  rows, cols, mines,
     coords, board, clicked, marked, boomed, success, remaining, minesRemaining,
@@ -18,7 +59,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
     click, mark, safe, show,
     observers = {}, recurse, update, attach, detach, notify,
     startTime, stopTime, inited, start, stop,
-    reset, restart, solve, solve0, dispatch
+    reset, restart, solver, dispatch
   },
 
   mineQ = board[#] == "x" &;
@@ -193,33 +234,13 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
       click@SelectFirst[choices, alternative, First[choices]]
     ];
 
-  solve0[k_, lst_, remains_] := Block[{C},
-    Let[{
-        involved = Fold[Union[#1, neighbors[#2, clicked]]&, {}, lst],
-        vars     = C /@ (Fold[Union[#1, neighbors[#2, freeQ]]&, {}, involved] ~Union~ lst),
-        eqn      = Map[Total[C/@neighbors[#, freeQ]] == markRemains[#]&, involved]
-                   ~Append~ If[remains < 0, Nothing, Total[vars] == remains]
-                   ~Append~ (0 <= vars <= 1),
-        sol      = Solve[eqn, vars, Integers],
-        unify    = If[Length[sol] == 0, {}, Normal[Merge[sol, Total] / Length[sol]]]
-      },
-      verbose[If[Count[unify, _->0|1] > 0, {eqn, unify} /. C[{x_,y_}] :> Subscript[C,x,y] // Column]];
-      k[unify /. C[pos_] :> pos]
-    ]];
+  solver = AbstractSolver[<|
+    "neighbors"   -> neighbors,
+    "freeQ"       -> freeQ,
+    "clicked"     -> clicked,
+    "markRemains" -> markRemains
+  |>];
 
-  solve[k_, priori_:False][cell_] := With[{v = neighbors[cell, freeQ]},
-    Which[
-      !clicked[cell] || Length[v] == 0,
-        k[{}],
-      priori && markRemains[cell] == 0,
-        k@Thread[v -> 0],
-      priori && markRemains[cell] == Length[v],
-        k@Thread[v -> 1],
-      True,
-        solve0[k, v, -1]
-    ]
-  ];
-      
   dispatch["solve", OptionsPattern[{Greedy -> False, ClickOnly -> False}]] :=
     With[{clickOnly = OptionValue[ClickOnly]},
       With[{
@@ -231,18 +252,87 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
             ]
         },
         If[OptionValue[Greedy],
-          AnyTrue[solve[k, clickOnly] /@ coords, Identity],
-          AnyTrue[coords, solve[k, clickOnly]]
+          AnyTrue[solver[k, clickOnly] /@ coords, Identity],
+          AnyTrue[coords, solver[k, clickOnly]]
         ]
-        || (minesRemaining < 5 && solve0[k, Select[coords, freeQ], minesRemaining])
+        || (minesRemaining < 5 && solver[k, Select[coords, freeQ], minesRemaining])
       ]
     ];
 
-  dispatch["solve", cell_] := solve[Identity][cell];
+  dispatch["solve", cell_] := solver[Identity][cell];
 
   reset[rows0, cols0, mines0, sample0];
   Dispatcher[dispatch]
 ]
+
+MinesweeperSolver[] :=
+  Module[{
+      rows = 0, cols = 0, coords, board,
+      neighbors, solver, dispatch
+    },
+
+    reset[grid_] :=
+      With[{dim = Dimensions[grid]},
+        If[dim != {rows,cols},
+          {rows,cols} = dim;
+          coords = Catenate@CoordinateBoundsArray[{{1,rows}, {1,cols}}];
+          Clear[board]
+        ];
+        MapIndexed[(board[#2] = #1)&, grid, {2}]
+      ];
+
+    neighbors[cell_, crit_] :=
+      Select[
+        cell+#& /@ Tuples[{-1,0,1}, 2],
+        #!=cell && And@@Thread[1<=#<={rows,cols}] && crit[#] &
+      ];
+
+    solver = AbstractSolver[<|
+      "neighbors"   -> neighbors,
+      "freeQ"       -> Function[board[#] == " "],
+      "clicked"     -> Function[IntegerQ[board[#]]],
+      "markRemains" -> Function[board[#] - Length@neighbors[#, board[#]=="m"&]]
+    |>];
+
+    dispatch["solve", grid_, k_, OptionsPattern[{Greedy -> False, ClickOnly -> False}]] :=
+      With[{clickOnly = OptionValue[ClickOnly]},
+        reset[grid];
+        If[OptionValue[Greedy],
+          AnyTrue[solver[k, clickOnly] /@ coords, Identity],
+          AnyTrue[coords, solver[k, clickOnly]]
+        ]
+      ];
+
+    Dispatcher[dispatch]
+  ];
+
+MinesweeperSolver[board_] :=
+  Module[{solver = MinesweeperSolver[], dispatch},
+    dispatch["solve", opts:OptionsPattern[{Greedy->False, ClickOnly->False}]] :=
+      With[{
+          k = If[OptionValue[ClickOnly],
+                Function[With[{clicks = Cases[#, (pos_->0):>pos]},
+                  Length[clicks] != 0 &&
+                  (Scan[board@click[#]&, Sow@clicks]; True)
+                ]],
+                Function[With[{clicks = Cases[#, (pos_->0):>pos], marks = Cases[#, (pos_->1):>pos]},
+                  Length[clicks]+Length[marks] != 0 &&
+                  (Scan[board@click[#]&, Sow@clicks]; Scan[board@mark[#]&, Sow@marks]; True)
+                ]]
+              ]
+        },
+        solver@solve[board@show, k, opts]
+      ];
+
+    dispatch["solveAll", opts:OptionsPattern[{Greedy->False, ClickOnly->False, Cheat->False}]] :=
+      While[!(board@boomed || board@success),
+        If[!dispatch["solve", Sequence@@FilterRules[{opts}, {Greedy,ClickOnly}]],
+          board@randomClick[OptionValue[Cheat]]
+        ]
+      ];
+
+    Dispatcher[dispatch]
+  ];
 
 Module[{fgcolor, bgcolor, image},
   fgcolor = <|1->Blue, 2->Darker@Green, 3->Red, 4->Darker@Blue, 5->Magenta, 6->Darker@Cyan, 7->Darker@Yellow, 8->Black|>;
