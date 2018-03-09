@@ -16,6 +16,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
     coords, board, clicked, marked, boomed, success, remaining, minesRemaining,
     mineQ, freeQ, markRemains, neighbors, calcNeighbors,
     click, mark, safe, show,
+    observers = {}, recurse, update, attach, detach, notify,
     startTime, stopTime, inited, start, stop,
     reset, restart, solve, solve0, dispatch
   },
@@ -24,6 +25,10 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
   freeQ = !(clicked[#] || marked[#])&;
   markRemains = board[#] - Length@neighbors[#, marked]&;
   success := remaining == 0;
+
+  attach[ob_Function] := If[!MemberQ[observers, ob], AppendTo[observers, ob]];
+  detach[ob_Function] := observers = DeleteCases[observers, ob];
+  notify[] := Scan[#[dispatch]&, observers];
 
   neighbors[cell_, crit_] :=
     Select[
@@ -58,12 +63,15 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
     startTime = stopTime = 0;
     minesRemaining = mines;
     remaining = rows*cols-mines;
+    recurse = update = 0;
+    notify[];
   );
   
   calcNeighbors[] :=
     Scan[If[!mineQ[#], board[#] = Length@neighbors[#, mineQ]]&, coords];
 
-  start[init_] := 
+  start[init_] := (
+    recurse++;
     If[startTime == 0,
       startTime = SessionTime[];
       If[!inited,
@@ -74,9 +82,18 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
         calcNeighbors[];
         inited = True;
       ]
-    ];
+    ]
+  );
   
-  stop[] := If[stopTime==0 && (boomed||success), stopTime = SessionTime[]];
+  stop[] := (
+    If[stopTime==0 && (boomed||success),
+      stopTime = SessionTime[]
+    ];
+    If[--recurse == 0 && update > 0,
+      update = 0;
+      notify[]
+    ];
+  );
   
   click[cell_] := (
     start[cell];
@@ -88,11 +105,13 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
       (* Click on a mine cell will boom. *)
       mineQ[cell],
         clicked[cell] = True;
-        boomed = True,
+        boomed = True;
+        update++,
         
       (* Click on a incorrectly marked cell will boom. *)
       marked[cell],
-        boomed = True,
+        boomed = True;
+        update++,
         
       (* Click on a clicked cell will click neighbor cells if the cell is safe. *)
       clicked[cell],
@@ -103,6 +122,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
       True,
         clicked[cell] = True;
         remaining--;
+        update++;
         If[board[cell] == 0, Scan[click, neighbors[cell, freeQ]]]
     ];
     stop[];
@@ -112,7 +132,10 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
   mark[cell_] := (
     start[Nothing];
     If[!(boomed||success) && !clicked[cell],
-      If[marked[cell] = !marked[cell], minesRemaining--, minesRemaining++]];
+      If[marked[cell] = !marked[cell], minesRemaining--, minesRemaining++];
+      update++
+    ];
+    stop[];
     cell
   );
 
@@ -130,6 +153,8 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
   dispatch["mines"] := mines;
   dispatch["show"] := Array[show@*List, {rows, cols}];
   dispatch["plot", args___] := MinesweeperPlotter2[dispatch][plotBoard[args]];
+  dispatch["attach", ob_] := attach[ob];
+  dispatch["detach", ob_] := detach[ob];
   dispatch["click", cell_, True] := If[mineQ[cell], mark[cell], click[cell]];
   dispatch["click", cell_, _:False] := If[!marked[cell], click[cell]];
   dispatch["mark", cell_] := mark[cell];
@@ -327,23 +352,21 @@ Minesweeper[] := DynamicModule[{
     uncertain = "Guess", greedy = False, clickOnly = False,
     autoSolve = False, safe = {}, cheats = {}, solved = {},
     reset, solve, step, options,
-    update = False, Updater, refresh
+    update = 0, Updater
   },
 
   board = MakeMinesweeper[16, 16, 40];
   plotter = MinesweeperPlotter[board];
 
+  (* Manually refresh the board when some change has happended *)
+  SetAttributes[Updater, HoldFirst];
+  Updater[expr_] := Dynamic[update; expr];
+
   reset[args___] := (
     board@reset[args];
     autoSolve = False;
     safe = cheats = solved = {};
-    refresh[];
   );
-
-  (* Manually refresh the board when some change has happended *)
-  SetAttributes[Updater, HoldFirst];
-  Updater[expr_] := Dynamic[update; expr];
-  refresh[] := update = !update;
 
   solve[] := (
     Which[
@@ -358,7 +381,6 @@ Minesweeper[] := DynamicModule[{
       True,
         autoSolve = False
     ];
-    refresh[];
     plotter@plotBoard[{cheats->LightRed}]
   );
 
@@ -371,7 +393,6 @@ Minesweeper[] := DynamicModule[{
       True,
         AppendTo[cheats, board@randomClick[True]]
     ];
-    refresh[];
   );
   
   options[] :=
@@ -400,13 +421,13 @@ Minesweeper[] := DynamicModule[{
           plotter@plotBoard[{safe->LightBlue, cheats->LightRed, solved->LightGreen}]
         ], {
           {"MouseDown", 1} :>
-            (safe = board@safe@plotter@mousePos; autoSolve = False; solved = {}; refresh[]),
+            (safe = board@safe@plotter@mousePos; autoSolve = False; solved = {}),
           {"MouseDragged", 1} :>
-            (safe = board@safe@plotter@mousePos; refresh[]),
+            (safe = board@safe@plotter@mousePos),
           {"MouseUp", 1} :>
-            (safe = {}; board@click[plotter@mousePos, CurrentValue["AltKey"]]; refresh[]),
+            (safe = {}; board@click[plotter@mousePos, CurrentValue["AltKey"]]),
           {"MouseUp", 2} :>
-            (board@mark@plotter@mousePos; autoSolve = False; solved = {}; refresh[])
+            (board@mark@plotter@mousePos; autoSolve = False; solved = {})
         }
       ],
       SpanFromLeft
@@ -422,7 +443,7 @@ Minesweeper[] := DynamicModule[{
         True,
           Refresh[Round[board@timeUsed], UpdateInterval->0.5]
       ]],
-      Item[Updater@If[Length@cheats > 1, "Guess: "<>ToString[Length[cheats]-1], ""], Alignment->Right, ItemSize->10]
+      Item[Dynamic@If[Length@cheats > 1, "Guess: "<>ToString[Length[cheats]-1], ""], Alignment->Right, ItemSize->10]
     },
 
     {
@@ -433,7 +454,9 @@ Minesweeper[] := DynamicModule[{
       }], Alignment->Center],
       SpanFromLeft
     }
-  }]
+  }],
+
+  Initialization :> board@attach[update++&]
 ];
 
 End[]
