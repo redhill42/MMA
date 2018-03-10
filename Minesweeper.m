@@ -67,8 +67,8 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
   markRemains = board[#] - Length@neighbors[#, marked]&;
   success := remaining == 0;
 
-  attach[ob_Function] := If[!MemberQ[observers, ob], AppendTo[observers, ob]];
-  detach[ob_Function] := observers = DeleteCases[observers, ob];
+  attach[ob_] := If[!MemberQ[observers, ob], AppendTo[observers, ob]];
+  detach[ob_] := observers = DeleteCases[observers, ob];
   notify[] := Scan[#[dispatch]&, observers];
 
   neighbors[cell_, crit_] :=
@@ -263,7 +263,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
 
   reset[rows0, cols0, mines0, sample0];
   Dispatcher[dispatch]
-]
+];
 
 MinesweeperSolver[] :=
   Module[{
@@ -551,4 +551,3 @@ Minesweeper[] := DynamicModule[{
 
 End[]
 EndPackage[]
-
