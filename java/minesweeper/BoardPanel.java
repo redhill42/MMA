@@ -57,10 +57,11 @@ public class BoardPanel extends JPanel {
     public void paintComponent(Graphics g) {
         if (field != null) {
             int rows = field.length, cols = field[0].length;
+            int startx = (getSize().width - cols*CELL_SIZE)/2;
             for (int i = 0; i < rows; i++) {
                 for (int j = 0; j < cols; j++) {
                     String cell = field[i][j];
-                    g.drawImage(images.get(cell), j*CELL_SIZE, i*CELL_SIZE, this);
+                    g.drawImage(images.get(cell), startx+j*CELL_SIZE, i*CELL_SIZE, this);
                 }
             }
         }

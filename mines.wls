@@ -121,9 +121,10 @@ MinesweeperJ[] := JavaBlock@Module[{
   reset[args___] := If[!solving, board@reset[args]];
 
   translateCoords[x_, y_, f_] :=
-    With[{pos = Floor[{y,x}/cellSize] + {1,1}},
-      If[!solving && TrueQ[And@@Thread[1<=pos<={board@rows,board@cols}]], f[pos]];
-    ];
+    With[{startx = (minefield@getSize[]@width - board@cols*cellSize)/2},
+      With[{pos = Floor[{y,x-startx}/cellSize] + {1,1}},
+        If[!solving && TrueQ[And@@Thread[1<=pos<={board@rows,board@cols}]], f[pos]];
+      ]];
 
   mouseDown[evt_,x_,y_,_] :=
     JavaBlock[
