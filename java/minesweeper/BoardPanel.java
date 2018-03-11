@@ -13,30 +13,32 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class BoardPanel extends JPanel {
+    private static final long serialVersionUID = -1990867873169498535L;
+
     public static final int CELL_SIZE = 22;
 
-    private int id = 0;
     private final Map<String, Image> images = new HashMap<>();
     private String[][] field;
 
-    private void loadImage(MediaTracker tracker, String key, String name) {
+    private void loadImage(MediaTracker tracker, int id, String key, String name) {
         URL url = getClass().getResource("/images/"+name);
         Image img = Toolkit.getDefaultToolkit().getImage(url);
-        tracker.addImage(img, id++);
+        tracker.addImage(img, id);
         images.put(key, img);
     }
 
     public BoardPanel() {
         MediaTracker tracker = new MediaTracker(this);
+        int id = 0;
 
         for (int i = 0; i <= 8; i++) {
-            loadImage(tracker, Integer.toString(i), i+".gif");
+            loadImage(tracker, id++, Integer.toString(i), i+".gif");
         }
-        loadImage(tracker, " ", "blank.gif");
-        loadImage(tracker, "x", "mine.gif");
-        loadImage(tracker, "X", "boomed.gif");
-        loadImage(tracker, "m", "flag.gif");
-        loadImage(tracker, "w", "strike.gif");
+        loadImage(tracker, id++, " ", "blank.gif");
+        loadImage(tracker, id++, "x", "mine.gif");
+        loadImage(tracker, id++, "X", "boomed.gif");
+        loadImage(tracker, id++, "m", "flag.gif");
+        loadImage(tracker, id++, "w", "strike.gif");
 
         try {
             tracker.waitForAll();
