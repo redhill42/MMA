@@ -58,7 +58,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
     mineQ, freeQ, markRemains, neighbors, calcNeighbors,
     click, mark, safe, show,
     observers = {}, recurse, update, attach, detach, notify,
-    startTime, stopTime, inited, start, stop,
+    startTime, stopTime, inited, batch,
     reset, restart, solver, dispatch
   },
 
@@ -111,7 +111,9 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
   calcNeighbors[] :=
     Scan[If[!mineQ[#], board[#] = Length@neighbors[#, mineQ]]&, coords];
 
-  start[init_] := (
+  SetAttributes[batch, HoldAll];
+  batch[blk_] := batch[Nothing, blk];
+  batch[init_, blk_] := (
     recurse++;
     If[startTime == 0,
       startTime = SessionTime[];
@@ -123,21 +125,21 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
         calcNeighbors[];
         inited = True;
       ]
+    ];
+
+    With[{res = blk},
+      If[stopTime==0 && (boomed||success),
+        stopTime = SessionTime[]
+      ];
+      If[--recurse == 0 && update > 0,
+        update = 0;
+        notify[]
+      ];
+      res
     ]
   );
-  
-  stop[] := (
-    If[stopTime==0 && (boomed||success),
-      stopTime = SessionTime[]
-    ];
-    If[--recurse == 0 && update > 0,
-      update = 0;
-      notify[]
-    ];
-  );
-  
-  click[cell_] := (
-    start[cell];
+
+  click[cell_] := batch[cell,
     Which[
       (* Do nothing after boomed or success. *)
       boomed || success,
@@ -166,19 +168,16 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
         update++;
         If[board[cell] == 0, Scan[click, neighbors[cell, freeQ]]]
     ];
-    stop[];
     cell
-  );
+  ];
 
-  mark[cell_] := (
-    start[Nothing];
+  mark[cell_] := batch[
     If[!(boomed||success) && !clicked[cell],
       If[marked[cell] = !marked[cell], minesRemaining--, minesRemaining++];
       update++
     ];
-    stop[];
     cell
-  );
+  ];
 
   safe[cell_ /; boomed||success||marked[cell]] = {};
   safe[cell_ ? clicked] := neighbors[cell, freeQ];
@@ -242,7 +241,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
   |>];
 
   dispatch["solve", OptionsPattern[{Greedy -> False, ClickOnly -> False}]] :=
-    With[{clickOnly = OptionValue[ClickOnly]},
+    batch@With[{clickOnly = OptionValue[ClickOnly]},
       With[{
         k = If[clickOnly,
               Function[With[{clicks = Cases[#, (pos_->0) :> pos]},
@@ -256,8 +255,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
           AnyTrue[coords, solver[k, clickOnly]]
         ]
         || (minesRemaining < 5 && solver[k, Select[coords, freeQ], minesRemaining])
-      ]
-    ];
+      ]];
 
   dispatch["solve", cell_] := solver[Identity][cell];
 

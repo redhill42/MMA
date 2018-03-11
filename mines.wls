@@ -11,7 +11,8 @@ MinesweeperJ[] := JavaBlock@Module[{
     cellSize, safe = {}, refresh,
     advanced, toggleAdvanced, advancedBtn, stick,
     uncertain = "Guess", greedy = False, clickOnly = False,
-    reset, solve, step, solving = False, guesses, guessLabel,
+    guesses = 0, solveResult, updateSolveResult,
+    reset, solve, step, solving = False,
     mouseDown, mouseUp, mouseDragged, translateCoords,
     code, button, checkbox
   },
@@ -126,7 +127,7 @@ MinesweeperJ[] := JavaBlock@Module[{
     If[!solving,
       board@reset[args];
       guesses = 0;
-      guessLabel@setText[""];
+      updateSolveResult[]
     ];
 
   solve[] /; solving := Null;
@@ -136,7 +137,8 @@ MinesweeperJ[] := JavaBlock@Module[{
       While[solving,
         Which[
           board@boomed || board@success,
-            solving = False,
+            solving = False;
+            updateSolveResult[],
           !board@started,
             board@randomClick,
           board@solve[Greedy->greedy, ClickOnly->clickOnly],
@@ -146,7 +148,7 @@ MinesweeperJ[] := JavaBlock@Module[{
           True,
             board@randomClick[uncertain=="Cheat"];
             guesses++;
-            guessLabel@setText["Guess: "<>ToString[guesses]]
+            updateSolveResult[]
         ];
         Pause[0.1];
       ],
@@ -158,13 +160,24 @@ MinesweeperJ[] := JavaBlock@Module[{
       solving,
         Null,
       board@boomed || board@success,
-        Null,
+        updateSolveResult[],
       !board@started,
         board@randomClick,
       !board@solve[Greedy->greedy, ClickOnly->clickOnly],
         board@randomClick[True];
         guesses++;
-        guessLabel@setText["Guess: "<>ToString[guesses]]
+        updateSolveResult[]
+    ];
+
+  updateSolveResult[] :=
+    Which[
+      board@boomed || board@success,
+        solveResult@setText[StringTemplate["Guess: ``, Time Used: ``"]
+                                    [guesses, NumberForm[board@timeUsed, {Infinity,2}]]],
+      guesses > 0,
+        solveResult@setText["Guess: "<>ToString[guesses]],
+      True,
+        solveResult@setText[""]
     ];
 
   translateCoords[x_, y_, f_] :=
@@ -236,10 +249,10 @@ MinesweeperJ[] := JavaBlock@Module[{
         cheatBox     = checkbox["Cheat", uncertainG, uncertain=="Cheat", uncertainF],
         pauseBox     = checkbox["Pause", uncertainG, uncertain=="Pause", uncertainF],
         greedyBox    = checkbox["Greedy mode", greedy, code[(greedy=#2==1; ReleaseJavaObject[#1])&]],
-        clickOnlyBox = checkbox["ClickOnly", clickOnly, code[(clickOnly=#2==1; ReleaseJavaObject[#1])&]]
+        clickOnlyBox = checkbox["No flags", clickOnly, code[(clickOnly=#2==1; ReleaseJavaObject[#1])&]]
       },
 
-      guessLabel = JavaNew["java.awt.Label"];
+      solveResult = JavaNew["java.awt.Label"];
 
       advanced@setLayout[layout];
       layout@setAutoCreateGaps[True];
@@ -258,7 +271,7 @@ MinesweeperJ[] := JavaBlock@Module[{
           ]
           @addComponent[greedyBox]
           @addComponent[clickOnlyBox]
-          @addComponent[guessLabel]
+          @addComponent[solveResult]
       ];
 
       layout@setVerticalGroup[
@@ -274,7 +287,7 @@ MinesweeperJ[] := JavaBlock@Module[{
           ]
           @addComponent[greedyBox]
           @addComponent[clickOnlyBox]
-          @addComponent[guessLabel]
+          @addComponent[solveResult]
       ]
   ]];
 
@@ -282,17 +295,23 @@ MinesweeperJ[] := JavaBlock@Module[{
   advanced@setResizable[False];
   advanced@onClose[code[toggleAdvanced[]]];
 
-  stick[master_, slave_] :=
+  stick[master_, slave_] := JavaBlock[
     With[{pos = master@getLocation[], size = master@getSize[]},
-      pos@translate[size@width, 0];
+      pos@translate[size@width+20, 0];
       slave@setLocation[pos]
-    ];
+    ]];
 
   toggleAdvanced[] := JavaBlock[
     If[advanced@isVisible[],
       advancedBtn@setLabel[">>"]; advanced@setVisible[False],
       advancedBtn@setLabel["<<"]; stick[frame, advanced]; JavaShow[advanced]
     ]];
+
+  With[{cl = JavaNew["com.wolfram.jlink.MathComponentListener"]},
+    cl@setHandler["componentMoved", code[stick[frame, advanced]]];
+    cl@setHandler["componentResized", code[stick[frame, advanced]]];
+    frame@addComponentListener[cl]
+  ];
 
   JavaShow[frame];
   frame@setModal[];
