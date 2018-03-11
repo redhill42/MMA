@@ -57,7 +57,11 @@ public class DigitPane extends JPanel {
 
         @Override
         public void run() {
-            setValue(callback.value());
+            try {
+                setValue(callback.value());
+            } catch (Throwable ex) {
+                ex.printStackTrace();
+            }
         }
     }
 
