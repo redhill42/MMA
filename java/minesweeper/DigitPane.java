@@ -12,13 +12,16 @@ import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class DigitPane extends JPanel implements SwingConstants {
+public class DigitPane extends JPanel {
+    private static final long serialVersionUID = 8591415007977698668L;
+
     private static final int D_WIDTH = 13;
     private static final int D_HEIGHT = 23;
 
     private String digits = "000";
-    private int alignment = LEFT;
     private final Image[] images = new Image[11];
+
+    private static final Timer timer = new Timer(true);
 
     private void loadImage(MediaTracker tracker, int id, String name) {
         URL url = getClass().getResource("/images/" + name);
@@ -28,10 +31,6 @@ public class DigitPane extends JPanel implements SwingConstants {
     }
 
     public DigitPane() {
-        this(LEFT);
-    }
-
-    public DigitPane(int alignment) {
         MediaTracker tracker = new MediaTracker(this);
         for (int i = 0; i <= 10; i++) {
             loadImage(tracker, i, "d"+i+".gif");
@@ -40,15 +39,12 @@ public class DigitPane extends JPanel implements SwingConstants {
             tracker.waitForAll();
         } catch (InterruptedException ignored){}
 
-        this.alignment = alignment;
         setDoubleBuffered(true);
         setPreferredSize(new Dimension(3*(D_WIDTH+3), D_HEIGHT+1));
     }
 
-    public DigitPane(ValueCallback callback, int alignment) {
-        this(alignment);
-
-        Timer timer = new Timer(true);
+    public DigitPane(ValueCallback callback) {
+        this();
         timer.scheduleAtFixedRate(new Task(callback), 0, 1);
     }
 
@@ -81,17 +77,9 @@ public class DigitPane extends JPanel implements SwingConstants {
 
     @Override
     public synchronized void paintComponent(Graphics g) {
-        if (alignment == RIGHT) {
-            int width = getSize().width;
-            for (int i = 0; i < digits.length(); i++) {
-                Image image = images[digits.charAt(i)-'0'];
-                g.drawImage(image, width-(digits.length()-i)*D_WIDTH-1, 1, this);
-            }
-        } else {
-            for (int i = 0; i < digits.length(); i++) {
-                Image image = images[digits.charAt(i)-'0'];
-                g.drawImage(image, i*D_WIDTH+1, 1, this);
-            }
+        for (int i = 0; i < digits.length(); i++) {
+            Image image = images[digits.charAt(i)-'0'];
+            g.drawImage(image, i*D_WIDTH+1, 1, this);
         }
     }
 }
