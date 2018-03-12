@@ -6,6 +6,7 @@
 
 package minesweeper;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -82,49 +83,143 @@ public class Minesweeper implements BoardListener {
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.WEST;
         c.weightx = 0.1;
+        c.insets.set(0, 2, 0, 0);
         pane.add(remainsPane, c);
+
+        JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
+        buttons.add(restartButton());
+        buttons.add(advancedButton());
 
         c.gridx = 1;
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.CENTER;
         c.weightx = 1;
-        pane.add(toolButtons(), c);
+        c.insets.set(0, 0, 0, 0);
+        pane.add(buttons, c);
 
         c.gridx = 2;
         c.fill = GridBagConstraints.NONE;
         c.anchor = GridBagConstraints.EAST;
         c.weightx = 0.1;
+        c.insets.set(0, 0, 0, 2);
         pane.add(timePane, c);
 
         return pane;
     }
 
-    private JPanel toolButtons() {
-        JPanel buttons = new JPanel(new FlowLayout());
+    private JButton restartButton() {
+        JButton button = new JButton();
+        Smiley smiley = new Smiley(button);
 
-        JButton restartButton = new JButton("Restart");
-        restartButton.addActionListener(e -> {
+        button.addActionListener(smiley);
+        board.attach(smiley);
+        minefield.addMouseListener(smiley);
+
+        return button;
+    }
+
+    class Smiley extends MouseAdapter implements ActionListener, BoardListener {
+        private final JButton button;
+        private final ImageIcon smile, nervous, sad, happy, surprise;
+
+        Smiley(JButton button) {
+            smile    = new ImageIcon(getClass().getResource("/images/face1.png"));
+            nervous  = new ImageIcon(getClass().getResource("/images/face2.png"));
+            sad      = new ImageIcon(getClass().getResource("/images/face3.png"));
+            happy    = new ImageIcon(getClass().getResource("/images/face4.png"));
+            surprise = new ImageIcon(getClass().getResource("/images/face5.png"));
+
+            this.button = button;
+            button.setIcon(smile);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
             restart((e.getModifiers() & ActionEvent.ALT_MASK) != 0);
-        });
-        buttons.add(restartButton);
+        }
 
-        final JButton advancedButton = new JButton(">>");
-        advancedButton.addActionListener(e -> advanced.toggle());
-        buttons.add(advancedButton);
-
-        advanced.addComponentListener(new ComponentAdapter() {
-            @Override
-            public void componentShown(ComponentEvent e) {
-                advancedButton.setText("<<");
+        private void update(boolean attempt) {
+            if (TrueQ(board.boomed())) {
+                button.setIcon(sad);
+            } else if (TrueQ(board.success())) {
+                button.setIcon(happy);
+            } else if (attempt) {
+                button.setIcon(nervous);
+            } else if (advanced.isSolving()) {
+                button.setIcon(surprise);
+            } else {
+                button.setIcon(smile);
             }
+        }
 
-            @Override
-            public void componentHidden(ComponentEvent e) {
-                advancedButton.setText(">>");
+        @Override
+        public void update() {
+            update(false);
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            update(true);
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            update(false);
+        }
+    }
+
+    private JButton advancedButton() {
+        JButton button = new JButton();
+        Robot robot = new Robot(button);
+
+        button.addActionListener(robot);
+        board.attach(robot);
+        advanced.addComponentListener(robot);
+
+        return button;
+    }
+
+    class Robot extends ComponentAdapter implements ActionListener, BoardListener {
+        private final JButton button;
+        private final ImageIcon robot_l, robot_r;
+
+        Robot(JButton button) {
+            robot_l = new ImageIcon(getClass().getResource("/images/robot_l.png"));
+            robot_r = new ImageIcon(getClass().getResource("/images/robot_r.png"));
+
+            this.button = button;
+            button.setIcon(robot_l);
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            advanced.toggle();
+        }
+
+        @Override
+        public void update() {
+            if (advanced.isVisible()) {
+                if (TrueQ(board.boomed()) || TrueQ(board.success())) {
+                    button.setIcon(robot_r);
+                } else if (advanced.isSolving()) {
+                    button.setIcon(robot_l);
+                } else {
+                    button.setIcon(robot_r);
+                }
+            } else {
+                button.setIcon(robot_l);
             }
-        });
+        }
 
-        return buttons;
+        @Override
+        public void componentShown(ComponentEvent e) {
+            update();
+        }
+
+        @Override
+        public void componentHidden(ComponentEvent e) {
+            update();
+        }
     }
 
     private JPanel resetbar() {

@@ -17,8 +17,8 @@ import java.net.URL;
 public class DigitPane extends JPanel {
     private static final long serialVersionUID = 8591415007977698668L;
 
-    private static final int D_WIDTH = 13;
-    private static final int D_HEIGHT = 23;
+    private static final int D_WIDTH = 16;
+    private static final int D_HEIGHT = 28;
 
     private String digits = "000";
     private final Image[] images = new Image[11];
@@ -35,12 +35,16 @@ public class DigitPane extends JPanel {
         for (int i = 0; i <= 10; i++) {
             loadImage(tracker, i, "d"+i+".gif");
         }
+
         try {
             tracker.waitForAll();
+            for (int i = 0; i <=10; i++) {
+                images[i] = images[i].getScaledInstance(D_WIDTH, D_HEIGHT, Image.SCALE_DEFAULT);
+            }
         } catch (InterruptedException ignored){}
 
         setDoubleBuffered(true);
-        setPreferredSize(new Dimension(3*(D_WIDTH+3), D_HEIGHT+1));
+        setPreferredSize(new Dimension(3*D_WIDTH, D_HEIGHT));
     }
 
     public void setValue(int value) {

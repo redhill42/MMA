@@ -133,6 +133,10 @@ class AdvancedDialog extends JFrame {
         setLocation(pos);
     }
 
+    boolean isSolving() {
+        return solving;
+    }
+
     void toggle() {
         if (isVisible()) {
             setVisible(false);
