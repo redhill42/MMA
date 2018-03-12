@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static minesweeper.BoardPane.CELL_SIZE;
+import static minesweeper.LocalStrings._L;
 
 public class Minesweeper implements BoardListener {
     private final JFrame frame;
@@ -51,6 +52,7 @@ public class Minesweeper implements BoardListener {
         timePane    = new DigitPane();
         advanced    = new AdvancedDialog(frame, board);
 
+        frame.setTitle(_L("Minesweeper"));
         frame.setLocationRelativeTo(null);
         frame.getContentPane().add(minefield, BorderLayout.CENTER);
         frame.getContentPane().add(toolbar(), BorderLayout.NORTH);
@@ -224,9 +226,9 @@ public class Minesweeper implements BoardListener {
 
     private JPanel resetbar() {
         JPanel pane = new JPanel(new FlowLayout());
-        pane.add(button("Beginner",     e -> reset(9,9,10)));
-        pane.add(button("Intermediate", e -> reset(16,16,40)));
-        pane.add(button("Expert",       e -> reset(16,30,99)));
+        pane.add(button(_L("Beginner"),     e -> reset(9,9,10)));
+        pane.add(button(_L("Intermediate"), e -> reset(16,16,40)));
+        pane.add(button(_L("Expert"),       e -> reset(16,30,99)));
         return pane;
     }
 

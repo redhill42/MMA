@@ -27,6 +27,7 @@ import java.awt.event.ItemEvent;
 
 import static minesweeper.Minesweeper.TrueQ;
 import static minesweeper.Minesweeper.button;
+import static minesweeper.LocalStrings._L;
 
 import static minesweeper.AdvancedDialog.Uncertain.Cheat;
 import static minesweeper.AdvancedDialog.Uncertain.Guess;
@@ -50,16 +51,16 @@ class AdvancedDialog extends JFrame {
     private final JLabel solveResult = new JLabel(" ");
 
     AdvancedDialog(JFrame frame, Board board) {
-        super("Advanced");
+        super(_L("Advanced"));
 
         this.frame = frame;
         this.board = board;
 
-        JButton   solveButton   = button("Solve", e -> solving = true);
-        JButton   stepButton    = button("Step", e -> step());
+        JButton   solveButton   = button(_L("Solve"), e -> solving = true);
+        JButton   stepButton    = button(_L("Step"), e -> step());
         JPanel    uncertainPane = uncertainPane();
-        JCheckBox greedyBox     = new JCheckBox("Greedy mode", greedy);
-        JCheckBox clickOnlyBox  = new JCheckBox("No flags", clickOnly);
+        JCheckBox greedyBox     = new JCheckBox(_L("Greedy"), greedy);
+        JCheckBox clickOnlyBox  = new JCheckBox(_L("ClickOnly"), clickOnly);
 
         greedyBox.addItemListener(e ->
             greedy = e.getStateChange() == ItemEvent.SELECTED);
@@ -89,6 +90,7 @@ class AdvancedDialog extends JFrame {
             .addComponent(uncertainPane)
             .addComponent(greedyBox)
             .addComponent(clickOnlyBox)
+            .addGap(10)
             .addComponent(solveResult)
         );
 
@@ -112,13 +114,13 @@ class AdvancedDialog extends JFrame {
 
     private JPanel uncertainPane() {
         JPanel pane = new JPanel(new FlowLayout());
-        pane.setBorder(BorderFactory.createTitledBorder("When uncertain"));
+        pane.setBorder(BorderFactory.createTitledBorder(_L("Uncertain")));
 
         ActionListener a = e -> uncertain = Uncertain.valueOf(e.getActionCommand());
         ButtonGroup g = new ButtonGroup();
 
         for (Uncertain item : Uncertain.values()) {
-            JRadioButton box = new JRadioButton(item.name(), uncertain == item);
+            JRadioButton box = new JRadioButton(_L(item.name()), uncertain == item);
             box.setActionCommand(item.name());
             box.addActionListener(a);
             pane.add(box);
@@ -187,9 +189,9 @@ class AdvancedDialog extends JFrame {
 
     private void updateSolveResult() {
         if (TrueQ(board.boomed()) || TrueQ(board.success())) {
-            solveResult.setText(String.format("Guess: %d, Time: %.2f", guesses, board.timeUsed()));
+            solveResult.setText(String.format(_L("SolveResult"), guesses, board.timeUsed()));
         } else if (guesses > 0) {
-            solveResult.setText("Guess: " + guesses);
+            solveResult.setText(String.format(_L("Guesses"), guesses));
         } else {
             solveResult.setText(" ");
         }
