@@ -6,6 +6,6 @@
 
 package minesweeper;
 
-public interface ValueCallback {
-    int value();
+public interface BoardListener {
+    void update();
 }

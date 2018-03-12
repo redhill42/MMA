@@ -67,8 +67,8 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
   markRemains = board[#] - Length@neighbors[#, marked]&;
   success := remaining == 0;
 
-  attach[ob_] := If[!MemberQ[observers, ob], AppendTo[observers, ob]];
-  detach[ob_] := observers = DeleteCases[observers, ob];
+  attach[ob_] := (If[!MemberQ[observers, ob], AppendTo[observers, ob]]; Null);
+  detach[ob_] := (observers = DeleteCases[observers, ob]; Null);
   notify[] := Scan[#[dispatch]&, observers];
 
   neighbors[cell_, crit_] :=
@@ -196,7 +196,7 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
   dispatch["attach", ob_] := attach[ob];
   dispatch["detach", ob_] := detach[ob];
   dispatch["click", cell_, True] := If[mineQ[cell], mark[cell], click[cell]];
-  dispatch["click", cell_, _:False] := If[!marked[cell], click[cell]];
+  dispatch["click", cell_, _:False] := If[!marked[cell], click[cell], cell];
   dispatch["mark", cell_] := mark[cell];
   dispatch["safe", cell_] := safe[cell];
   dispatch["started"] := startTime != 0;

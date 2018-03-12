@@ -6,11 +6,13 @@
 
 package minesweeper;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.Toolkit;
 import java.net.URL;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class DigitPane extends JPanel {
     private static final long serialVersionUID = 8591415007977698668L;
@@ -20,8 +22,6 @@ public class DigitPane extends JPanel {
 
     private String digits = "000";
     private final Image[] images = new Image[11];
-
-    private static final Timer timer = new Timer(true);
 
     private void loadImage(MediaTracker tracker, int id, String name) {
         URL url = getClass().getResource("/images/" + name);
@@ -43,29 +43,7 @@ public class DigitPane extends JPanel {
         setPreferredSize(new Dimension(3*(D_WIDTH+3), D_HEIGHT+1));
     }
 
-    public DigitPane(ValueCallback callback) {
-        this();
-        timer.scheduleAtFixedRate(new Task(callback), 0, 1);
-    }
-
-    class Task extends TimerTask {
-        private final ValueCallback callback;
-
-        Task(ValueCallback callback) {
-            this.callback = callback;
-        }
-
-        @Override
-        public void run() {
-            try {
-                setValue(callback.value());
-            } catch (Throwable ex) {
-                ex.printStackTrace();
-            }
-        }
-    }
-
-    public synchronized void setValue(int value) {
+    public void setValue(int value) {
         if (value < 0) {
             digits = Integer.toString(Integer.min(-value, 99));
             if (digits.length() == 1)
@@ -80,7 +58,7 @@ public class DigitPane extends JPanel {
     }
 
     @Override
-    public synchronized void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g) {
         for (int i = 0; i < digits.length(); i++) {
             Image image = images[digits.charAt(i)-'0'];
             g.drawImage(image, i*D_WIDTH+1, 1, this);

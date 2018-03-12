@@ -6,14 +6,17 @@
 
 package minesweeper;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.MediaTracker;
+import java.awt.Toolkit;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-public class BoardPanel extends JPanel {
-    private static final long serialVersionUID = -1990867873169498535L;
+public class BoardPane extends JPanel {
+    private static final long serialVersionUID = 6819997252275128187L;
 
     public static final int CELL_SIZE = 22;
 
@@ -27,7 +30,7 @@ public class BoardPanel extends JPanel {
         images.put(key, img);
     }
 
-    public BoardPanel() {
+    public BoardPane() {
         MediaTracker tracker = new MediaTracker(this);
         int id = 0;
 
