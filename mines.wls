@@ -7,7 +7,7 @@ Needs["Minesweeper`"];
 
 JavaBlock[
   InstallJava[];
-  AddToClassPath[FileNameJoin[{Directory[], "java"}]];
+  AddToClassPath[FileNameJoin[{Directory[], "java", "target"}]];
 
   Module[{
     board = MakeMinesweeper[16, 16, 40], jboard,
