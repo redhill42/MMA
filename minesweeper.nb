@@ -3,10 +3,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[         0,          0]
-NotebookDataLength[      2022,         67]
-NotebookOptionsPosition[      1333,         40]
-NotebookOutlinePosition[      1789,         59]
-CellTagsIndexPosition[      1746,         56]
+NotebookDataLength[      2287,         73]
+NotebookOptionsPosition[      1596,         46]
+NotebookOutlinePosition[      2052,         65]
+CellTagsIndexPosition[      2009,         62]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -24,18 +24,24 @@ Cell[BoxData[
        RowBox[{"NotebookDirectory", "[", "]"}], "]"}], ";", 
       "\[IndentingNewLine]", 
       RowBox[{"Needs", "[", "\"\<Minesweeper`\>\"", "]"}], ";"}], 
-     "\[IndentingNewLine]", ")"}]}]}], "]"}]], "Input",ExpressionUUID->\
-"1ac72cd0-8312-4fa6-9b43-a4ca5c5d3c2d"],
+     "\[IndentingNewLine]", ")"}]}], ",", "\[IndentingNewLine]", 
+   RowBox[{"TrackedSymbols", "\[Rule]", 
+    RowBox[{"{", "}"}]}]}], "\[IndentingNewLine]", "]"}]], "Input",
+ CellChangeTimes->{{3.7299127372995863`*^9, 
+  3.7299127444441433`*^9}},ExpressionUUID->"1ac72cd0-8312-4fa6-9b43-\
+a4ca5c5d3c2d"],
 
 Cell[BoxData[
  DynamicBox[ToBoxes[
    Minesweeper`Minesweeper[], StandardForm], None,
   ImageSizeCache->{461., {288., 295.}},
   Initialization:>(SetDirectory[
-     NotebookDirectory[]]; Needs["Minesweeper`"]; Null)]], "Output",
- CellChangeTimes->{{3.7294623822524767`*^9, 
-  3.729462387320696*^9}},ExpressionUUID->"4583b503-43b3-451f-b957-\
-6594e0e0f3f7"]
+     NotebookDirectory[]]; Needs["Minesweeper`"]; Null),
+  TrackedSymbols:>{}]], "Output",
+ CellChangeTimes->{{3.7294623822524767`*^9, 3.729462387320696*^9}, {
+  3.729912786625057*^9, 
+  3.729912795800063*^9}},ExpressionUUID->"9a7c9027-d626-4318-840f-\
+07b8080885f0"]
 }, {2}]]
 },
 InitializationCellEvaluation->Automatic,
@@ -59,8 +65,8 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[422, 15, 540, 12, 171, "Input",ExpressionUUID->"1ac72cd0-8312-4fa6-9b43-a4ca5c5d3c2d"],
-Cell[965, 29, 355, 8, 645, "Output",ExpressionUUID->"4583b503-43b3-451f-b957-6594e0e0f3f7"]
+Cell[422, 15, 732, 16, 233, "Input",ExpressionUUID->"1ac72cd0-8312-4fa6-9b43-a4ca5c5d3c2d"],
+Cell[1157, 33, 426, 10, 611, "Output",ExpressionUUID->"9a7c9027-d626-4318-840f-07b8080885f0"]
 }, {2}]]
 }
 ]
