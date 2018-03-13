@@ -5,11 +5,24 @@ SetDirectory[DirectoryName@ExpandFileName@First@$ScriptCommandLine];
 Needs["JLink`"];
 Needs["Minesweeper`"];
 
-JavaBlock[
-  InstallJava[];
-  AddToClassPath[FileNameJoin[{Directory[], "java", "target"}]];
+With[{
+    source = FileNameJoin[{Directory[], "java", "src", "main", "java"}],
+    resources = FileNameJoin[{Directory[], "java", "src", "main", "resources"}],
+    target = FileNameJoin[{Directory[], "java", "target"}]
+  },
+  If[!FileExistsQ[target],
+    CreateDirectory[target];
+    Scan[If[DirectoryQ[#], CopyDirectory[#, FileNameJoin[{target, FileNameTake[#]}]]]&,
+         FileNames["*", resources]
+    ];
+    Run["javac", "-d", target, Sequence@@FileNames["*.java", source, Infinity]];
+  ];
 
-  Module[{
+  InstallJava[];
+  AddToClassPath[target];
+];
+
+JavaBlock@Module[{
     board = MakeMinesweeper[16, 16, 40], jboard,
     rows, cols, mines,
     started, boomed, success,
@@ -61,4 +74,4 @@ JavaBlock[
     frame@setModal[];
     DoModal[]
   ]
-]];
+];
