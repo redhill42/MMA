@@ -40,7 +40,7 @@ public class Minesweeper implements BoardListener {
 
     private final BoardPane minefield;
     private final DigitPane remainsPane, timePane;
-    private final AdvancedDialog advanced;
+    private final SolverDialog solver;
 
     public Minesweeper(JFrame frame, Board board) {
         this.frame = frame;
@@ -50,7 +50,7 @@ public class Minesweeper implements BoardListener {
         minefield   = new BoardPane();
         remainsPane = new DigitPane();
         timePane    = new DigitPane();
-        advanced    = new AdvancedDialog(frame, board);
+        solver      = new SolverDialog(frame, board);
 
         frame.setTitle(_L("Minesweeper"));
         frame.setLocationRelativeTo(null);
@@ -90,7 +90,7 @@ public class Minesweeper implements BoardListener {
 
         JPanel buttons = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 0));
         buttons.add(restartButton());
-        buttons.add(advancedButton());
+        buttons.add(solverButton());
 
         c.gridx = 1;
         c.fill = GridBagConstraints.NONE;
@@ -147,7 +147,7 @@ public class Minesweeper implements BoardListener {
                 button.setIcon(happy);
             } else if (attempt) {
                 button.setIcon(nervous);
-            } else if (advanced.isSolving()) {
+            } else if (solver.isSolving()) {
                 button.setIcon(surprise);
             } else {
                 button.setIcon(smile);
@@ -170,13 +170,13 @@ public class Minesweeper implements BoardListener {
         }
     }
 
-    private JButton advancedButton() {
+    private JButton solverButton() {
         JButton button = new JButton();
         Robot robot = new Robot(button);
 
         button.addActionListener(robot);
         board.attach(robot);
-        advanced.addComponentListener(robot);
+        solver.addComponentListener(robot);
 
         return button;
     }
@@ -195,15 +195,15 @@ public class Minesweeper implements BoardListener {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            advanced.toggle();
+            solver.toggle();
         }
 
         @Override
         public void update() {
-            if (advanced.isVisible()) {
+            if (solver.isVisible()) {
                 if (TrueQ(board.boomed()) || TrueQ(board.success())) {
                     button.setIcon(robot_r);
-                } else if (advanced.isSolving()) {
+                } else if (solver.isSolving()) {
                     button.setIcon(robot_l);
                 } else {
                     button.setIcon(robot_r);
@@ -234,12 +234,12 @@ public class Minesweeper implements BoardListener {
 
     private void restart(boolean keep) {
         board.restart(keep);
-        advanced.reset();
+        solver.reset();
     }
 
     private void reset(int rows, int cols, int mines) {
         board.reset(rows, cols, mines);
-        advanced.reset();
+        solver.reset();
     }
 
     @Override

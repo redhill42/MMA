@@ -29,11 +29,11 @@ import static minesweeper.Minesweeper.TrueQ;
 import static minesweeper.Minesweeper.button;
 import static minesweeper.LocalStrings._L;
 
-import static minesweeper.AdvancedDialog.Uncertain.Cheat;
-import static minesweeper.AdvancedDialog.Uncertain.Guess;
-import static minesweeper.AdvancedDialog.Uncertain.Pause;
+import static minesweeper.SolverDialog.Uncertain.Cheat;
+import static minesweeper.SolverDialog.Uncertain.Guess;
+import static minesweeper.SolverDialog.Uncertain.Pause;
 
-class AdvancedDialog extends JFrame {
+class SolverDialog extends JFrame {
     private static final long serialVersionUID = -219238393387768402L;
 
     enum Uncertain {
@@ -50,8 +50,8 @@ class AdvancedDialog extends JFrame {
     private int guesses;
     private final JLabel solveResult = new JLabel(" ");
 
-    AdvancedDialog(JFrame frame, Board board) {
-        super(_L("Advanced"));
+    SolverDialog(JFrame frame, Board board) {
+        super(_L("Solver"));
 
         this.frame = frame;
         this.board = board;
