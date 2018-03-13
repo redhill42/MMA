@@ -47,7 +47,19 @@ JavaBlock@Module[{
   click[r_,c_,cheat_]   := JavaBlock[JavaNew["minesweeper.Cell",  board@click[{r,c}, cheat]]];
   randomClick[cheat_]   := JavaBlock[JavaNew["minesweeper.Cell",  board@randomClick[cheat]]];
   mark[r_,c_]           := JavaBlock[JavaNew["minesweeper.Cell",  board@mark[{r,c}]]];
-  solve[greedy_, clickOnly_] := board@solve[Greedy->greedy, ClickOnly->clickOnly];
+
+  solve[greedy_, clickOnly_, solved_] := JavaBlock[
+    If[solved === Null,
+      board@solve[Greedy->greedy, ClickOnly->clickOnly],
+      First@Reap[
+        board@solve[Greedy->greedy, ClickOnly->clickOnly],
+        _,
+        (Scan[solved@add[JavaNew["minesweeper.Cell", #]]&, Catenate[#2]];
+         ReleaseJavaObject[solved]
+        )&
+      ]
+    ]
+  ];
 
   jboard = ImplementJavaInterface["minesweeper.Board", {
     "rows"              -> ToString[rows],

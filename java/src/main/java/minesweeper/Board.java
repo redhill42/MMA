@@ -6,6 +6,8 @@
 
 package minesweeper;
 
+import java.util.List;
+
 public interface Board {
     int rows();
     int cols();
@@ -28,5 +30,5 @@ public interface Board {
     Cell randomClick(boolean cheat);
     Cell mark(int row, int col);
 
-    String solve(boolean greedy, boolean clickOnly);
+    String solve(boolean greedy, boolean clickOnly, List<Cell> solved);
 }

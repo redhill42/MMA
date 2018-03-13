@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
@@ -27,11 +28,14 @@ import java.awt.event.MouseMotionAdapter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static minesweeper.BoardPane.CELL_SIZE;
 import static minesweeper.LocalStrings._L;
 
-public class Minesweeper implements BoardListener {
+public class Minesweeper implements BoardData, BoardListener {
     private final JFrame frame;
     private final Board board;
     private int rows, cols;
@@ -41,6 +45,9 @@ public class Minesweeper implements BoardListener {
     private final BoardPane minefield;
     private final DigitPane remainsPane, timePane;
     private final SolverDialog solver;
+
+    private static final Color GUESSES_COLOR = new Color(255, 0, 0, 96);
+    private static final Color SOLVED_COLOR = new Color(0, 255, 0, 64);
 
     public Minesweeper(JFrame frame, Board board) {
         this.frame = frame;
@@ -254,6 +261,12 @@ public class Minesweeper implements BoardListener {
             frame.pack();
         }
 
+        minefield.update(this);
+        remainsPane.setValue(board.minesRemaining());
+    }
+
+    @Override
+    public String[][] getField() {
         String[][] data = field;
         if (!safe.isEmpty()) {
             data = new String[rows][];
@@ -264,9 +277,15 @@ public class Minesweeper implements BoardListener {
                 data[p.row][p.col] = "0";
             }
         }
+        return data;
+    }
 
-        minefield.update(data);
-        remainsPane.setValue(board.minesRemaining());
+    @Override
+    public Map<Color,List<Cell>> getColorMap() {
+        Map<Color,List<Cell>> colorMap = new HashMap<>();
+        colorMap.put(GUESSES_COLOR, solver.getGuesses());
+        colorMap.put(SOLVED_COLOR, solver.getSolved());
+        return colorMap;
     }
 
     private void addMouseListeners() {

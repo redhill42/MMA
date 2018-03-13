@@ -25,6 +25,9 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import static minesweeper.Minesweeper.TrueQ;
 import static minesweeper.Minesweeper.button;
 import static minesweeper.LocalStrings._L;
@@ -47,8 +50,9 @@ class SolverDialog extends JFrame {
     private boolean greedy, clickOnly;
 
     private boolean solving;
-    private int guesses;
     private final JLabel solveResult = new JLabel(" ");
+    private final List<Cell> guesses = new ArrayList<>();
+    private final List<Cell> solved = new ArrayList<>();
 
     SolverDialog(JFrame frame, Board board) {
         super(_L("Solver"));
@@ -139,6 +143,14 @@ class SolverDialog extends JFrame {
         return solving;
     }
 
+    List<Cell> getGuesses() {
+        return guesses;
+    }
+
+    List<Cell> getSolved() {
+        return solved;
+    }
+
     void toggle() {
         if (isVisible()) {
             setVisible(false);
@@ -149,49 +161,56 @@ class SolverDialog extends JFrame {
     }
 
     void solve() {
-        if (!solving)
+        if (!solving) {
             return;
+        }
+
+        solved.clear();
         if (TrueQ(board.boomed()) || TrueQ(board.success())) {
             solving = false;
             updateSolveResult();
         } else if (!TrueQ(board.started())) {
             board.randomClick(false);
-        } else if (!TrueQ(board.solve(greedy, clickOnly))) {
-            if (uncertain == Pause) {
-                solving = false;
-            } else {
-                board.randomClick(uncertain == Cheat);
-                guesses++;
-                updateSolveResult();
-            }
+        } else if (TrueQ(board.solve(greedy, clickOnly, null))) {
+            // do nothing
+        } else if (uncertain == Pause) {
+            solving = false;
+        } else {
+            guesses.add(board.randomClick(uncertain == Cheat));
+            updateSolveResult();
         }
     }
 
     void step() {
-        if (solving)
+        if (solving) {
             return;
+        }
+
+        solved.clear();
         if (TrueQ(board.boomed()) || TrueQ(board.success())) {
             updateSolveResult();
         } else if (!TrueQ(board.started())) {
             board.randomClick(false);
-        } else if (!TrueQ(board.solve(greedy, clickOnly))) {
-            board.randomClick(true);
-            guesses++;
+        } else if (TrueQ(board.solve(greedy, clickOnly, solved))) {
+            updateSolveResult();
+        } else {
+            guesses.add(board.randomClick(true));
             updateSolveResult();
         }
     }
 
     void reset() {
         solving = false;
-        guesses = 0;
+        guesses.clear();
+        solved.clear();
         updateSolveResult();
     }
 
     private void updateSolveResult() {
         if (TrueQ(board.boomed()) || TrueQ(board.success())) {
-            solveResult.setText(String.format(_L("SolveResult"), guesses, board.timeUsed()));
-        } else if (guesses > 0) {
-            solveResult.setText(String.format(_L("Guesses"), guesses));
+            solveResult.setText(String.format(_L("SolveResult"), guesses.size(), board.timeUsed()));
+        } else if (!guesses.isEmpty()) {
+            solveResult.setText(String.format(_L("Guesses"), guesses.size()));
         } else {
             solveResult.setText(" ");
         }

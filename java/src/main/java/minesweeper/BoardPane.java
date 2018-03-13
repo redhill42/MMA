@@ -7,12 +7,14 @@
 package minesweeper;
 
 import javax.swing.JPanel;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class BoardPane extends JPanel {
@@ -21,7 +23,7 @@ public class BoardPane extends JPanel {
     public static final int CELL_SIZE = 22;
 
     private final Map<String, Image> images = new HashMap<>();
-    private String[][] field;
+    private BoardData data;
 
     private void loadImage(MediaTracker tracker, int id, String key, String name) {
         URL url = getClass().getResource("/images/"+name);
@@ -53,21 +55,35 @@ public class BoardPane extends JPanel {
         setDoubleBuffered(true);
     }
 
-    public void update(String[][] field) {
-        this.field = field;
+    public void update(BoardData data) {
+        this.data = data;
         repaint();
     }
 
     @Override
     public void paintComponent(Graphics g) {
-        if (field != null) {
-            int rows = field.length, cols = field[0].length;
-            int startx = (getSize().width - cols*CELL_SIZE)/2;
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    String cell = field[i][j];
-                    g.drawImage(images.get(cell), startx+j*CELL_SIZE, i*CELL_SIZE, this);
-                }
+        if (data == null) {
+            return;
+        }
+
+        String[][] field = data.getField();
+        Map<Color,List<Cell>> colorMap = data.getColorMap();
+        int rows = field.length, cols = field[0].length;
+        int startx = (getSize().width - cols*CELL_SIZE)/2;
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                String cell = field[i][j];
+                g.drawImage(images.get(cell), startx+j*CELL_SIZE, i*CELL_SIZE, this);
+            }
+        }
+
+        for (Map.Entry<Color,List<Cell>> e : colorMap.entrySet()) {
+            g.setColor(e.getKey());
+            for (Cell cell : e.getValue()) {
+                g.fillRect(startx + (cell.col-1)*CELL_SIZE,
+                           (cell.row-1)*CELL_SIZE,
+                           CELL_SIZE, CELL_SIZE);
             }
         }
     }
