@@ -11,6 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface BoardData {
-    String[][] getField();
+    int[][] getField();
     Map<Color,List<Cell>> getColorMap();
 }

@@ -13,42 +13,50 @@ import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.MissingResourceException;
 
 public class BoardPane extends JPanel {
     private static final long serialVersionUID = 6819997252275128187L;
 
     public static final int CELL_SIZE = 22;
 
-    private final Map<String, Image> images = new HashMap<>();
+    private final Image[] images = new Image[128];
     private BoardData data;
 
-    private void loadImage(MediaTracker tracker, int id, String key, String name) {
-        URL url = getClass().getResource("/images/"+name);
+    private void loadImage(MediaTracker tracker, int id, String name) {
+        URL url = getClass().getResource("/images/"+name+".png");
+        if (url == null) {
+            url = getClass().getResource("/images/"+name+".gif");
+            if (url == null) {
+                throw new MissingResourceException(name, getClass().getName(), name);
+            }
+        }
+
         Image img = Toolkit.getDefaultToolkit().getImage(url);
         tracker.addImage(img, id);
-        images.put(key, img);
+        images[id] = img;
     }
 
     public BoardPane() {
         MediaTracker tracker = new MediaTracker(this);
-        int id = 0;
 
         for (int i = 0; i <= 8; i++) {
-            loadImage(tracker, id++, Integer.toString(i), i+".gif");
+            loadImage(tracker, '0'+i, Integer.toString(i));
         }
-        loadImage(tracker, id++, " ", "blank.gif");
-        loadImage(tracker, id++, "x", "mine.gif");
-        loadImage(tracker, id++, "X", "boomed.gif");
-        loadImage(tracker, id++, "m", "flag.gif");
-        loadImage(tracker, id++, "w", "strike.gif");
+        loadImage(tracker, ' ', "blank");
+        loadImage(tracker, 'x', "mine");
+        loadImage(tracker, 'X', "boomed");
+        loadImage(tracker, 'm', "flag");
+        loadImage(tracker, 'w', "strike");
 
         try {
             tracker.waitForAll();
-            for (Map.Entry<String,Image> e : images.entrySet()) {
-                e.setValue(e.getValue().getScaledInstance(CELL_SIZE, CELL_SIZE, Image.SCALE_DEFAULT));
+            for (int i = 0; i < images.length; i++) {
+                if (images[i] != null) {
+                    images[i] = images[i].getScaledInstance(CELL_SIZE, CELL_SIZE, Image.SCALE_DEFAULT);
+                }
             }
         } catch (InterruptedException ignored){}
 
@@ -66,15 +74,18 @@ public class BoardPane extends JPanel {
             return;
         }
 
-        String[][] field = data.getField();
+        int[][] field = data.getField();
         Map<Color,List<Cell>> colorMap = data.getColorMap();
         int rows = field.length, cols = field[0].length;
-        int startx = (getSize().width - cols*CELL_SIZE)/2;
+        int startx = (getWidth() - cols*CELL_SIZE)/2;
+        int starty = (getHeight() - rows*CELL_SIZE)/2;
 
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                String cell = field[i][j];
-                g.drawImage(images.get(cell), startx+j*CELL_SIZE, i*CELL_SIZE, this);
+                g.drawImage(images[field[i][j]],
+                            startx + j*CELL_SIZE,
+                            starty + i*CELL_SIZE,
+                            this);
             }
         }
 
@@ -82,7 +93,7 @@ public class BoardPane extends JPanel {
             g.setColor(e.getKey());
             for (Cell cell : e.getValue()) {
                 g.fillRect(startx + (cell.col-1)*CELL_SIZE,
-                           (cell.row-1)*CELL_SIZE,
+                           starty + (cell.row-1)*CELL_SIZE,
                            CELL_SIZE, CELL_SIZE);
             }
         }

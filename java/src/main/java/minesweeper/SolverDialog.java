@@ -28,7 +28,6 @@ import java.awt.event.ItemEvent;
 import java.util.List;
 import java.util.ArrayList;
 
-import static minesweeper.Minesweeper.TrueQ;
 import static minesweeper.Minesweeper.button;
 import static minesweeper.LocalStrings._L;
 
@@ -166,12 +165,12 @@ class SolverDialog extends JFrame {
         }
 
         solved.clear();
-        if (TrueQ(board.boomed()) || TrueQ(board.success())) {
+        if (board.boomed() || board.success()) {
             solving = false;
             updateSolveResult();
-        } else if (!TrueQ(board.started())) {
+        } else if (!board.started()) {
             board.randomClick(false);
-        } else if (TrueQ(board.solve(greedy, clickOnly, null))) {
+        } else if (board.solve(greedy, clickOnly, null)) {
             // do nothing
         } else if (uncertain == Pause) {
             solving = false;
@@ -187,11 +186,11 @@ class SolverDialog extends JFrame {
         }
 
         solved.clear();
-        if (TrueQ(board.boomed()) || TrueQ(board.success())) {
+        if (board.boomed() || board.success()) {
             updateSolveResult();
-        } else if (!TrueQ(board.started())) {
+        } else if (!board.started()) {
             board.randomClick(false);
-        } else if (TrueQ(board.solve(greedy, clickOnly, solved))) {
+        } else if (board.solve(greedy, clickOnly, solved)) {
             updateSolveResult();
         } else {
             guesses.add(board.randomClick(true));
@@ -207,7 +206,7 @@ class SolverDialog extends JFrame {
     }
 
     private void updateSolveResult() {
-        if (TrueQ(board.boomed()) || TrueQ(board.success())) {
+        if (board.boomed() || board.success()) {
             solveResult.setText(String.format(_L("SolveResult"), guesses.size(), board.timeUsed()));
         } else if (!guesses.isEmpty()) {
             solveResult.setText(String.format(_L("Guesses"), guesses.size()));

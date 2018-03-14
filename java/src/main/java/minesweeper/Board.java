@@ -13,9 +13,9 @@ public interface Board {
     int cols();
     int mines();
 
-    String started();
-    String boomed();
-    String success();
+    boolean started();
+    boolean boomed();
+    boolean success();
 
     int remaining();
     int minesRemaining();
@@ -24,11 +24,11 @@ public interface Board {
     void reset(int rows, int cols, int mines);
     void restart(boolean keep);
     void attach(BoardListener listener);
-    Field show();
+    int[][] show();
 
     Cell click(int row, int col, boolean cheat);
     Cell randomClick(boolean cheat);
     Cell mark(int row, int col);
 
-    String solve(boolean greedy, boolean clickOnly, List<Cell> solved);
+    boolean solve(boolean greedy, boolean clickOnly, List<Cell> solved);
 }

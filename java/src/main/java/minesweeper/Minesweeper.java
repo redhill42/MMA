@@ -39,7 +39,7 @@ public class Minesweeper implements BoardData, BoardListener {
     private final JFrame frame;
     private final Board board;
     private int rows, cols;
-    private String[][] field;
+    private int[][] field;
     private final ArrayList<Cell> safe = new ArrayList<>();
 
     private final BoardPane minefield;
@@ -71,11 +71,6 @@ public class Minesweeper implements BoardData, BoardListener {
         Timer timer = new Timer(1000, e -> timePane.setValue((int)Math.round(board.timeUsed())));
         timer.setInitialDelay(0);
         timer.start();
-    }
-
-    // Wolfram Language doesn't properly handle boolean values in an interface
-    static boolean TrueQ(String s) {
-        return "True".equalsIgnoreCase(s);
     }
 
     static JButton button(String label, ActionListener action) {
@@ -148,9 +143,9 @@ public class Minesweeper implements BoardData, BoardListener {
         }
 
         private void update(boolean attempt) {
-            if (TrueQ(board.boomed())) {
+            if (board.boomed()) {
                 button.setIcon(sad);
-            } else if (TrueQ(board.success())) {
+            } else if (board.success()) {
                 button.setIcon(happy);
             } else if (attempt) {
                 button.setIcon(nervous);
@@ -208,7 +203,7 @@ public class Minesweeper implements BoardData, BoardListener {
         @Override
         public void update() {
             if (solver.isVisible()) {
-                if (TrueQ(board.boomed()) || TrueQ(board.success())) {
+                if (board.boomed() || board.success()) {
                     button.setIcon(robot_r);
                 } else if (solver.isSolving()) {
                     button.setIcon(robot_l);
@@ -253,7 +248,7 @@ public class Minesweeper implements BoardData, BoardListener {
     public void update() {
         rows  = board.rows();
         cols  = board.cols();
-        field = board.show().m;
+        field = board.show();
 
         Dimension dim = new Dimension(CELL_SIZE * cols, CELL_SIZE * rows);
         if (!minefield.isPreferredSizeSet() || !dim.equals(minefield.getPreferredSize())) {
@@ -266,15 +261,15 @@ public class Minesweeper implements BoardData, BoardListener {
     }
 
     @Override
-    public String[][] getField() {
-        String[][] data = field;
+    public int[][] getField() {
+        int[][] data = field;
         if (!safe.isEmpty()) {
-            data = new String[rows][];
+            data = new int[rows][];
             for (int i = 0; i < data.length; i++) {
                 data[i] = Arrays.copyOf(field[i], cols);
             }
             for (Cell p : safe) {
-                data[p.row][p.col] = "0";
+                data[p.row][p.col] = '0';
             }
         }
         return data;
@@ -330,8 +325,9 @@ public class Minesweeper implements BoardData, BoardListener {
     }
 
     private Cell translateCoords(int x, int y) {
-        int startx = (minefield.getSize().width - cols*CELL_SIZE)/2;
-        int row = y/CELL_SIZE + 1;
+        int startx = (minefield.getWidth() - cols*CELL_SIZE)/2;
+        int starty = (minefield.getHeight() - rows*CELL_SIZE)/2;
+        int row = (y-starty)/CELL_SIZE + 1;
         int col = (x-startx)/CELL_SIZE + 1;
         if (row < 1 || row > rows || col < 1 || col > cols) {
             return null;
@@ -342,7 +338,7 @@ public class Minesweeper implements BoardData, BoardListener {
     private void safe(Cell pos) {
         safe.clear();
 
-        if (pos == null || TrueQ(board.boomed()) || TrueQ(board.success())) {
+        if (pos == null || board.boomed() || board.success()) {
             return;
         }
 
@@ -351,9 +347,9 @@ public class Minesweeper implements BoardData, BoardListener {
         int col = pos.col - 1;
 
         switch (field[row][col]) {
-        case "m":
+        case 'm':
             break;
-        case " ":
+        case ' ':
             safe.add(new Cell(row, col));
             break;
         default:
@@ -361,7 +357,7 @@ public class Minesweeper implements BoardData, BoardListener {
                 for (int j = -1; j <= 1; j++) {
                     int r = row+i, c = col+j;
                     if (r >= 0 && r < rows && c >= 0 && c < cols) {
-                        if (" ".equals(field[r][c])) {
+                        if (field[r][c] == ' ') {
                             safe.add(new Cell(r,c));
                         }
                     }
