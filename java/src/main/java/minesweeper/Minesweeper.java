@@ -45,6 +45,7 @@ public class Minesweeper implements BoardData, BoardListener {
     private final BoardPane minefield;
     private final DigitPane remainsPane, timePane;
     private final SolverDialog solver;
+    private final Timer timer;
 
     private static final Color GUESSES_COLOR = new Color(255, 0, 0, 96);
     private static final Color SOLVED_COLOR = new Color(0, 255, 0, 64);
@@ -59,6 +60,9 @@ public class Minesweeper implements BoardData, BoardListener {
         timePane    = new DigitPane();
         solver      = new SolverDialog(frame, board);
 
+        timer = new Timer(1000, e -> timePane.setValue((int)Math.round(board.timeUsed())));
+        timer.setInitialDelay(0);
+
         frame.setTitle(_L("Minesweeper"));
         frame.setLocationRelativeTo(null);
         frame.getContentPane().add(minefield, BorderLayout.CENTER);
@@ -67,10 +71,6 @@ public class Minesweeper implements BoardData, BoardListener {
         frame.setResizable(false);
         addMouseListeners();
         update();
-
-        Timer timer = new Timer(1000, e -> timePane.setValue((int)Math.round(board.timeUsed())));
-        timer.setInitialDelay(0);
-        timer.start();
     }
 
     static JButton button(String label, ActionListener action) {
@@ -163,12 +163,16 @@ public class Minesweeper implements BoardData, BoardListener {
 
         @Override
         public void mousePressed(MouseEvent e) {
-            update(true);
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                update(true);
+            }
         }
 
         @Override
         public void mouseReleased(MouseEvent e) {
-            update(false);
+            if (e.getButton() == MouseEvent.BUTTON1) {
+                update(false);
+            }
         }
     }
 
@@ -203,7 +207,7 @@ public class Minesweeper implements BoardData, BoardListener {
         @Override
         public void update() {
             if (solver.isVisible()) {
-                if (board.boomed() || board.success()) {
+                if (board.stopped()) {
                     button.setIcon(robot_r);
                 } else if (solver.isSolving()) {
                     button.setIcon(robot_l);
@@ -258,6 +262,13 @@ public class Minesweeper implements BoardData, BoardListener {
 
         minefield.update(this);
         remainsPane.setValue(board.minesRemaining());
+
+        if (!timer.isRunning() && board.started()) {
+            timer.start();
+        } else if (timer.isRunning() && board.stopped()) {
+            timer.stop();
+            timePane.setValue((int)Math.round(board.timeUsed()));
+        }
     }
 
     @Override
@@ -338,7 +349,7 @@ public class Minesweeper implements BoardData, BoardListener {
     private void safe(Cell pos) {
         safe.clear();
 
-        if (pos == null || board.boomed() || board.success()) {
+        if (pos == null || board.stopped()) {
             return;
         }
 

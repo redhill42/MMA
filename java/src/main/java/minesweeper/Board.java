@@ -14,6 +14,7 @@ public interface Board {
     int mines();
 
     boolean started();
+    boolean stopped();
     boolean boomed();
     boolean success();
 

@@ -44,11 +44,11 @@ class SolverDialog extends JFrame {
 
     private final JFrame frame;
     private final Board board;
+    private final Timer timer;
 
     private Uncertain uncertain = Guess;
-    private boolean greedy, clickOnly;
+    private boolean greedy, clickOnly, alwaysRun;
 
-    private boolean solving;
     private final JLabel solveResult = new JLabel(" ");
     private final List<Cell> guesses = new ArrayList<>();
     private final List<Cell> solved = new ArrayList<>();
@@ -59,16 +59,33 @@ class SolverDialog extends JFrame {
         this.frame = frame;
         this.board = board;
 
-        JButton   solveButton   = button(_L("Solve"), e -> solving = true);
-        JButton   stepButton    = button(_L("Step"), e -> step());
-        JPanel    uncertainPane = uncertainPane();
-        JCheckBox greedyBox     = new JCheckBox(_L("Greedy"), greedy);
-        JCheckBox clickOnlyBox  = new JCheckBox(_L("ClickOnly"), clickOnly);
+        timer = new Timer(100, e -> solve());
+        JButton solveButton = button(_L("Solve"), e -> {
+            if (!isSolving()) {
+                timer.stop();
+                timer.setActionCommand("solve");
+                timer.setInitialDelay(0);
+                timer.start();
+            }
+        });
+
+        JButton stepButton = button(_L("Step"), e -> {
+            if (!isSolving()) {
+                step();
+            }
+        });
+
+        JPanel uncertainPane = uncertainPane();
+        JCheckBox greedyBox = new JCheckBox(_L("Greedy"), greedy);
+        JCheckBox clickOnlyBox = new JCheckBox(_L("ClickOnly"), clickOnly);
+        JCheckBox alwaysRunBox = new JCheckBox(_L("AlwaysRun"), alwaysRun);
 
         greedyBox.addItemListener(e ->
             greedy = e.getStateChange() == ItemEvent.SELECTED);
         clickOnlyBox.addItemListener(e ->
             clickOnly = e.getStateChange() == ItemEvent.SELECTED);
+        alwaysRunBox.addItemListener(e ->
+            alwaysRun = e.getStateChange() == ItemEvent.SELECTED);
 
         GroupLayout layout = new GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -82,6 +99,7 @@ class SolverDialog extends JFrame {
           .addComponent(uncertainPane)
           .addComponent(greedyBox)
           .addComponent(clickOnlyBox)
+          .addComponent(alwaysRunBox)
           .addComponent(solveResult)
         );
 
@@ -93,6 +111,7 @@ class SolverDialog extends JFrame {
             .addComponent(uncertainPane)
             .addComponent(greedyBox)
             .addComponent(clickOnlyBox)
+            .addComponent(alwaysRunBox)
             .addGap(10)
             .addComponent(solveResult)
         );
@@ -111,8 +130,6 @@ class SolverDialog extends JFrame {
                 stick();
             }
         });
-
-        new Timer(100, e -> solve()).start();
     }
 
     private JPanel uncertainPane() {
@@ -129,17 +146,18 @@ class SolverDialog extends JFrame {
             pane.add(box);
             g.add(box);
         }
+
         return pane;
     }
 
-    void stick() {
+    private void stick() {
         Point pos = frame.getLocation();
         pos.translate(frame.getSize().width+20, 0);
         setLocation(pos);
     }
 
     boolean isSolving() {
-        return solving;
+        return timer.isRunning() && "solve".equals(timer.getActionCommand());
     }
 
     List<Cell> getGuesses() {
@@ -159,34 +177,53 @@ class SolverDialog extends JFrame {
         }
     }
 
-    void solve() {
-        if (!solving) {
-            return;
-        }
-
+    void reset() {
+        timer.stop();
+        guesses.clear();
         solved.clear();
-        if (board.boomed() || board.success()) {
-            solving = false;
+        updateSolveResult();
+    }
+
+    private void solve() {
+        solved.clear();
+
+        if ("again".equals(timer.getActionCommand())) {
+            if (alwaysRun) {
+                board.restart(false);
+                guesses.clear();
+                solved.clear();
+
+                timer.stop();
+                timer.setActionCommand("solve");
+                timer.setInitialDelay(0);
+                timer.start();
+            } else {
+                timer.stop();
+            }
+        } else if (board.stopped()) {
             updateSolveResult();
+            if (alwaysRun) {
+                timer.stop();
+                timer.setActionCommand("again");
+                timer.setInitialDelay(1000);
+                timer.start();
+            } else {
+                timer.stop();
+            }
         } else if (!board.started()) {
             board.randomClick(false);
         } else if (board.solve(greedy, clickOnly, null)) {
             // do nothing
         } else if (uncertain == Pause) {
-            solving = false;
+            timer.stop();
         } else {
             guesses.add(board.randomClick(uncertain == Cheat));
-            updateSolveResult();
         }
     }
 
-    void step() {
-        if (solving) {
-            return;
-        }
-
+    private void step() {
         solved.clear();
-        if (board.boomed() || board.success()) {
+        if (board.stopped()) {
             updateSolveResult();
         } else if (!board.started()) {
             board.randomClick(false);
@@ -198,18 +235,9 @@ class SolverDialog extends JFrame {
         }
     }
 
-    void reset() {
-        solving = false;
-        guesses.clear();
-        solved.clear();
-        updateSolveResult();
-    }
-
     private void updateSolveResult() {
-        if (board.boomed() || board.success()) {
+        if (board.stopped()) {
             solveResult.setText(String.format(_L("SolveResult"), guesses.size(), board.timeUsed()));
-        } else if (!guesses.isEmpty()) {
-            solveResult.setText(String.format(_L("Guesses"), guesses.size()));
         } else {
             solveResult.setText(" ");
         }

@@ -25,7 +25,7 @@ With[{
 JavaBlock@Module[{
     board = MakeMinesweeper[16, 16, 40], jboard,
     rows, cols, mines,
-    started, boomed, success,
+    started, stopped, boomed, success,
     remaining, minesRemaining, timeUsed,
     reset, restart, attach, show,
     click, randomClick, mark, safe, solve,
@@ -46,6 +46,7 @@ JavaBlock@Module[{
   cols[]                := board@cols;
   mines[]               := board@mines;
   started[]             := Boolean[board@started];
+  stopped[]             := Boolean[board@boomed || board@success];
   boomed[]              := Boolean[board@boomed];
   success[]             := Boolean[board@success];
   remaining[]           := board@remaining;
@@ -76,6 +77,7 @@ JavaBlock@Module[{
     "rows"              -> ToString[rows],
     "cols"              -> ToString[cols],
     "started"           -> ToString[started],
+    "stopped"           -> ToString[stopped],
     "boomed"            -> ToString[boomed],
     "success"           -> ToString[success],
     "remaining"         -> ToString[remaining],
