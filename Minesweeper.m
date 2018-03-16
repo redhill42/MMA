@@ -199,22 +199,24 @@ MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] :
     "markRemains" -> markRemains
   |>];
 
-  instruction[clickOnly_] :=
-    If[clickOnly,
-      Function[With[{clicks = Cases[#, (pos_->0) :> pos]},
-        Length[clicks] != 0 && batch[Scan[click, Sow@clicks]; True]]],
-      Function[With[{clicks = Cases[#, (pos_->0) :> pos], marks = Cases[#, (pos_->1) :> pos]},
-        Length[clicks]+Length[marks] != 0 && batch[Scan[click, Sow@clicks]; Scan[mark, Sow@marks]; True]]]
-    ];
+  instruction[_,_][{}] = False;
+  instruction[False, False][sol_] :=
+    (batch@Scan[If[Last[#] == 0, click[Sow@@#], mark[Sow@@#]]&, sol]; True);
+  instruction[True, False][sol_] := With[{clicks = Cases[sol, HoldPattern[_->0]]},
+    Length[clicks] != 0 && (batch@Scan[click[Sow@@#]&, clicks]; True)];
+  instruction[False, True][sol_] :=
+    (Scan[Sow@@#&, sol]; True);
+  instruction[True, True][sol_] := With[{clicks = Cases[sol, HoldPattern[_->0]]},
+    Length[clicks] != 0 && (Scan[Sow@@#&, clicks]; True)];
 
-  dispatch["instruction", clickOnly_] := instruction[clickOnly];
+  dispatch["instruction", clickOnly_, noAction_] := instruction[clickOnly, noAction];
 
-  dispatch["solve", OptionsPattern[{Greedy -> False, ClickOnly -> False}]] :=
+  dispatch["solve", OptionsPattern[{Greedy->False, ClickOnly->False, NoAction->False}]] :=
     With[{clickOnly = OptionValue[ClickOnly]},
-      With[{k = instruction[clickOnly]},
+      With[{k = instruction[clickOnly, OptionValue[NoAction]]},
         If[OptionValue[Greedy],
           k@Normal@Fold[
-            Join[#1, Association[solver[Cases[HoldPattern[_->0|1]], clickOnly][#2]]]&,
+            Join[#1, solver[Association, clickOnly][#2]]&,
             <||>,
             coords],
           AnyTrue[coords, solver[k, clickOnly]]
@@ -245,7 +247,7 @@ AbstractSolver[disp_] :=
             unify    = If[Length[sol] == 0, {}, Normal[Merge[sol, Total] / Length[sol]]]
           },
           verbose[If[Count[unify, _->0|1] > 0, {eqn, unify} /. C[{x_,y_}] :> Subscript[C,x,y] // Column]];
-          k[unify /. C[pos_] :> pos]
+          k[Cases[unify, (C[pos_]->tag:0|1) :> pos->tag]]
         ]];
 
       solver[k_, priori_:False][cell_?clicked] :=
@@ -294,12 +296,12 @@ MinesweeperSolver[] :=
       "markRemains" -> Function[board[#] - Length@neighbors[#, board[#]=="m"&]]
     |>];
 
-    dispatch["solve", grid_, k_, OptionsPattern[{Greedy -> False, ClickOnly -> False}]] :=
+    dispatch["solve", grid_, k_, OptionsPattern[{Greedy->False, ClickOnly->False}]] :=
       With[{clickOnly = OptionValue[ClickOnly]},
         reset[grid];
         If[OptionValue[Greedy],
           k@Normal@Fold[
-            Join[#1, Association[solver[Cases[HoldPattern[_->0|1]], clickOnly][#2]]]&,
+            Join[#1, solver[Association, clickOnly][#2]]&,
             <||>,
             coords],
           AnyTrue[coords, solver[k, clickOnly]]
@@ -311,14 +313,11 @@ MinesweeperSolver[] :=
 
 MinesweeperSolver[board_] :=
   Module[{solver = MinesweeperSolver[], dispatch},
-    dispatch["solve", opts:OptionsPattern[{Greedy->False, ClickOnly->False}]] :=
-      solver@solve[board@show, board@instruction[OptionValue[ClickOnly]], opts];
-
-    dispatch["solveAll", opts:OptionsPattern[{Greedy->False, ClickOnly->False, Cheat->False}]] :=
-      While[!(board@boomed || board@success),
-        If[!dispatch["solve", Sequence@@FilterRules[{opts}, {Greedy,ClickOnly}]],
-          board@randomClick[OptionValue[Cheat]]
-        ]
+    dispatch["solve", opts:OptionsPattern[{Greedy->False, ClickOnly->False, NoAction->False}]] :=
+      solver@solve[
+        board@show,
+        board@instruction[OptionValue[ClickOnly], OptionValue[NoAction]],
+        Sequence@@FilterRules[{opts}, {Greedy,ClickOnly}]
       ];
 
     Dispatcher[dispatch]
@@ -464,19 +463,18 @@ Minesweeper[] := DynamicModule[{
     plotter@plotBoard[{cheats->LightRed}]
   );
 
-  step[] := (
+  step[] :=
     Which[
       board@boomed || board@success,
         Null,
       !board@started,
         board@randomClick[],
-      First@Reap[board@solve[Greedy -> greedy, ClickOnly -> clickOnly], _, (solved = Catenate[#2])&],
+      (solved = Catenate[#2]; #1)& @@ Reap[board@solve[Greedy->greedy, ClickOnly->clickOnly]],
         Null,
       True,
         AppendTo[cheats, board@randomClick[True]]
     ];
-  );
-  
+
   options[] :=
     CreateDialog[{
       "When uncertain: ", RadioButtonBar[Dynamic@uncertain, {"Guess", "Cheat", "Pause"}],

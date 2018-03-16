@@ -63,14 +63,11 @@ JavaBlock@Module[{
   solve[greedy_, clickOnly_, solved_] :=
     If[solved === Null,
       Boolean[board@solve[Greedy->greedy, ClickOnly->clickOnly]],
-      Boolean@First@Reap[
-        board@solve[Greedy->greedy, ClickOnly->clickOnly],
-        _,
-        JavaBlock[
-          Scan[solved@add[JavaNew["minesweeper.Cell", #]]&, Catenate[#2]];
-          ReleaseJavaObject[solved]
-        ]&
-      ]
+      JavaBlock[
+        Scan[solved@add[JavaNew["minesweeper.Cell", #]]&, Catenate[#2]];
+        ReleaseJavaObject[solved];
+        Boolean[#1]
+      ]& @@ Reap[board@solve[Greedy->greedy, ClickOnly->clickOnly]]
     ];
 
   jboard = ImplementJavaInterface["minesweeper.Board", {
