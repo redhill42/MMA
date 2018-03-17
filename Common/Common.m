@@ -11,7 +11,7 @@ Begin["`Private`"]
 
 verbose[val_] := val;
 
-SetAttributes[VerboseBlock, HoldAll]
+SetAttributes[VerboseBlock, HoldAll];
 VerboseBlock[expr_] := Block[{verbose},
   verbose[Null] = Null;
   verbose[val_] := (Print[val]; val);

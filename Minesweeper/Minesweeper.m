@@ -1,6 +1,4 @@
-(* ::Package:: *)
-
-BeginPackage["Minesweeper`"]
+BeginPackage["Minesweeper`", {"Common`"}]
 
 MakeMinesweeper::usage = "Make a new minesweeper board.";
 MinesweeperSolver::usage = "Create a minesweeper solver";
@@ -9,8 +7,6 @@ MinesweeperPlotter2::usage = "An alternate minesweeper plotter.";
 Minesweeper::usage = "The default minesweeper game implementation.";
 
 Begin["`Private`"]
-
-Needs["Common`"];
 
 MakeMinesweeper[rows0_Integer, cols0_Integer, mines0_Integer, sample0_List:{}] := Module[{
 	  rows, cols, mines,
