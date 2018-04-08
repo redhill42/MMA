@@ -9,6 +9,8 @@ Pell::usage = "Find the funtamental solution of a Pell equation";
 PellSeries::usage = "Generate a series of Pell equation solution";
 PellFunction::usage = "Returns a pure function that generate all solutions for a Pell equation";
 
+Palindrome::usage = "Generate a series of palindrome numbers";
+
 Begin["`Private`"]
 
 ImportResource[name_, elements___] := ImportResource[name, elements] =
@@ -19,8 +21,8 @@ Timed[expr_] :=
   With[{format = {#2, Style["Time: " <> ToString[#1], Smaller, Darker@Gray]} &},
     Column[format @@ AbsoluteTiming[expr]]];
 
-JavaSolve[num_Integer] := JavaBlock[
-  JavaNew["euler.Problem" <> ToString[num]]@solve[]
+JavaSolve[num_Integer, args___] := JavaBlock[
+  JavaNew["euler.Problem" <> ToString[num]]@solve[args]
 ];
 
 Hungarian[costMatrix_List] := JavaBlock[
@@ -76,6 +78,28 @@ PellSeries[d_, -1] := Module[{p, q, x, y, next},
 PellFunction[d_Integer, c:1|-1:1][n_] :=
   With[{series = PellSeries[d, c]},
     Nest[series[]&, {}, n]];
+
+Palindrome[len_Integer:1] :=
+  Module[{n, length, limit, init, next, mix},
+    init[l_] := (
+      length = l;
+      n = 10^(Floor[(length+1)/2] - 1);
+      limit = n * 10;
+    );
+
+    mix[n_, l_?EvenQ] := mix[n, n, l/2];
+    mix[n_, l_?OddQ] := mix[n, Floor[n/10], (l-1)/2];
+    mix[a_, b_, 0] := a;
+    mix[a_, b_, n_] := mix[a*10 + Mod[b,10], Floor[b/10], n-1];
+
+    next[] := With[{r = mix[n, length]},
+      If[++n >= limit, init[length + 1]];
+      r
+    ];
+
+    init[len];
+    next
+  ];
 
 End[]
 
