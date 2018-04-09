@@ -9,7 +9,10 @@ Pell::usage = "Find the funtamental solution of a Pell equation";
 PellSeries::usage = "Generate a series of Pell equation solution";
 PellFunction::usage = "Returns a pure function that generate all solutions for a Pell equation";
 
-Palindrome::usage = "Generate a series of palindrome numbers";
+PalindromeSeries::usage = "Generate a series of palindrome numbers";
+PalindromeList::usage = "Generate a list of palindrome numbers";
+
+MatrixPowerMod::usage = "Compute the matrix power with modulus";
 
 Begin["`Private`"]
 
@@ -79,7 +82,7 @@ PellFunction[d_Integer, c:1|-1:1][n_] :=
   With[{series = PellSeries[d, c]},
     Nest[series[]&, {}, n]];
 
-Palindrome[len_Integer:1] :=
+PalindromeSeries[len_Integer:1] :=
   Module[{n, length, limit, init, next, mix},
     init[l_] := (
       length = l;
@@ -100,6 +103,25 @@ Palindrome[len_Integer:1] :=
     init[len];
     next
   ];
+
+PalindromeList[n_Integer, minlen_Integer:1] :=
+  With[{p = PalindromeSeries[minlen]},
+    NestList[p[]&, p[], n - 1]];
+
+PalindromeList[{len_Integer}] := PalindromeList[{len, len}];
+
+PalindromeList[{minlen_Integer, maxlen_Integer}] :=
+  With[{p = PalindromeSeries[minlen]},
+    Most@NestWhileList[p[]&, p[], IntegerLength[#] <= maxlen&]];
+
+MatrixPowerMod[a_, 0, _] :=
+  IdentityMatrix[Length[a]];
+MatrixPowerMod[a_, n_?Negative, m_] :=
+  MatrixPowerMod[Inverse[a], -n, m];
+MatrixPowerMod[a_, n_, m_] :=
+  Fold[With[{b = Mod[#1.#1, m]},
+    If[#2 == 1, Mod[a.b, m], b]]&,
+    a, Rest@IntegerDigits[n, 2]];
 
 End[]
 
