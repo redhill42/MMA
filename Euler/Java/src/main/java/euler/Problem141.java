@@ -1,7 +1,11 @@
 package euler;
 
 public class Problem141 {
-    private final static long LIMIT = 1_000_000_000_000L;
+    private final long limit;
+
+    public Problem141(long limit) {
+        this.limit = limit;
+    }
 
     private static boolean isSquare(long n) {
         long r = (long)Math.sqrt(n);
@@ -23,9 +27,9 @@ public class Problem141 {
             for (long b = 1; b < a; b++) {
                 if (gcd(a, b) != 1)
                     continue;
-                for (long c = 1; c < LIMIT; c++) {
+                for (long c = 1; c < limit; c++) {
                     long n = a*a*a*b*c*c + b*b*c;
-                    if (n > LIMIT)
+                    if (n > limit)
                         break;
                     if (isSquare(n))
                         sum += n;
@@ -36,6 +40,7 @@ public class Problem141 {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Problem141().solve());
+        Problem141 solver = new Problem141(1_000_000_000_000L);
+        System.out.println(solver.solve());
     }
 }

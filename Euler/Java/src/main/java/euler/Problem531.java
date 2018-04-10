@@ -1,6 +1,13 @@
 package euler;
 
 public class Problem531 {
+    private final int start, end;
+
+    public Problem531(int start, int end) {
+        this.start = start;
+        this.end = end;
+    }
+
     static class Pair {
         long x, y;
     }
@@ -57,7 +64,7 @@ public class Problem531 {
         return ((a + p.y * n) % t + t) % t;
     }
 
-    public long solve(int start, int end) {
+    public long solve() {
         int[] phi = new int[end];
         for (int i = 1; i < end; i++) {
             phi[i] = (i % 2 == 0) ? i / 2 : i;
@@ -78,6 +85,7 @@ public class Problem531 {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Problem531().solve(1_000_000, 1_005_000));
+        Problem531 solver = new Problem531(1_000_000, 1_005_000);
+        System.out.println(solver.solve());
     }
 }

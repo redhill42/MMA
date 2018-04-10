@@ -3,7 +3,13 @@ package euler;
 import java.util.stream.LongStream;
 
 public class Problem348 {
-    public long[] solve(int count) {
+    private final int count;
+
+    public Problem348(int count) {
+        this.count = count;
+    }
+
+    public long[] solve() {
         Palindrome p = new Palindrome();
         long[] solutions = new long[count];
         for (int i = 0; i < count; ) {
@@ -23,7 +29,7 @@ public class Problem348 {
     }
 
     public static void main(String[] args) {
-        Problem348 solver = new Problem348();
-        System.out.println(LongStream.of(solver.solve(5)).sum());
+        Problem348 solver = new Problem348(5);
+        System.out.println(LongStream.of(solver.solve()).sum());
     }
 }

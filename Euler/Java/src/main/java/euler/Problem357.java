@@ -3,29 +3,10 @@ package euler;
 import java.util.BitSet;
 
 public class Problem357 {
-    static final int LIMIT = 100000000;
-    BitSet primes = new BitSet(LIMIT);
+    private final BitSet primes;
 
-    public Problem357() {
-        primes.set(2);
-        for (int i = 3; i <= LIMIT; i += 2)
-            primes.set(i);
-
-        int sq = (int)Math.sqrt(LIMIT);
-        for (int i = 3; i <= sq; i += 2) {
-            if (primes.get(i))
-                for (int j = i*i; j <= LIMIT; j += i)
-                    primes.clear(j);
-        }
-    }
-
-    boolean check(int n) {
-        int sq = (int)Math.sqrt(n);
-        for (int i = 1; i <= sq; i++) {
-            if (n % i == 0 && !primes.get(i + n / i))
-                return false;
-        }
-        return true;
+    public Problem357(int limit) {
+        this.primes = Sieve.build(limit);
     }
 
     public long solve() {
@@ -37,7 +18,17 @@ public class Problem357 {
         return sum;
     }
 
+    boolean check(int n) {
+        int sq = (int)Math.sqrt(n);
+        for (int i = 1; i <= sq; i++) {
+            if (n % i == 0 && !primes.get(i + n / i))
+                return false;
+        }
+        return true;
+    }
+
     public static void main(String[] args) {
-        System.out.println(new Problem357().solve());
+        Problem357 solver = new Problem357(100_000_000);
+        System.out.println(solver.solve());
     }
 }

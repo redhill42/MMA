@@ -3,12 +3,16 @@ package euler;
 import java.util.stream.IntStream;
 
 public class Problem135 {
-    static final int LIMIT = 1000000;
+    private final int limit;
+
+    public Problem135(int limit) {
+        this.limit = limit;
+    }
 
     public long solve() {
-        int[] solutions = new int[LIMIT + 1];
-        for (int x = 1; x <= LIMIT; x++) {
-            for (int y = 1; x * y <= LIMIT; y++) {
+        int[] solutions = new int[limit + 1];
+        for (int x = 1; x <= limit; x++) {
+            for (int y = 1; x * y <= limit; y++) {
                 if ((x + y) % 4 == 0 && 3 * y > x) {
                     solutions[x * y]++;
                 }
@@ -18,6 +22,7 @@ public class Problem135 {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Problem135().solve());
+        Problem135 solver = new Problem135(1000000);
+        System.out.println(solver.solve());
     }
 }

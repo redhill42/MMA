@@ -1,7 +1,22 @@
 package euler;
 
 public class Problem78 {
-	private final int[] p = new int[1000000];
+    private final int modulo;
+	private final int[] p;
+
+    public Problem78(int modulo) {
+        this.modulo = modulo;
+        this.p = new int[modulo];
+    }
+
+    public int solve() {
+        p[0] = p[1] = 1;
+        for (int n = 2; ; n++) {
+            if (partition(n) == 0) {
+                return n;
+            }
+        }
+    }
 
 	private int partition(int n) {
 		int k = 4;
@@ -20,19 +35,12 @@ public class Problem78 {
 		if (n >= b) {
 			sum += s * p[n - b];
 		}
-		return p[n] = sum % 1000000;
+
+		return p[n] = sum % modulo;
     }
 
-	public int solve() {
-		p[0] = p[1] = 1;
-		for (int n = 2; ; n++) {
-			if (partition(n) == 0) {
-				return n;
-			}
-		}
-	}
-
 	public static void main(String[] args) {
-		System.out.println(new Problem78().solve());
+        Problem78 solver = new Problem78(1_000_000);
+		System.out.println(solver.solve());
 	}
 }

@@ -3,15 +3,18 @@ package euler;
 import java.util.Arrays;
 
 public class Problem95 {
-    static final int LIMIT = 1000000;
+    private final int limit;
+    private final int[] divsum;
+    private final int[] chain;
 
-    final int[] divsum = new int[LIMIT + 1];
-    final int[] chain = new int[LIMIT + 1];
+    public Problem95(int limit) {
+        this.limit = limit;
+        this.divsum = new int[limit + 1];
+        this.chain = new int[limit + 1];
 
-    public Problem95() {
         Arrays.fill(divsum, 1);
-        for (int q = 2; q <= Math.sqrt(LIMIT); q++) {
-            for (int c = q; c*q <= LIMIT; c++) {
+        for (int q = 2; q <= Math.sqrt(limit); q++) {
+            for (int c = q; c*q <= limit; c++) {
                 divsum[c*q] += c+q;
             }
         }
@@ -30,16 +33,16 @@ public class Problem95 {
         int L = 1;
         int maxlen = 0, minval = 0;
 
-        for (int i = 3; i <= LIMIT; i++) {
+        for (int i = 3; i <= limit; i++) {
             if (chain[i] != 0)
                 continue;
 
             int nx = i;
-            while (nx <= LIMIT && chain[nx] == 0) {
+            while (nx <= limit && chain[nx] == 0) {
                 chain[nx] = L++;
                 nx = divsum[nx];
             }
-            if (nx <= LIMIT && chain[nx] >= chain[i]) {
+            if (nx <= limit && chain[nx] >= chain[i]) {
                 int len = L - chain[nx];
                 if (len > maxlen) {
                     maxlen = len;
@@ -52,6 +55,7 @@ public class Problem95 {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Problem95().solve());
+        Problem95 solver = new Problem95(1000000);
+        System.out.println(solver.solve());
     }
 }

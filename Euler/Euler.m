@@ -25,7 +25,7 @@ Timed[expr_] :=
     Column[format @@ AbsoluteTiming[expr]]];
 
 JavaSolve[num_Integer, args___] := JavaBlock[
-  JavaNew["euler.Problem" <> ToString[num]]@solve[args]
+  JavaNew["euler.Problem" <> ToString[num], args]@solve[]
 ];
 
 Hungarian[costMatrix_List] := JavaBlock[
