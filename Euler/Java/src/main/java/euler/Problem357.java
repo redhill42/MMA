@@ -2,11 +2,13 @@ package euler;
 
 import java.util.BitSet;
 
+import euler.util.PrimeSieve;
+
 public class Problem357 {
     private final BitSet primes;
 
     public Problem357(int limit) {
-        this.primes = Sieve.build(limit);
+        this.primes = PrimeSieve.build(limit);
     }
 
     public long solve() {

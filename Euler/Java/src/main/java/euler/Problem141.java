@@ -1,5 +1,7 @@
 package euler;
 
+import static euler.util.Utils.gcd;
+
 public class Problem141 {
     private final long limit;
 
@@ -10,15 +12,6 @@ public class Problem141 {
     private static boolean isSquare(long n) {
         long r = (long)Math.sqrt(n);
         return r * r == n;
-    }
-
-    private static long gcd(long a, long b) {
-        while (b != 0) {
-            long m = a % b;
-            a = b;
-            b = m;
-        }
-        return a;
     }
 
     public long solve() {

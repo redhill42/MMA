@@ -32,7 +32,7 @@ Hungarian[costMatrix_List] := JavaBlock[
   InstallJava[];
   MapIndexed[
     {First[#2], #1+1}&,
-    JavaNew["euler.HungarianAlgorithm", costMatrix]@execute[]
+    JavaNew["euler.algorithms.Hungarian", costMatrix]@execute[]
   ]
 ];
 

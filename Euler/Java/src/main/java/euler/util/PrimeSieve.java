@@ -1,9 +1,9 @@
-package euler;
+package euler.util;
 
 import java.util.BitSet;
 
-public final class Sieve {
-    private Sieve() {}
+public final class PrimeSieve {
+    private PrimeSieve() {}
 
     public static BitSet build(int limit) {
         BitSet primes = new BitSet(limit + 1);

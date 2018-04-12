@@ -7,6 +7,8 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import euler.util.PrimeSieve;
+
 public class Problem615 {
     static class Datum {
         Map<Integer,Integer> factors;
@@ -84,7 +86,7 @@ public class Problem615 {
     }
 
     public long solve() {
-        BitSet primes = Sieve.build(limit);
+        BitSet primes = PrimeSieve.build(limit);
 
         PriorityQueue<Datum> frontier = new PriorityQueue<>(
             (x, y) -> Double.compare(x.value, y.value));

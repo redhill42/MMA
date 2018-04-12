@@ -1,10 +1,4 @@
-/**
- * Cloudway Platform
- * Copyright (c) 2012-2016 Cloudway Technology, Inc.
- * All rights reserved.
- */
-
-package euler;
+package euler.algorithms;
 
 import java.util.Arrays;
 
@@ -32,7 +26,7 @@ import java.util.Arrays;
  *
  * @author Kevin L. Stern
  */
-public class HungarianAlgorithm {
+public class Hungarian {
     private final double[][] costMatrix;
     private final int rows, cols, dim;
     private final double[] labelByWorker, labelByJob;
@@ -51,7 +45,7 @@ public class HungarianAlgorithm {
      *          irregular in the sense that all rows must be the same length; in
      *          addition, all entries must be non-infinite numbers.
      */
-    public HungarianAlgorithm(double[][] costMatrix) {
+    public Hungarian(double[][] costMatrix) {
         rows = costMatrix.length;
         cols = costMatrix[0].length;
         dim = Math.max(rows, cols);
