@@ -1,17 +1,13 @@
 package euler;
 
 import static euler.util.Utils.gcd;
+import static euler.util.Utils.isSquare;
 
 public class Problem141 {
     private final long limit;
 
     public Problem141(long limit) {
         this.limit = limit;
-    }
-
-    private static boolean isSquare(long n) {
-        long r = (long)Math.sqrt(n);
-        return r * r == n;
     }
 
     public long solve() {

@@ -24,4 +24,10 @@ public final class Utils {
         }
         return a;
     }
+
+    public static boolean isSquare(long n) {
+        if (n < 0) return false;
+        long r = (long)Math.sqrt(n);
+        return r * r == n;
+    }
 }
