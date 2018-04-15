@@ -1,5 +1,7 @@
 BeginPackage["Euler`", {"JLink`"}]
 
+Let::usage = "Consecuitive bindings for With scoping construct.";
+
 ImportResource::usage = "Import an external resource";
 Timed::usage = "Display solve result and used time";
 JavaSolve::usage = "Solve a problem with Java program";
@@ -15,6 +17,16 @@ PalindromeList::usage = "Generate a list of palindrome numbers";
 MatrixPowerMod::usage = "Compute the matrix power with modulus";
 
 Begin["`Private`"]
+
+SetAttributes[Let, HoldAll];
+Let /: Verbatim[SetDelayed][lhs_, rhs:Let[{__}, _]] :=
+  Block[{With}, Attributes[With] = {HoldAll};
+    lhs := Evaluate[rhs]];
+Let[{}, expr_] := expr;
+Let[{head_}, expr_] := With[{head}, expr];
+Let[{head_, tail__}, expr_] :=
+  Block[{With}, Attributes[With] = {HoldAll};
+    With[{head}, Evaluate[Let[{tail}, expr]]]];
 
 ImportResource[name_, elements___] := ImportResource[name, elements] =
   Import["https://projecteuler.net/project/resources/" <> name, elements];
