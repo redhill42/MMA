@@ -1,6 +1,8 @@
 package euler;
 
 import java.util.stream.LongStream;
+import euler.util.Palindrome;
+import static euler.util.Utils.isqrt;
 
 public class Problem348 {
     private final int count;
@@ -17,7 +19,7 @@ public class Problem348 {
             int ways = 0;
             long a, b;
             for (a = 1; (b = a*a*a) < n; a++) {
-                long sq = (long)Math.sqrt(n - b);
+                long sq = isqrt(n - b);
                 if (sq * sq == n - b)
                     ways++;
             }

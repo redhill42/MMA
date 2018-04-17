@@ -1,8 +1,8 @@
 package euler;
 
 import static euler.util.Utils.gcd;
+import static euler.util.Utils.isqrt;
 import static java.lang.Math.min;
-import static java.lang.Math.sqrt;
 
 public class Problem139 {
     private final int limit;
@@ -13,7 +13,7 @@ public class Problem139 {
 
     public int solve() {
         int count = 0;
-        int max_m = (int)sqrt(limit / 2);
+        int max_m = isqrt(limit / 2);
         for (int m = 2; m <= max_m; m++) {
             int max_n = min(m - 1, limit / (2 * m) - m);
             for (int n = (m & 1) + 1; n <= max_n; n += 2) {

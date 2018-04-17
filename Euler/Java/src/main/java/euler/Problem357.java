@@ -1,19 +1,18 @@
 package euler;
 
-import java.util.BitSet;
-
 import euler.util.PrimeSieve;
+import static euler.util.Utils.isqrt;
 
 public class Problem357 {
-    private final BitSet primes;
+    private final PrimeSieve sieve;
 
     public Problem357(int limit) {
-        this.primes = PrimeSieve.build(limit);
+        this.sieve = new PrimeSieve(limit);
     }
 
     public long solve() {
         long sum = 0;
-        for (int i = 2; i > 0; i = primes.nextSetBit(i+1)) {
+        for (int i = 2; i > 0; i = sieve.nextPrime(i)) {
             if (check(i-1))
                 sum += i-1;
         }
@@ -21,9 +20,8 @@ public class Problem357 {
     }
 
     boolean check(int n) {
-        int sq = (int)Math.sqrt(n);
-        for (int i = 1; i <= sq; i++) {
-            if (n % i == 0 && !primes.get(i + n / i))
+        for (int i = 1, sq = isqrt(n); i <= sq; i++) {
+            if (n % i == 0 && !sieve.isPrime(i + n / i))
                 return false;
         }
         return true;

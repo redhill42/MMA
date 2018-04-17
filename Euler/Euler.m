@@ -31,10 +31,16 @@ Let[{head_, tail__}, expr_] :=
 ImportResource[name_, elements___] := ImportResource[name, elements] =
   Import["https://projecteuler.net/project/resources/" <> name, elements];
 
+coloring[time_] := Darker@Gray /; time < 1;
+coloring[time_] := Darker@Darker@Green /; time < 4;
+coloring[time_] := Darker@Blue /; time < 60;
+coloring[time_] := Red /; time >= 60;
+
+timing[time_, result_] :=
+  Column[{result, Style["Time: " <> ToString[time], Smaller, coloring[time]]}];
+
 SetAttributes[Timed, HoldFirst];
-Timed[expr_] :=
-  With[{format = {#2, Style["Time: " <> ToString[#1], Smaller, Darker@Gray]} &},
-    Column[format @@ AbsoluteTiming[expr]]];
+Timed[expr_] := timing @@ AbsoluteTiming[expr];
 
 JavaSolve[num_Integer, args___] := JavaBlock[
   JavaNew["euler.Problem" <> ToString[num], args]@solve[]

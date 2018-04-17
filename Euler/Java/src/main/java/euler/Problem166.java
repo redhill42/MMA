@@ -1,7 +1,5 @@
 package euler;
 
-import java.util.Scanner;
-
 public class Problem166 {
     private static boolean complete(int n, int a1, int a2, int a3, int a4, int b1, int b2, int b3, int c1) {
         int b4 = a1 + a2 + a3 + a4 - b1 - b2 - b3;

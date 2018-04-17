@@ -1,6 +1,7 @@
 package euler;
 
 import java.util.Arrays;
+import static euler.util.Utils.isqrt;
 
 public class Problem95 {
     private final int limit;
@@ -13,7 +14,7 @@ public class Problem95 {
         this.chain = new int[limit + 1];
 
         Arrays.fill(divsum, 1);
-        for (int q = 2; q <= Math.sqrt(limit); q++) {
+        for (int q = 2; q <= isqrt(limit); q++) {
             for (int c = q; c*q <= limit; c++) {
                 divsum[c*q] += c+q;
             }

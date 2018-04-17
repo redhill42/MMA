@@ -1,8 +1,8 @@
 package euler;
 
 import static euler.util.Utils.gcd;
+import static euler.util.Utils.isqrt;
 import static java.lang.Math.min;
-import static java.lang.Math.sqrt;
 
 public class Problem153 {
     private final int limit;
@@ -18,7 +18,7 @@ public class Problem153 {
     private static long sigma(long n) {
         long k, m, s = 0;
 
-        m = (long)sqrt(n);
+        m = isqrt(n);
         for (k = 1; k <= m; k++)
             s += k * (n / k);
         for (k = 1; k <= m; k++)
@@ -31,7 +31,7 @@ public class Problem153 {
     public long solve() {
         long s = sigma(limit);
         for (long a = 1; a * a <= limit; a++) {
-            long m = min(a, (long)sqrt(limit - a * a));
+            long m = min(a, isqrt(limit - a * a));
             for (long b = 1; b <= m; b++) {
                 if (gcd(a, b) == 1) {
                     s += 2 * (a == b ? a : a + b) * sigma(limit / (a * a + b * b));

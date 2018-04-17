@@ -1,4 +1,4 @@
-package euler;
+package euler.util;
 
 public class Palindrome {
     private int length;

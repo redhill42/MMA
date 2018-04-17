@@ -1,6 +1,5 @@
 package euler;
 
-import java.util.BitSet;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
@@ -86,7 +85,7 @@ public class Problem615 {
     }
 
     public long solve() {
-        BitSet primes = PrimeSieve.build(limit);
+        PrimeSieve sieve = new PrimeSieve(limit);
 
         PriorityQueue<Datum> frontier = new PriorityQueue<>(
             (x, y) -> Double.compare(x.value, y.value));
@@ -98,7 +97,7 @@ public class Problem615 {
             Datum current = frontier.poll();
 
             for (int p : current.factors.keySet()) {
-                Datum next = current.replace(p, primes.nextSetBit(p + 1));
+                Datum next = current.replace(p, sieve.nextPrime(p));
                 if (seen.add(next.code())) {
                     frontier.offer(next);
                 }

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static euler.util.Utils.isqrt;
+
 public class Problem118 {
     static final int MAX = 98765432;
 
@@ -56,7 +58,7 @@ public class Problem118 {
             primes.set(i);
         }
 
-        int sq = (int)Math.sqrt(MAX);
+        int sq = isqrt(MAX);
         for (int i = 3; i <= sq; i += 2) {
             if (primes.get(i)) {
                 addCandidate(i);
