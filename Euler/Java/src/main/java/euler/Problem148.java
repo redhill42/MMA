@@ -2,16 +2,10 @@ package euler;
 
 import java.util.Arrays;
 
-public class Problem148 {
-    private final long levels;
-    private final int modulo;
+public final class Problem148 {
+    private Problem148() {}
 
-    public Problem148(long levels, int modulo) {
-        this.levels = levels;
-        this.modulo = modulo;
-    }
-
-    public long solve() {
+    public static long solve(long levels, int modulo) {
         int[] basep = new int[(int)(Math.log(levels) / Math.log(modulo)) + 1];
         Arrays.fill(basep, 1);
 
@@ -32,7 +26,6 @@ public class Problem148 {
     }
 
     public static void main(String[] args) {
-        Problem148 solver = new Problem148(1_000_000_000, 7);
-        System.out.println(solver.solve());
+        System.out.println(solve(1_000_000_000, 7));
     }
 }

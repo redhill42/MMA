@@ -3,8 +3,10 @@ package euler;
 import java.util.Scanner;
 import static euler.util.Utils.isPalindrome;
 
-public class Problem4 {
-    public int solve() {
+public final class Problem4 {
+    private Problem4() {}
+
+    public static int solve() {
         return solve(1000000);
     }
 

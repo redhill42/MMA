@@ -8,7 +8,9 @@ import java.util.TreeSet;
 
 import euler.util.PrimeSieve;
 
-public class Problem615 {
+public final class Problem615 {
+    private Problem615() {}
+
     static class Datum {
         Map<Integer,Integer> factors;
         double value;
@@ -77,14 +79,7 @@ public class Problem615 {
         }
     }
 
-    private final int limit, modulo;
-
-    public Problem615(int limit, int modulo) {
-        this.limit = limit;
-        this.modulo = modulo;
-    }
-
-    public long solve() {
+    public static long solve(int limit, int modulo) {
         PrimeSieve sieve = new PrimeSieve(limit);
 
         PriorityQueue<Datum> frontier = new PriorityQueue<>(
@@ -113,7 +108,6 @@ public class Problem615 {
     }
 
     public static void main(String[] args) {
-        Problem615 solver = new Problem615(1_000_000, 123454321);
-        System.out.println(solver.solve());
+        System.out.println(solve(1_000_000, 123454321));
     }
 }

@@ -2,16 +2,8 @@ package euler;
 
 import java.util.Scanner;
 
-public class Problem14 {
-    private final int limit;
-
-    public Problem14(int limit) {
-        this.limit = limit;
-    }
-
-    public int solve() {
-        return solve(limit);
-    }
+public final class Problem14 {
+    private Problem14() {}
 
     public static int solve(int limit) {
         int max_len = 0, max_n = 0;

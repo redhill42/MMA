@@ -1,17 +1,10 @@
 package euler;
 
+import java.util.Scanner;
 import static euler.util.Utils.isPrime;
 
-public class Problem7 {
-    private final int limit;
-
-    public Problem7(int limit) {
-        this.limit = limit;
-    }
-
-    public int solve() {
-        return solve(limit);
-    }
+public final class Problem7 {
+    private Problem7() {}
 
     public static int solve(int limit) {
         int count = 2; // 2 and 3
@@ -24,6 +17,11 @@ public class Problem7 {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Problem7(10001).solve());
+        Scanner in = new Scanner(System.in);
+        int t = in.nextInt();
+        while (--t >= 0) {
+            int n = in.nextInt();
+            System.out.println(solve(n));
+        }
     }
 }

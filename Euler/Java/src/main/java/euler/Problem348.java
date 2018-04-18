@@ -4,14 +4,10 @@ import java.util.stream.LongStream;
 import euler.util.Palindrome;
 import static euler.util.Utils.isqrt;
 
-public class Problem348 {
-    private final int count;
+public final class Problem348 {
+    private Problem348() {}
 
-    public Problem348(int count) {
-        this.count = count;
-    }
-
-    public long[] solve() {
+    public static long[] solve(int count) {
         Palindrome p = new Palindrome();
         long[] solutions = new long[count];
         for (int i = 0; i < count; ) {
@@ -31,7 +27,6 @@ public class Problem348 {
     }
 
     public static void main(String[] args) {
-        Problem348 solver = new Problem348(5);
-        System.out.println(LongStream.of(solver.solve()).sum());
+        System.out.println(LongStream.of(solve(5)).sum());
     }
 }

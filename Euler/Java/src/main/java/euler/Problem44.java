@@ -1,6 +1,8 @@
 package euler;
 
-public class Problem44 {
+public final class Problem44 {
+    private Problem44() {}
+
     private static long P(int n) {
         return (long)n * (3 * n - 1) / 2;
     }
@@ -10,7 +12,7 @@ public class Problem44 {
         return P(n) == x;
     }
 
-    public long solve() {
+    public static long solve() {
         for (int n = 3; ; n++) {
             for (int j = 1; j < n / 2; j++) {
                 long Pn = P(n), Pj = P(j);
@@ -22,6 +24,6 @@ public class Problem44 {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Problem44().solve());
+        System.out.println(solve());
     }
 }

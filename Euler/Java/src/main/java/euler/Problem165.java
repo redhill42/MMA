@@ -12,21 +12,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Problem165 {
-    private final int limit;
+public final class Problem165 {
+    private Problem165() {}
 
-    public Problem165(int limit) {
-        this.limit = limit;
-    }
-
-    public int solve() {
+    public static int solve(int limit) {
+        RandomGenerator rg = new RandomGenerator();
         List<Segment> segments = new ArrayList<>();
         Set<Point> intersections = Collections.synchronizedSet(new HashSet<>());
 
         for (int i = 0; i < limit; i++) {
             Segment a = new Segment();
-            a.p1 = new Point(next(), next());
-            a.p2 = new Point(next(), next());
+            a.p1 = new Point(rg.next(), rg.next());
+            a.p2 = new Point(rg.next(), rg.next());
 
             for (Segment b : segments) {
                 Point x = intersect(a.p1, a.p2, b.p1, b.p2);
@@ -39,13 +36,15 @@ public class Problem165 {
         return intersections.size();
     }
 
-    private long seed = 290797;
+    private static class RandomGenerator {
+        private long seed = 290797;
 
-    // generate "Blum Blum Shub" pseudo-random numbers.
-    private int next() {
-        seed *= seed;
-        seed %= 50515093;
-        return (int)(seed % 500);
+        // generate "Blum Blum Shub" pseudo-random numbers.
+        public int next() {
+            seed *= seed;
+            seed %= 50515093;
+            return (int)(seed % 500);
+        }
     }
 
     static class Point {
@@ -106,6 +105,6 @@ public class Problem165 {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Problem165(5000).solve());
+        System.out.println((5000));
     }
 }

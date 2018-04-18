@@ -4,14 +4,10 @@ import static euler.util.Utils.gcd;
 import static euler.util.Utils.isqrt;
 import static java.lang.Math.min;
 
-public class Problem139 {
-    private final int limit;
+public final class Problem139 {
+    private Problem139() {}
 
-    public Problem139(int limit) {
-        this.limit = limit;
-    }
-
-    public int solve() {
+    public static int solve(int limit) {
         int count = 0;
         int max_m = isqrt(limit / 2);
         for (int m = 2; m <= max_m; m++) {
@@ -31,7 +27,6 @@ public class Problem139 {
     }
 
     public static void main(String[] args) {
-        Problem139 solver = new Problem139(100_000_000);
-        System.out.println(solver.solve());
+        System.out.println(solve(100_000_000));
     }
 }

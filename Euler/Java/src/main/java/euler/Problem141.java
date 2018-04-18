@@ -3,14 +3,10 @@ package euler;
 import static euler.util.Utils.gcd;
 import static euler.util.Utils.isSquare;
 
-public class Problem141 {
-    private final long limit;
+public final class Problem141 {
+    private Problem141() {}
 
-    public Problem141(long limit) {
-        this.limit = limit;
-    }
-
-    public long solve() {
+    public static long solve(long limit) {
         long sum = 0;
         for (long a = 2; a <= 10000; a++) {
             for (long b = 1; b < a; b++) {
@@ -29,7 +25,6 @@ public class Problem141 {
     }
 
     public static void main(String[] args) {
-        Problem141 solver = new Problem141(1_000_000_000_000L);
-        System.out.println(solver.solve());
+        System.out.println(solve(1_000_000_000_000L));
     }
 }

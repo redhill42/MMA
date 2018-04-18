@@ -3,18 +3,8 @@ package euler;
 import java.math.BigInteger;
 import java.util.Scanner;
 
-public class Problem8 {
-    private final BigInteger input;
-    private final int len;
-
-    public Problem8(BigInteger input, int len) {
-        this.input = input;
-        this.len = len;
-    }
-
-    public long solve() {
-        return solve(input, len);
-    }
+public final class Problem8 {
+    private Problem8() {}
 
     public static long solve(BigInteger input, int len) {
         char[] digits = input.toString().toCharArray();

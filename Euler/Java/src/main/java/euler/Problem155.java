@@ -6,8 +6,10 @@ import java.util.TreeSet;
 
 import static euler.util.Utils.gcd;
 
-public class Problem155 {
-    static class Fraction implements Comparable<Fraction> {
+public final class Problem155 {
+    private Problem155() {}
+
+    private static class Fraction implements Comparable<Fraction> {
         private final int num, den;
 
         Fraction(int num, int den) {
@@ -54,13 +56,7 @@ public class Problem155 {
         }
     }
 
-    private final int limit;
-
-    public Problem155(int limit) {
-        this.limit = limit;
-    }
-
-    public int solve() {
+    public static int solve(int limit) {
         @SuppressWarnings("unchecked")
         Set<Fraction>[] circuits = new Set[limit + 1];
         circuits[1] = Collections.singleton(new Fraction(1, 1));
@@ -86,6 +82,6 @@ public class Problem155 {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Problem155(18).solve());
+        System.out.println(solve(18));
     }
 }

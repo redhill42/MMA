@@ -7,16 +7,8 @@ import static java.lang.Math.ceil;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.min;
 
-public class Problem9 {
-    private final int s;
-
-    public Problem9(int s) {
-        this.s = s;
-    }
-
-    public int solve() {
-        return solve(s);
-    }
+public final class Problem9 {
+    private Problem9() {}
 
     public static int solve(int s) {
         if ((s & 1) == 1) {

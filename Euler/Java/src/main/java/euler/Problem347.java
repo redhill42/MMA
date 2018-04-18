@@ -2,14 +2,10 @@ package euler;
 
 import java.util.HashSet;
 
-public class Problem347 {
-    private final int limit;
+public final class Problem347 {
+    private Problem347() {}
 
-    public Problem347(int limit) {
-        this.limit = limit;
-    }
-
-    public long solve() {
+    public static long solve(int limit) {
         int[] sieve = new int[limit + 1];
         int[][] pairs = new int[limit + 1][2];
 
@@ -38,7 +34,6 @@ public class Problem347 {
     }
 
     public static void main(String[] args) {
-        Problem347 solver = new Problem347(10_000_000);
-        System.out.println(solver.solve());
+        System.out.println(solve(10_000_000));
     }
 }

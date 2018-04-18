@@ -1,6 +1,8 @@
 package euler;
 
-public class Problem166 {
+public final class Problem166 {
+    private Problem166() {}
+
     private static boolean complete(int n, int a1, int a2, int a3, int a4, int b1, int b2, int b3, int c1) {
         int b4 = a1 + a2 + a3 + a4 - b1 - b2 - b3;
         int c2 = a1 - a4 + b1 - b3 + c1;
@@ -33,10 +35,6 @@ public class Problem166 {
             if (complete(n, a1, a2, a3, a4, b1, b2, b3, c1))
                 count++;
         return count;
-    }
-
-    public int solve() {
-        return solve(9);
     }
 
     public static void main(String[] args) {

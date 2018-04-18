@@ -2,16 +2,8 @@ package euler;
 
 import java.util.Scanner;
 
-public class Problem2 {
-    private final long limit;
-
-    public Problem2(long limit) {
-        this.limit = limit;
-    }
-
-    public long solve() {
-        return solve(limit);
-    }
+public final class Problem2 {
+    private Problem2() {}
 
     public static long solve(long limit) {
         long a = 2, b = 8, s = 0, t;

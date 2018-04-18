@@ -3,16 +3,8 @@ package euler;
 import java.util.Scanner;
 import static euler.util.Utils.isqrt;
 
-public class Problem3 {
-    private final long n;
-
-    public Problem3(long n) {
-        this.n = n;
-    }
-
-    public long solve() {
-        return solve(n);
-    }
+public final class Problem3 {
+    private Problem3() {}
 
     public static long solve(long n) {
         long lastFactor = 0;

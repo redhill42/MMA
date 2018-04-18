@@ -2,8 +2,10 @@ package euler;
 
 import static euler.util.Utils.isSquare;
 
-public class Problem142 {
-    public int solve() {
+public final class Problem142 {
+    private Problem142() {}
+
+    public static int solve() {
         int a, b, c, d, e, f;
         for (int m = 2; ; m++) {
             a = m * m;
@@ -28,6 +30,6 @@ public class Problem142 {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Problem142().solve());
+        System.out.println(solve());
     }
 }

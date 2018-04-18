@@ -3,16 +3,8 @@ package euler;
 import java.util.Scanner;
 import euler.util.FactorizationSieve;
 
-public class Problem12 {
-    private final int limit;
-
-    public Problem12(int limit) {
-        this.limit = limit;
-    }
-
-    public int solve() {
-        return solve(limit);
-    }
+public final class Problem12 {
+    private Problem12() {}
 
     public static int solve(int limit) {
         FactorizationSieve sieve = new FactorizationSieve(50000);

@@ -4,12 +4,8 @@ import static euler.util.Utils.gcd;
 import static euler.util.Utils.isqrt;
 import static java.lang.Math.min;
 
-public class Problem153 {
-    private final int limit;
-
-    public Problem153(int limit) {
-        this.limit = limit;
-    }
+public final class Problem153 {
+    private Problem153() {}
 
     private static long T(long n) {
         return n * (n + 1) / 2;
@@ -28,7 +24,7 @@ public class Problem153 {
         return s;
     }
 
-    public long solve() {
+    public static long solve(int limit) {
         long s = sigma(limit);
         for (long a = 1; a * a <= limit; a++) {
             long m = min(a, isqrt(limit - a * a));
@@ -42,6 +38,6 @@ public class Problem153 {
     }
 
     public static void main(String[] args) {
-        System.out.println(new Problem153(100000000).solve());
+        System.out.println(solve(100000000));
     }
 }

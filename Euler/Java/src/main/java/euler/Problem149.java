@@ -5,7 +5,9 @@ import java.util.concurrent.ExecutionException;
 
 import static java.lang.Math.max;
 
-public class Problem149 {
+public final class Problem149 {
+    private Problem149() {}
+
     static class SampleGenerator {
         private final int[] sample;
         private int current = 1;
@@ -43,13 +45,7 @@ public class Problem149 {
         }
     }
 
-    private final int dim;
-
-    public Problem149(int dim) {
-        this.dim = dim;
-    }
-
-    public int solve() throws InterruptedException, ExecutionException {
+    public static int solve(int dim) throws InterruptedException, ExecutionException {
         AccumMax horizontal = new AccumMax();
         AccumMax[] vertical = new AccumMax[dim];
         AccumMax[] diagonal = new AccumMax[2 * dim - 1];
@@ -75,6 +71,6 @@ public class Problem149 {
     }
 
     public static void main(String[] args) throws Exception {
-        System.out.println(new Problem149(2000).solve());
+        System.out.println(solve(2000));
     }
 }

@@ -2,14 +2,10 @@ package euler;
 
 import java.util.stream.IntStream;
 
-public class Problem135 {
-    private final int limit;
+public final class Problem135 {
+    private Problem135() {}
 
-    public Problem135(int limit) {
-        this.limit = limit;
-    }
-
-    public long solve() {
+    public static long solve(int limit) {
         int[] solutions = new int[limit + 1];
         for (int x = 1; x <= limit; x++) {
             for (int y = 1; x * y <= limit; y++) {
@@ -22,7 +18,6 @@ public class Problem135 {
     }
 
     public static void main(String[] args) {
-        Problem135 solver = new Problem135(1000000);
-        System.out.println(solver.solve());
+        System.out.println(solve(1000000));
     }
 }

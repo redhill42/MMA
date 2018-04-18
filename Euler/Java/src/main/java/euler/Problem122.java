@@ -3,16 +3,12 @@ package euler;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
-public class Problem122 {
+public final class Problem122 {
     private static final int MAX_DEPTH = 100;
 
-    private final int limit;
+    private Problem122() {}
 
-    public Problem122(int limit) {
-        this.limit = limit;
-    }
-
-    public int[] solve() {
+    public static int[] solve(int limit) {
         final int[] results = new int[limit];
         final int[] powers = new int[MAX_DEPTH + 1];
         final int[] levels = new int[MAX_DEPTH + 1];
@@ -50,7 +46,6 @@ public class Problem122 {
     }
 
     public static void main(String[] args) {
-        int[] results = new Problem122(200).solve();
-        System.out.println(IntStream.of(results).sum());
+        System.out.println(IntStream.of(solve(200)).sum());
     }
 }

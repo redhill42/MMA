@@ -43,7 +43,8 @@ SetAttributes[Timed, HoldFirst];
 Timed[expr_] := timing @@ AbsoluteTiming[expr];
 
 JavaSolve[num_Integer, args___] := JavaBlock[
-  JavaNew["euler.Problem" <> ToString[num], args]@solve[]
+  LoadJavaClass["euler.Problem" <> ToString[num]];
+  Symbol["euler`Problem" <> ToString[num] <> "`solve"][args]
 ];
 
 Hungarian[costMatrix_List] := JavaBlock[
