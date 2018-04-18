@@ -117,6 +117,18 @@ public class FactorizationSieve extends PrimeSieve {
         return s;
     }
 
+    public int moebius(int n) {
+        if (n < 0)
+            n = -n;
+        if (n <= 1)
+            return n;
+
+        for (Factor f : factors(n))
+            if (f.a > 1)
+                return 0;
+        return factors(n).size() % 2 == 0 ? 1 : -1;
+    }
+
     public int[] divisors(int n) {
         if (n < 0)
             n = -n;

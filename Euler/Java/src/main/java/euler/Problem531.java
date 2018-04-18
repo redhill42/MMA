@@ -1,5 +1,7 @@
 package euler;
 
+import euler.util.TotientSieve;
+
 public final class Problem531 {
     private Problem531() {}
 
@@ -60,20 +62,11 @@ public final class Problem531 {
     }
 
     public static long solve(int start, int end) {
-        int[] phi = new int[end];
-        for (int i = 1; i < end; i++) {
-            phi[i] = (i % 2 == 0) ? i / 2 : i;
-        }
-        for (int p = 3; p < end; p += 2) {
-            if (phi[p] == p)
-                for (int m = p; m < end; m += p)
-                    phi[m] -= phi[m] / p;
-        }
-
+        TotientSieve sieve = new TotientSieve(end);
         long sum = 0;
         for (int n = start; n < end; n++) {
             for (int m = n + 1; m < end; m++) {
-                sum += chineseRemainder(phi[n], n, phi[m], m);
+                sum += chineseRemainder(sieve.phi(n), n, sieve.phi(m), m);
             }
         }
         return sum;
