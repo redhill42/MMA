@@ -3,7 +3,6 @@ package euler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.IntStream;
 
 import euler.util.PrimeSieve;
 import static euler.util.Utils.isqrt;

@@ -33,6 +33,85 @@ public final class Utils {
         return a * b / gcd(a, b);
     }
 
+    public static int exponent(int n, int k) {
+        int a = 0;
+        while (n % k == 0) {
+            a++;
+            n /= k;
+        }
+        return a;
+    }
+
+    public static int exponent(long n, long k) {
+        int a = 0;
+        while (n % k == 0) {
+            a++;
+            n /= k;
+        }
+        return a;
+    }
+
+    public static int pow(int x, int n) {
+        if (n == 0)
+            return 1;
+        if (n == 1)
+            return x;
+
+        int y = 1;
+        while (n != 0) {
+            if (n % 2 == 1)
+                y *= x;
+            n >>= 1;
+            x *= x;
+        }
+        return y;
+    }
+
+    public static long pow(long x, int n) {
+        if (n == 0)
+            return 1;
+        if (n == 1)
+            return x;
+
+        long y = 1;
+        while (n != 0) {
+            if (n % 2 == 1)
+                y *= x;
+            n >>= 1;
+            x *= x;
+        }
+        return y;
+    }
+
+    public static long modmul(long a, long b, long m) {
+        if (a == 0 || b == 0) {
+            return 0;
+        }
+
+        long r = (a %= m) * (b %= m);
+        if ((a | b) >>> 31 != 0 && r / b != a) {
+            r = 0;
+            while (b > 0) {
+                if ((b & 1) != 0)
+                    r = (r + a) % m;
+                a = (a << 1) % m;
+                b >>= 1;
+            }
+        }
+        return r % m;
+    }
+
+    public static long modpow(long a, long n, long m) {
+        long ret = 1;
+        while (n > 0) {
+            if ((n & 1) == 1)
+                ret = modmul(ret, a, m);
+            a = modmul(a, a, m);
+            n >>= 1;
+        }
+        return ret;
+    }
+
     public static int isqrt(int n) {
         return (int)Math.sqrt(n);
     }

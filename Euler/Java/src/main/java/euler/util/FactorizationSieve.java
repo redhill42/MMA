@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static euler.util.Utils.exponent;
+import static euler.util.Utils.pow;
+
 public class FactorizationSieve extends PrimeSieve {
     public static final class Factor implements Comparable<Factor> {
         private final int p, a;
@@ -59,31 +62,6 @@ public class FactorizationSieve extends PrimeSieve {
                 factorizations[n].add(new Factor(p, exponent(n, p)));
             }
         }
-    }
-
-    private static int exponent(int n, int k) {
-        int a = 0;
-        while (n % k == 0) {
-            a++;
-            n /= k;
-        }
-        return a;
-    }
-
-    private static int pow(int x, int n) {
-        if (n == 0)
-            return 1;
-        if (n == 1)
-            return x;
-
-        int y = 1;
-        while (n != 0) {
-            if (n % 2 == 1)
-                y *= x;
-            n >>= 1;
-            x *= x;
-        }
-        return y;
     }
 
     public Set<Factor> factors(int n) {

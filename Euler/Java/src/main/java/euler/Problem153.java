@@ -1,5 +1,8 @@
 package euler;
 
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.RecursiveTask;
+
 import static euler.util.Utils.gcd;
 import static euler.util.Utils.isqrt;
 import static java.lang.Math.min;
@@ -24,17 +27,51 @@ public final class Problem153 {
         return s;
     }
 
-    public static long solve(int limit) {
-        long s = sigma(limit);
-        for (long a = 1; a * a <= limit; a++) {
-            long m = min(a, isqrt(limit - a * a));
-            for (long b = 1; b <= m; b++) {
-                if (gcd(a, b) == 1) {
-                    s += 2 * (a == b ? a : a + b) * sigma(limit / (a * a + b * b));
+    @SuppressWarnings("serial")
+    private static class SolveTask extends RecursiveTask<Long> {
+        private final long from, to, limit;
+
+        SolveTask(long limit) {
+            this.from = 1;
+            this.to = isqrt(limit);
+            this.limit = limit;
+        }
+
+        SolveTask(long from, long to, long limit) {
+            this.from = from;
+            this.to = to;
+            this.limit = limit;
+        }
+
+        @Override
+        public Long compute() {
+            if (to - from <= 1000) {
+                long sum = 0;
+                for (long a = from; a <= to; a++) {
+                    long m = min(a, isqrt(limit - a * a));
+                    for (long b = 1; b <= m; b++) {
+                        if (gcd(a, b) == 1) {
+                            sum += 2 * (a == b ? a : a + b) * sigma(limit / (a * a + b * b));
+                        }
+                    }
                 }
+                return sum;
+            } else {
+                long middle = (from + to) / 2;
+                SolveTask left = new SolveTask(from, middle, limit);
+                SolveTask right = new SolveTask(middle + 1, to, limit);
+                left.fork();
+                right.fork();
+                return left.join() + right.join();
             }
         }
-        return s;
+    }
+
+    public static long solve(int limit) {
+        ForkJoinPool pool = new ForkJoinPool();
+        long result = sigma(limit) + pool.invoke(new SolveTask(limit));
+        pool.shutdown();
+        return result;
     }
 
     public static void main(String[] args) {
