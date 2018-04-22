@@ -112,6 +112,21 @@ public final class Utils {
         return ret;
     }
 
+    public static long modinv(long x, long m) {
+        long y = x, a = 0, b = 1;
+        x = m;
+        while (y != 0) {
+            long z = x % y;
+            long c = a - x / y * b;
+            x = y; y = z; a = b; b = c;
+        }
+        if (x == 1) {
+            return a >= 0 ? a : a + m;
+        } else {
+            throw new IllegalArgumentException("Inverse modulo does not exist");
+        }
+    }
+
     public static int isqrt(int n) {
         return (int)Math.sqrt(n);
     }

@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import static euler.util.Utils.exponent;
+import static euler.util.Utils.isqrt;
 import static euler.util.Utils.pow;
 
 public class FactorizationSieve extends PrimeSieve {
@@ -22,6 +23,10 @@ public class FactorizationSieve extends PrimeSieve {
 
         public int power() {
             return a;
+        }
+
+        public int value() {
+            return pow(p, a);
         }
 
         @Override
@@ -46,26 +51,58 @@ public class FactorizationSieve extends PrimeSieve {
         }
     }
 
-    private final Set<Factor>[] factorizations;
+    private final int[] primes;
+    private final byte[] powers;
 
-    @SuppressWarnings("unchecked")
     public FactorizationSieve(int limit) {
         super(limit);
 
-        factorizations = new Set[limit + 1];
-        Arrays.setAll(factorizations, i -> new TreeSet<Factor>());
-        factorizations[1].add(new Factor(1, 1));
+        primes = new int[limit + 1];
+        powers = new byte[limit + 1];
+        primes[1] = 1;
+        powers[1] = 1;
 
+        int plimit = isqrt(limit);
         for (int p = 2; p > 0; p = nextPrime(p)) {
-            factorizations[p].add(new Factor(p, 1));
-            for (int n = p + p; n <= limit; n += p) {
-                factorizations[n].add(new Factor(p, exponent(n, p)));
+            primes[p] = p;
+            powers[p] = 1;
+            if (p <= plimit) {
+                for (int n = p * p; n <= limit; n += p) {
+                    if (primes[n] == 0) {
+                        primes[n] = p;
+                        powers[n] = (byte)exponent(n, p);
+                    }
+                }
             }
         }
     }
 
+    private int smallestFactor(int n) {
+        return pow(primes[n], powers[n]);
+    }
+
     public Set<Factor> factors(int n) {
-        return factorizations[n];
+        Set<Factor> result = new TreeSet<>();
+        while (n != 1) {
+            result.add(new Factor(primes[n], powers[n]));
+            n /= smallestFactor(n);
+        }
+        return result;
+    }
+
+    public int phi(int n) {
+        if (n < 0)
+            n = -n;
+        if (n <= 1)
+            return n;
+
+        int r = n;
+        while (n != 1) {
+            int p = primes[n];
+            r = r / p * (p - 1);
+            n /= smallestFactor(n);
+        }
+        return r;
     }
 
     public int sigma(int n) {
@@ -75,8 +112,10 @@ public class FactorizationSieve extends PrimeSieve {
             return n;
 
         int s = 1;
-        for (Factor f : factors(n))
-            s *= f.a + 1;
+        while (n != 1) {
+            s *= powers[n] + 1;
+            n /= smallestFactor(n);
+        }
         return s;
     }
 
@@ -90,8 +129,11 @@ public class FactorizationSieve extends PrimeSieve {
             return n;
 
         int s = 1;
-        for (Factor f : factors(n))
-            s *= (pow(f.p, k * (f.a + 1)) - 1) / (pow(f.p, k) - 1);
+        while (n != 1) {
+            int p = primes[n], a = powers[n];
+            s *= (pow(p, k * (a + 1)) - 1) / (pow(p, k) - 1);
+            n /= smallestFactor(n);
+        }
         return s;
     }
 
@@ -101,10 +143,14 @@ public class FactorizationSieve extends PrimeSieve {
         if (n <= 1)
             return n;
 
-        for (Factor f : factors(n))
-            if (f.a > 1)
+        int len = 0;
+        while (n != 1) {
+            if (powers[n] > 1)
                 return 0;
-        return factors(n).size() % 2 == 0 ? 1 : -1;
+            n /= smallestFactor(n);
+            len++;
+        }
+        return len % 2 == 0 ? 1 : -1;
     }
 
     public int[] divisors(int n) {
@@ -119,14 +165,15 @@ public class FactorizationSieve extends PrimeSieve {
         if (n <= 1)
             return d;
 
-        for (Factor f : factors(n)) {
-            int k = i, p = f.p, a = f.a;
+        while (n != 1) {
+            int k = i, p = primes[n], a = powers[n];
             while (--a >= 0) {
                 for (int j = 0; j < i; j++)
                     d[k++] = d[j] * p;
-                p *= f.p;
+                p *= primes[n];
             }
             i = k;
+            n /= smallestFactor(n);
         }
 
         Arrays.sort(d);
