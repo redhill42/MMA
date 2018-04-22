@@ -8,7 +8,7 @@ import static euler.util.Utils.exponent;
 import static euler.util.Utils.isqrt;
 import static euler.util.Utils.pow;
 
-public class FactorizationSieve extends PrimeSieve {
+public class FactorizationSieve {
     public static final class Factor implements Comparable<Factor> {
         private final int p, a;
 
@@ -53,20 +53,20 @@ public class FactorizationSieve extends PrimeSieve {
 
     private final int[] primes;
     private final byte[] powers;
+    private final int nprimes;
 
     public FactorizationSieve(int limit) {
-        super(limit);
-
-        primes = new int[limit + 1];
-        powers = new byte[limit + 1];
-        primes[1] = 1;
-        powers[1] = 1;
-
+        int[] primes = new int[limit + 1];
+        byte[] powers = new byte[limit + 1];
+        int nprimes = 0;
         int plimit = isqrt(limit);
-        for (int p = 2; p > 0; p = nextPrime(p)) {
-            primes[p] = p;
-            powers[p] = 1;
-            if (p <= plimit) {
+        int p;
+
+        for (p = 2; p <= plimit; p++) {
+            if (primes[p] == 0) {
+                primes[p] = p;
+                powers[p] = 1;
+                nprimes++;
                 for (int n = p * p; n <= limit; n += p) {
                     if (primes[n] == 0) {
                         primes[n] = p;
@@ -75,6 +75,62 @@ public class FactorizationSieve extends PrimeSieve {
                 }
             }
         }
+        for (; p <= limit; p++) {
+            if (primes[p] == 0) {
+                primes[p] = p;
+                powers[p] = 1;
+                nprimes++;
+            }
+        }
+
+        this.primes = primes;
+        this.powers = powers;
+        this.nprimes = nprimes;
+    }
+
+    public boolean isPrime(int n) {
+        return primes[n] == n;
+    }
+
+    public int nextPrime(int n) {
+        if (n < 2)
+            return 2;
+        if (++n % 2 == 0)
+            ++n;
+        for (; n < primes.length; n += 2)
+            if (primes[n] == n)
+                return n;
+        return -1;
+    }
+
+    public int previousPrime(int n) {
+        if (n < 0)
+            n = primes.length;
+        if (n == 3)
+            return 2;
+        if (n <= 2)
+            return -1;
+        if (--n % 2 == 0)
+            --n;
+        for (; n >= 3; n -= 2)
+            if (primes[n] == n)
+                return n;
+        return -1;
+    }
+
+    public int cardinality() {
+        return nprimes;
+    }
+
+    public int[] getPrimes() {
+        int[] result = new int[nprimes];
+        int i = 0;
+
+        result[i++] = 2;
+        for (int n = 3; n < primes.length; n += 2)
+            if (primes[n] == n)
+                result[i++] = n;
+        return result;
     }
 
     private int smallestFactor(int n) {

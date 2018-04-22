@@ -141,7 +141,7 @@ public final class Utils {
         return r * r == n;
     }
 
-    public static boolean isPrime(long n) {
+    public static boolean isPrime(int n) {
         if (n <= 1)
             return false;
         if (n < 4)  // 2 and 3 are prime
@@ -153,31 +153,66 @@ public final class Utils {
         if (n % 3 == 0)
             return false;
 
-        long r = isqrt(n), f = 5;
-        while (f <= r) {
-            if (n % f == 0)
+        for (int f = 5, w = isqrt(n); f <= w; f += 6)
+            if (n % f == 0 || n % (f + 2) == 0)
                 return false;
-            if (n % (f + 2) == 0)
+        return true;
+    }
+
+   public static boolean isPrime(long n) {
+        if (n <= 1)
+            return false;
+        if (n < 4)  // 2 and 3 are prime
+            return true;
+        if (n % 2 == 0)
+            return false;
+        if (n < 9)  // we have already excluded 4, 6, and 8
+            return true;
+        if (n % 3 == 0)
+            return false;
+
+        for (long f = 5, w = isqrt(n); f <= w; f += 6)
+            if (n % f == 0 || n % (f + 2) == 0)
                 return false;
-            f += 6;
-        }
         return true;
     }
 
     public static int reverse(int n) {
+        return reverse(n, 10);
+    }
+
+    public static int reverse(int n, int b) {
         int r = 0;
-        while (n > 0) {
-            r = 10 * r + n % 10;
-            n /= 10;
+        if (b == 2) {
+            while (n != 0) {
+                r = (r << 1) | (n & 1);
+                n >>= 1;
+            }
+        } else {
+            while (n != 0) {
+                r = b * r + n % b;
+                n /= b;
+            }
         }
         return r;
     }
 
     public static long reverse(long n) {
+        return reverse(n, 10);
+    }
+
+    public static long reverse(long n, int b) {
         long r = 0;
-        while (n > 0) {
-            r = 10 * r + n % 10;
-            n /= 10;
+        if (b == 2) {
+            while (n != 0) {
+                r = (r << 1) | (n & 1);
+                n >>= 1;
+            }
+        } else {
+            while (n != 0) {
+                r = b * r + n % b;
+                n /= b;
+            }
         }
         return r;
     }
