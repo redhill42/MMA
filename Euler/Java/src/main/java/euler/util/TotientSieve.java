@@ -9,14 +9,18 @@ public class TotientSieve extends PrimeSieve {
         this.phi = new int[limit + 1];
         phi[1] = phi[2] = 1;
 
-        for (int n = 3; n <= limit; n += 2) {
+        int n;
+        for (n = 3; n < limit; n += 2) {
             phi[n] = n;
             phi[n+1] = (n+1)/2;
+        }
+        if (n == limit) {
+            phi[n] = n;
         }
 
         for (int p = 3; p > 0; p = nextPrime(p)) {
             phi[p] = p - 1;
-            for (int n = p + p; n <= limit; n += p) {
+            for (n = p + p; n <= limit; n += p) {
                 phi[n] = phi[n] / p * (p - 1);
             }
         }
