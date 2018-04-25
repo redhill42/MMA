@@ -6,6 +6,8 @@ ImportResource::usage = "Import an external resource";
 Timed::usage = "Display solve result and used time";
 JavaSolve::usage = "Solve a problem with Java program";
 
+TotientSum::usage = "Returns the totient summation";
+
 Hungarian::usage = "The Hungarian algorithm for solving the assignment problem";
 Pell::usage = "Find the funtamental solution of a Pell equation";
 PellSeries::usage = "Generate a series of Pell equation solution";
@@ -45,6 +47,11 @@ Timed[expr_] := timing @@ AbsoluteTiming[expr];
 JavaSolve[num_Integer, args___] := JavaBlock[
   LoadJavaClass["euler.Problem" <> ToString[num]];
   Symbol["euler`Problem" <> ToString[num] <> "`solve"][args]
+];
+
+TotientSum[n_] := JavaBlock[
+  LoadJavaClass["euler.util.Utils"];
+  euler`util`Utils`totientSum[n]
 ];
 
 Hungarian[costMatrix_List] := JavaBlock[

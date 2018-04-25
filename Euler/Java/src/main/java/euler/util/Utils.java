@@ -1,5 +1,6 @@
 package euler.util;
 
+@SuppressWarnings("unused")
 public final class Utils {
     private Utils() {}
 
@@ -31,6 +32,106 @@ public final class Utils {
 
     public static long lcm(long a, long b) {
         return a * b / gcd(a, b);
+    }
+
+    public static int exgcd(int a, int b, int[] p) {
+        if (a < 0) a = -a;
+        if (b < 0) b = -b;
+
+        int s0 = 1, s1 = 0;
+        int t0 = 0, t1 = 1;
+        int q;
+
+        while (true) {
+            q = a / b;
+            a %= b;
+            s0 -= q * s1;
+            t0 -= q * t1;
+            if (a == 0) {
+                p[0] = s1;
+                p[1] = t1;
+                return b;
+            }
+
+            q = b / a;
+            b %= a;
+            s1 -= q * s0;
+            t1 -= q * t0;
+            if (b == 0) {
+                p[0] = s0;
+                p[1] = t0;
+                return a;
+            }
+        }
+    }
+
+    public static long exgcd(long a, long b, long[] p) {
+        if (a < 0) a = -a;
+        if (b < 0) b = -b;
+
+        long s0 = 1, s1 = 0;
+        long t0 = 0, t1 = 1;
+        long q;
+
+        while (true) {
+            q = a / b;
+            a %= b;
+            s0 -= q * s1;
+            t0 -= q * t1;
+            if (a == 0) {
+                p[0] = s1;
+                p[1] = t1;
+                return b;
+            }
+
+            q = b / a;
+            b %= a;
+            s1 -= q * s0;
+            t1 -= q * t0;
+            if (b == 0) {
+                p[0] = s0;
+                p[1] = t0;
+                return a;
+            }
+        }
+    }
+
+    private static boolean merge(long a, long b, long m, long[] p) {
+        if (m < 0)
+            m = -m;
+        if ((a %= m) < 0)
+            a += m;
+        if ((b %= m)  < 0)
+            b += m;
+
+        long d = exgcd(a, m, p);
+        if (b % d != 0)
+            return false;
+
+        long x = (p[0] % m + m) % m;
+        x = x * (b / d) % m;
+
+        p[0] = m / d;
+        p[1] = x % p[0];
+        return true;
+    }
+
+    public static long chineseRemainder(long a, long n, long b, long m) {
+        if (n < 0)
+            n = -n;
+        if (m < 0)
+            m = -m;
+        if ((a %= n) < 0)
+            a = -a;
+        if ((b %= m) < 0)
+            b = -b;
+
+        long[] p = new long[2];
+        if (!merge(n, b - a, m, p))
+            return 0;
+
+        long t = p[0] * n;
+        return ((a + p[1] * n) % t + t) % t;
     }
 
     public static int exponent(int n, int k) {
@@ -159,7 +260,7 @@ public final class Utils {
         return true;
     }
 
-   public static boolean isPrime(long n) {
+    public static boolean isPrime(long n) {
         if (n <= 1)
             return false;
         if (n < 4)  // 2 and 3 are prime
@@ -175,6 +276,113 @@ public final class Utils {
             if (n % f == 0 || n % (f + 2) == 0)
                 return false;
         return true;
+    }
+
+    private static double log2(double x) {
+        return Math.log(x) / Math.log(2);
+    }
+
+    private static final int[] totientSumCache = {
+        0, 1, 2, 4, 6, 10, 12, 18, 22, 28, 32
+    };
+
+    public static long totientSum(int n) {
+        if (n < 0)
+            return 0;
+        if (n < totientSumCache.length)
+            return totientSumCache[n];
+
+        int L = (int)(Math.pow(n / log2(log2(n)), 2./3));
+        long[] sieve = new long[L + 1];
+        long[] bigV  = new long[n / L + 1];
+
+        for (int i = 0; i < sieve.length; i++) {
+            sieve[i] = i;
+        }
+
+        for (int p = 2; p <= L; p++) {
+            if (p == sieve[p])
+                for (int k = p; k <= L; k += p)
+                    sieve[k] -= sieve[k] / p;
+            sieve[p] += sieve[p - 1];
+        }
+
+        for (int x = n / L; x >= 1; x--) {
+            int k = n / x, klimit = isqrt(k);
+            long res = (long)k * (k + 1) / 2;
+
+            for (int g = 2; g <= klimit; g++) {
+                if (k / g <= L) {
+                    res -= sieve[k / g];
+                } else {
+                    res -= bigV[x * g];
+                }
+            }
+
+            for (int z = 1; z <= klimit; z++) {
+                if (z != k / z)
+                    res -= (k / z - k / (z + 1)) * sieve[z];
+            }
+
+            bigV[x] = res;
+        }
+
+        return bigV[1];
+    }
+
+    public static long totientSum(long n, long m) {
+        if (n < 0)
+            return 0;
+        if (n < totientSumCache.length)
+            return totientSumCache[(int)n] % m;
+
+        int L = (int)(Math.pow(n / log2(log2(n)), 2./3));
+        long[] sieve = new long[L + 1];
+        long[] bigV  = new long[(int)(n / L + 1)];
+
+        for (int i = 0; i < sieve.length; i++) {
+            sieve[i] = i;
+        }
+
+        for (int p = 2; p <= L; p++) {
+            if (p == sieve[p])
+                for (int k = p; k <= L; k += p)
+                    sieve[k] -= sieve[k] / p;
+            sieve[p] = (sieve[p] + sieve[p - 1]) % m;
+        }
+
+        for (int x = (int)(n / L); x >= 1; x--) {
+            long k = n / x;
+            int  klimit = (int)isqrt(k);
+            long res;
+
+            if ((k & 1) == 0) {
+                res = modmul(k + 1, k / 2, m);
+            } else {
+                res = modmul(k, (k + 1) / 2, m);
+            }
+
+            for (int g = 2; g <= klimit; g++) {
+                if (k / g <= L) {
+                    res -= sieve[(int)(k / g)];
+                } else {
+                    res -= bigV[x * g];
+                }
+            }
+
+            for (int z = 1; z <= klimit; z++) {
+                if (z != k / z) {
+                    res -= (k / z - k / (z + 1)) * sieve[z] % m;
+                }
+            }
+
+            res %= m;
+            if (res < 0)
+                res += m;
+            bigV[x] = res;
+        }
+
+        return bigV[1];
     }
 
     public static int reverse(int n) {
