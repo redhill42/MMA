@@ -8,6 +8,7 @@ import static euler.util.Utils.exponent;
 import static euler.util.Utils.isqrt;
 import static euler.util.Utils.pow;
 
+@SuppressWarnings("unused")
 public class FactorizationSieve {
     public static final class Factor implements Comparable<Factor> {
         private final int p, a;
@@ -191,6 +192,20 @@ public class FactorizationSieve {
             n /= smallestFactor(n);
         }
         return s;
+    }
+
+    public int rad(int n) {
+        if (n < 0)
+            n = -n;
+        if (n <= 1)
+            return n;
+
+        int r = 1;
+        while (n != 1) {
+            r *= primes[n];
+            n /= smallestFactor(n);
+        }
+        return r;
     }
 
     public int moebius(int n) {
