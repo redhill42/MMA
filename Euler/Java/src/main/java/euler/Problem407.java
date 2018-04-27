@@ -2,9 +2,8 @@ package euler;
 
 import java.util.BitSet;
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.RecursiveTask;
-
 import euler.util.FactorizationSieve;
+import euler.util.RangedTask;
 import static euler.util.Utils.modinv;
 
 public final class Problem407 {
@@ -82,26 +81,24 @@ public final class Problem407 {
         }
 
         @SuppressWarnings("serial")
-        class SolveTask extends RecursiveTask<Long> {
-            private final int from, to;
-
+        class SolveTask extends RangedTask<Long> {
             SolveTask(int from, int to) {
-                this.from = from;
-                this.to = to;
+                super(from, to);
             }
 
             @Override
-            public Long compute() {
-                if (to - from <= 10000) {
-                    return Solver.this.compute(from, to);
-                } else {
-                    int M = (from + to) / 2;
-                    SolveTask L = new SolveTask(from, M);
-                    SolveTask R = new SolveTask(M+1, to);
-                    L.fork();
-                    R.fork();
-                    return L.join() + R.join();
-                }
+            protected Long compute(int from, int to) {
+                return Solver.this.compute(from, to);
+            }
+
+            @Override
+            protected Long combine(Long v1, Long v2) {
+                return v1 + v2;
+            }
+
+            @Override
+            protected SolveTask fork(int from, int to) {
+                return new SolveTask(from, to);
             }
         }
 

@@ -1,7 +1,7 @@
 package euler;
 
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.RecursiveTask;
+import euler.util.RangedTask;
 
 import static euler.util.Utils.gcd;
 import static euler.util.Utils.isSquare;
@@ -10,36 +10,20 @@ public final class Problem141 {
     private Problem141() {}
 
     @SuppressWarnings("serial")
-    private static class SolveTask extends RecursiveTask<Long> {
-        private final long from, to, limit;
+    private static class SolveTask extends RangedTask<Long> {
+        private final long limit;
 
         SolveTask(long limit) {
-            this.from = 2;
-            this.to = (long)Math.pow(limit, 1.0/3);
-            this.limit = limit;
+            this(2, (int)Math.pow(limit, 1.0/3), limit);
         }
 
-        SolveTask(long from, long to, long limit) {
-            this.from = from;
-            this.to = to;
+        SolveTask(int from, int to, long limit) {
+            super(from, to);
             this.limit = limit;
         }
 
         @Override
-        public Long compute() {
-            if (to - from <= 100) {
-                return compute(from, to, limit);
-            } else {
-                long middle = (from + to) / 2;
-                SolveTask left = new SolveTask(from, middle, limit);
-                SolveTask right = new SolveTask(middle + 1, to, limit);
-                left.fork();
-                right.fork();
-                return left.join() + right.join();
-            }
-        }
-
-        static long compute(long from, long to, long limit) {
+        protected Long compute(int from, int to) {
             long sum = 0;
             for (long a = from; a <= to; a++) {
                 for (long b = 1; b < a; b++) {
@@ -55,6 +39,16 @@ public final class Problem141 {
                 }
             }
             return sum;
+        }
+
+        @Override
+        protected Long combine(Long v1, Long v2) {
+            return v1 + v2;
+        }
+
+        @Override
+        protected SolveTask fork(int from, int to) {
+            return new SolveTask(from, to, limit);
         }
     }
 

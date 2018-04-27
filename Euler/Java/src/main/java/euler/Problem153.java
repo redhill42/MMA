@@ -1,7 +1,7 @@
 package euler;
 
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.RecursiveTask;
+import euler.util.RangedTask;
 
 import static euler.util.Utils.gcd;
 import static euler.util.Utils.isqrt;
@@ -28,42 +28,40 @@ public final class Problem153 {
     }
 
     @SuppressWarnings("serial")
-    private static class SolveTask extends RecursiveTask<Long> {
-        private final long from, to, limit;
+    private static class SolveTask extends RangedTask<Long> {
+        private final long limit;
 
         SolveTask(long limit) {
-            this.from = 1;
-            this.to = isqrt(limit);
-            this.limit = limit;
+            this(1, (int)isqrt(limit), limit);
         }
 
-        SolveTask(long from, long to, long limit) {
-            this.from = from;
-            this.to = to;
+        SolveTask(int from, int to, long limit) {
+            super(from, to, 1000);
             this.limit = limit;
         }
 
         @Override
-        public Long compute() {
-            if (to - from <= 1000) {
-                long sum = 0;
-                for (long a = from; a <= to; a++) {
-                    long m = min(a, isqrt(limit - a * a));
-                    for (long b = 1; b <= m; b++) {
-                        if (gcd(a, b) == 1) {
-                            sum += 2 * (a == b ? a : a + b) * sigma(limit / (a * a + b * b));
-                        }
+        public Long compute(int from, int to) {
+            long sum = 0;
+            for (long a = from; a <= to; a++) {
+                long m = min(a, isqrt(limit - a * a));
+                for (long b = 1; b <= m; b++) {
+                    if (gcd(a, b) == 1) {
+                        sum += 2 * (a == b ? a : a + b) * sigma(limit / (a * a + b * b));
                     }
                 }
-                return sum;
-            } else {
-                long middle = (from + to) / 2;
-                SolveTask left = new SolveTask(from, middle, limit);
-                SolveTask right = new SolveTask(middle + 1, to, limit);
-                left.fork();
-                right.fork();
-                return left.join() + right.join();
             }
+            return sum;
+        }
+
+        @Override
+        protected Long combine(Long v1, Long v2) {
+            return v1 + v2;
+        }
+
+        @Override
+        protected SolveTask fork(int from, int to) {
+            return new SolveTask(from, to, limit);
         }
     }
 

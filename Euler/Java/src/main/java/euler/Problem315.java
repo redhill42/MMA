@@ -1,9 +1,8 @@
 package euler;
 
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.RecursiveTask;
-
 import euler.util.PrimeSieve;
+import euler.util.RangedTask;
 
 public final class Problem315 {
     private Problem315() {}
@@ -97,29 +96,27 @@ public final class Problem315 {
         }
 
         @SuppressWarnings("serial")
-        class SolveTask extends RecursiveTask<Long> {
-            private final int from, to;
-
+        class SolveTask extends RangedTask<Long> {
             SolveTask(int from, int to) {
-                this.from = from;
-                this.to = to;
+                super(from, to, 1000);
             }
 
             @Override
-            public Long compute() {
-                if (to - from <= 1000) {
-                    long ret = 0;
-                    for (int p = sieve.nextPrime(from-1); p > 0 && p <= to; p = sieve.nextPrime(p))
-                        ret += samClock(p) - maxClock(p);
-                    return ret;
-                } else {
-                    int M = (from + to) / 2;
-                    SolveTask L = new SolveTask(from, M);
-                    SolveTask R = new SolveTask(M+1, to);
-                    L.fork();
-                    R.fork();
-                    return L.join() + R.join();
-                }
+            protected Long compute(int from, int to) {
+                long ret = 0;
+                for (int p = sieve.nextPrime(from-1); p > 0 && p <= to; p = sieve.nextPrime(p))
+                    ret += samClock(p) - maxClock(p);
+                return ret;
+            }
+
+            @Override
+            protected Long combine(Long v1, Long v2) {
+                return v1 + v2;
+            }
+
+            @Override
+            protected SolveTask fork(int from, int to) {
+                return new SolveTask(from, to);
             }
         }
 

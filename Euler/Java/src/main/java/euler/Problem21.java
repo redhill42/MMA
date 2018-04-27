@@ -17,7 +17,7 @@ public final class Problem21 {
         public Solver(int limit) {
             FactorizationSieve sieve = new FactorizationSieve(limit);
             for (int a = 2; a <= limit; a++) {
-                int b = sieve.sigma(1, a) - a;
+                int b = (int)sieve.sigma(1, a) - a;
                 if (b > a && b <= limit && sieve.sigma(1, b) - b == a) {
                     amicables.add(a);
                     amicables.add(b);

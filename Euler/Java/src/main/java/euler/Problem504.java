@@ -1,7 +1,7 @@
 package euler;
 
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.RecursiveTask;
+import euler.util.RangedTask;
 
 import static euler.util.Utils.gcd;
 import static euler.util.Utils.isSquare;
@@ -33,26 +33,24 @@ public final class Problem504 {
         }
 
         @SuppressWarnings("serial")
-        class SolveTask extends RecursiveTask<Integer> {
-            private final int from, to;
-
+        class SolveTask extends RangedTask<Integer> {
             SolveTask(int from, int to) {
-                this.from = from;
-                this.to = to;
+                super(from, to, 10);
             }
 
             @Override
-            public Integer compute() {
-                if (to - from <= 10) {
-                    return Solver.this.compute(from, to);
-                } else {
-                    int M = (from + to) / 2;
-                    SolveTask L = new SolveTask(from, M);
-                    SolveTask R = new SolveTask(M+1, to);
-                    L.fork();
-                    R.fork();
-                    return L.join() + R.join();
-                }
+            protected Integer compute(int from, int to) {
+                return Solver.this.compute(from, to);
+            }
+
+            @Override
+            protected Integer combine(Integer v1, Integer v2) {
+                return v1 + v2;
+            }
+
+            @Override
+            protected SolveTask fork(int from, int to) {
+                return new SolveTask(from, to);
             }
         }
 

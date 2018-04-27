@@ -176,7 +176,7 @@ public class FactorizationSieve {
         return s;
     }
 
-    public int sigma(int k, int n) {
+    public long sigma(int k, int n) {
         if (k == 0)
             return sigma(n);
 
@@ -185,13 +185,17 @@ public class FactorizationSieve {
         if (n <= 1)
             return n;
 
-        int s = 1;
+        long r = 1;
         while (n != 1) {
-            int p = primes[n], a = powers[n];
-            s *= (pow(p, k * (a + 1)) - 1) / (pow(p, k) - 1);
+            long p = primes[n];
+            int  a = powers[n];
+            long s = 1;
+            for (int i = 1; i <= a; i++)
+                s += pow(p, i * k);
+            r *= s;
             n /= smallestFactor(n);
         }
-        return s;
+        return r;
     }
 
     public int rad(int n) {

@@ -1,30 +1,29 @@
 package euler;
 
-import java.util.Scanner;
 import java.util.concurrent.ForkJoinPool;
-import euler.util.PrimeSieve;
+import euler.util.FactorizationSieve;
 import euler.util.RangedTask;
 
-public final class Problem381 {
-    private Problem381() {}
+import static euler.util.Utils.isSquare;
+
+public final class Problem211 {
+    private Problem211() {}
 
     @SuppressWarnings("serial")
     private static class SolveTask extends RangedTask<Long> {
-        private final PrimeSieve sieve;
+        private final FactorizationSieve sieve;
 
-        SolveTask(PrimeSieve sieve, int from, int to) {
-            super(from, to, 1000);
+        SolveTask(FactorizationSieve sieve, int from, int to) {
+            super(from, to, 10000);
             this.sieve = sieve;
         }
 
         @Override
         public Long compute(int from, int to) {
             long sum = 0;
-            int p = sieve.nextPrime(from - 1);
-            while (p > 0 && p <= to) {
-                sum += ((3 * p % 8) * p - 3) / 8;
-                p = sieve.nextPrime(p);
-            }
+            for (int n = from; n <= to; n++)
+                if (isSquare(sieve.sigma(2, n)))
+                    sum += n;
             return sum;
         }
 
@@ -39,17 +38,15 @@ public final class Problem381 {
         }
     }
 
-    public static long solve(int limit) {
-        PrimeSieve sieve = new PrimeSieve(limit);
+    public static long solve(int from, int to) {
         ForkJoinPool pool = new ForkJoinPool();
-        long result = pool.invoke(new SolveTask(sieve, 5, limit-1));
+        FactorizationSieve sieve = new FactorizationSieve(to);
+        long result = pool.invoke(new SolveTask(sieve, from, to-1));
         pool.shutdown();
         return result;
     }
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        int n = in.nextInt();
-        System.out.println(solve(n));
+        System.out.println(solve(1, 64_000_000));
     }
 }
