@@ -193,24 +193,40 @@ public final class Utils {
         if ((a | b) >>> 31 != 0 && r / b != a) {
             r = 0;
             while (b > 0) {
-                if ((b & 1) != 0)
-                    r = (r + a) % m;
-                a = (a << 1) % m;
+                if ((b & 1) != 0 && (r += a) >= m)
+                    r -= m;
+                if ((a <<= 1) >= m)
+                    a -= m;
                 b >>= 1;
             }
         }
         return r % m;
     }
 
+    public static int modmul(int a, int b, int m) {
+        return (int)((long)a * b % m);
+    }
+
     public static long modpow(long a, long n, long m) {
-        long ret = 1;
+        long x = a, y = 1;
         while (n > 0) {
             if ((n & 1) == 1)
-                ret = modmul(ret, a, m);
-            a = modmul(a, a, m);
+                y = modmul(y, x, m);
+            x = modmul(x, x, m);
             n >>= 1;
         }
-        return ret;
+        return y;
+    }
+
+    public static int modpow(int a, int n, int m) {
+        long x = a, y = 1;
+        while (n > 0) {
+            if ((n & 1) == 1)
+                y = y * x % m;
+            x = x * x % m;
+            n >>= 1;
+        }
+        return (int)y;
     }
 
     public static long modinv(long x, long m) {
