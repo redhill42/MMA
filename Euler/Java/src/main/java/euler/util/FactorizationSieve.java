@@ -198,6 +198,39 @@ public class FactorizationSieve {
         return r;
     }
 
+    public int unitarySigma(int n) {
+        if (n < 0)
+            n = -n;
+        if (n <= 1)
+            return n;
+
+        int r = 1;
+        while (n != 1) {
+            r <<= 1;
+            n /= smallestFactor(n);
+        }
+        return r;
+    }
+
+    public long unitarySigma(int k, int n) {
+        if (k == 0)
+            return unitarySigma(n);
+
+        if (n < 0)
+            return -n;
+        if (n <= 1)
+            return n;
+
+        long r = 1;
+        while (n != 1) {
+            long p = primes[n];
+            int  a = powers[n];
+            r *= 1 + pow(p, k * a);
+            n /= smallestFactor(n);
+        }
+        return r;
+    }
+
     public int rad(int n) {
         if (n < 0)
             n = -n;
@@ -249,6 +282,30 @@ public class FactorizationSieve {
             }
             i = k;
             n /= smallestFactor(n);
+        }
+
+        Arrays.sort(d);
+        return d;
+    }
+
+    public int[] unitaryDivisors(int n) {
+        if (n < 0)
+            n = -n;
+
+        int[] d = new int[unitarySigma(n)];
+        int i = 0;
+
+        if (n != 0)
+            d[i++] = 1;
+        if (n <= 1)
+            return d;
+
+        while (n != 1) {
+            int k = i, u = smallestFactor(n);
+            for (int j = 0; j < i; j++)
+                d[k++] = d[j] * u;
+            i = k;
+            n /= u;
         }
 
         Arrays.sort(d);
