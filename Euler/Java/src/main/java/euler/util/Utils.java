@@ -1,5 +1,7 @@
 package euler.util;
 
+import java.math.BigInteger;
+
 @SuppressWarnings("unused")
 public final class Utils {
     private Utils() {}
@@ -399,6 +401,31 @@ public final class Utils {
         }
 
         return bigV[1];
+    }
+
+    private static final long[][] binomial = new long[64][];
+    static {
+        for (int i = 0; i < binomial.length; i++) {
+            binomial[i] = new long[i + 1];
+            binomial[i][0] = binomial[i][i] = 1;
+            for (int j = 1; j < i; j++)
+                binomial[i][j] = binomial[i-1][j] + binomial[i-1][j-1];
+        }
+    }
+
+    public static BigInteger choose(int n, int k) {
+        if (n < 0 || k < 0 || k > n)
+            return BigInteger.ZERO;
+        if (n < binomial.length)
+            return BigInteger.valueOf(binomial[n][k]);
+
+        BigInteger r = BigInteger.ONE;
+        if (k > n / 2)
+            k = n - k;
+        for (int i = 1; i <= k; i++)
+            r = r.multiply(BigInteger.valueOf(n - i + 1))
+                 .divide(BigInteger.valueOf(i));
+        return r;
     }
 
     public static int reverse(int n) {
