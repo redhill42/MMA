@@ -4,10 +4,12 @@ import java.util.BitSet;
 import static euler.util.Utils.isqrt;
 
 public class PrimeSieve {
+    private final int limit;
     private final BitSet primes;
 
     public PrimeSieve(int limit) {
-        primes = new BitSet(limit + 1);
+        this.limit = limit;
+        this.primes = new BitSet(limit + 1);
 
         primes.set(2);
         for (int i = 3; i <= limit; i += 2) {
@@ -19,6 +21,10 @@ public class PrimeSieve {
             for (int n = p * p; n <= limit; n += p + p)
                 primes.clear(n);
         }
+    }
+
+    public int getLimit() {
+        return limit;
     }
 
     public boolean isPrime(int n) {
