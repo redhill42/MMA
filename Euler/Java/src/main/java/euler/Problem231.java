@@ -8,33 +8,34 @@ import java.util.concurrent.Future;
 
 import euler.util.SegmentedSieve;
 import static euler.util.Utils.factorialExponent;
-import static euler.util.Utils.modpow;
 
-public final class Problem429 {
-    private Problem429() {}
+public final class Problem231 {
+    private Problem231() {}
 
     private static class SolveTask implements Callable<Long> {
-        private final int n, m;
-        private final SegmentedSieve.Segment primes;
+        private final long n, k;
+        private final SegmentedSieve.Segment segment;
 
-        SolveTask(int n, int m, SegmentedSieve.Segment primes) {
+        SolveTask(long n, long k, SegmentedSieve.Segment segment) {
             this.n = n;
-            this.m = m;
-            this.primes = primes;
+            this.k = k;
+            this.segment = segment;
         }
 
         @Override
-        public Long call() {
-            long p, r = 1;
-            while ((p = primes.next()) > 0) {
-                long a = factorialExponent(n, p);
-                r = r * (1 + modpow(p, 2 * a, m)) % m;
+        public Long call() throws Exception {
+            long p, a, r = 0;
+            while ((p = segment.next()) > 0) {
+                a  = factorialExponent(n, p);
+                a -= factorialExponent(k, p);
+                a -= factorialExponent(n - k, p);
+                r += p * a;
             }
             return r;
         }
     }
 
-    public static long solve(int n, int m)
+    public static long solve(long n, long k)
         throws ExecutionException, InterruptedException
     {
         SegmentedSieve sieve = new SegmentedSieve(n);
@@ -42,11 +43,11 @@ public final class Problem429 {
 
         ForkJoinPool pool = new ForkJoinPool();
         SolveTask[] tasks = new SolveTask[blocks.length];
-        Arrays.setAll(tasks, i -> new SolveTask(n, m, blocks[i]));
+        Arrays.setAll(tasks, i -> new SolveTask(n, k, blocks[i]));
 
-        long result = 1;
+        long result = 0;
         for (Future<Long> res : pool.invokeAll(Arrays.asList(tasks))) {
-            result = result * res.get() % m;
+            result += res.get();
         }
 
         pool.shutdown();
@@ -56,6 +57,7 @@ public final class Problem429 {
     public static void main(String[] args)
         throws ExecutionException, InterruptedException
     {
-        System.out.println(solve(100_000_000, 1_000_000_009));
+        System.out.println(solve(10, 3));
+        System.out.println(solve(20_000_000, 15_000_000));
     }
 }

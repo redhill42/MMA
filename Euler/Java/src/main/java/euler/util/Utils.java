@@ -136,7 +136,7 @@ public final class Utils {
         return ((a + p[1] * n) % t + t) % t;
     }
 
-    public static int exponent(int n, int k) {
+    public static int exponent(long n, long k) {
         int a = 0;
         while (n % k == 0) {
             a++;
@@ -145,13 +145,11 @@ public final class Utils {
         return a;
     }
 
-    public static int exponent(long n, long k) {
-        int a = 0;
-        while (n % k == 0) {
-            a++;
-            n /= k;
-        }
-        return a;
+    public static long factorialExponent(long n, long p) {
+        long s = 0;
+        for (n /= p; n != 0; n /= p)
+            s += n;
+        return s;
     }
 
     public static int pow(int x, int n) {
