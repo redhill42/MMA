@@ -37,7 +37,7 @@ public final class Problem549 {
         int j = (int)(log(1 + a * (p - 1)) / log(p));
         int s = 0;
         while (r != 0) {
-            int aj = (pow(p, j) - 1) / (p - 1);
+            int aj = ((int)pow(p, j) - 1) / (p - 1);
             s += k;
             k = r / aj;
             r %= aj;

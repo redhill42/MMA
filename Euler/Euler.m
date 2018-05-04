@@ -4,6 +4,7 @@ Let::usage = "Consecuitive bindings for With scoping construct.";
 
 ImportResource::usage = "Import an external resource";
 Timed::usage = "Display solve result and used time";
+Rounded::usage = "Display result rounded to given decimal point places";
 JavaSolve::usage = "Solve a problem with Java program";
 
 TotientSum::usage = "Returns the totient summation";
@@ -43,6 +44,8 @@ timing[time_, result_] :=
 
 SetAttributes[Timed, HoldFirst];
 Timed[expr_] := timing @@ AbsoluteTiming[expr];
+
+Rounded[n_][expr_] := NumberForm[N[expr], {Infinity, n}];
 
 JavaSolve[num_Integer, args___] := JavaBlock[
   LoadJavaClass["euler.Problem" <> ToString[num]];

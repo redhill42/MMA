@@ -152,27 +152,13 @@ public final class Utils {
         return s;
     }
 
-    public static int pow(int x, int n) {
-        if (n == 0)
-            return 1;
-        if (n == 1)
-            return x;
-
-        int y = 1;
-        while (n != 0) {
-            if (n % 2 == 1)
-                y *= x;
-            n >>= 1;
-            x *= x;
-        }
-        return y;
-    }
-
     public static long pow(long x, int n) {
         if (n == 0)
             return 1;
         if (n == 1)
             return x;
+        if (x == 2)
+            return 1L << n;
 
         long y = 1;
         while (n != 0) {
@@ -258,24 +244,6 @@ public final class Utils {
         return r * r == n;
     }
 
-    public static boolean isPrime(int n) {
-        if (n <= 1)
-            return false;
-        if (n < 4)  // 2 and 3 are prime
-            return true;
-        if (n % 2 == 0)
-            return false;
-        if (n < 9)  // we have already excluded 4, 6, and 8
-            return true;
-        if (n % 3 == 0)
-            return false;
-
-        for (int f = 5, w = isqrt(n); f <= w; f += 6)
-            if (n % f == 0 || n % (f + 2) == 0)
-                return false;
-        return true;
-    }
-
     public static boolean isPrime(long n) {
         if (n <= 1)
             return false;
@@ -346,61 +314,6 @@ public final class Utils {
         return bigV[1];
     }
 
-    public static long totientSum(long n, long m) {
-        if (n < 0)
-            return 0;
-        if (n < totientSumCache.length)
-            return totientSumCache[(int)n] % m;
-
-        int L = (int)(Math.pow(n / log2(log2(n)), 2./3));
-        long[] sieve = new long[L + 1];
-        long[] bigV  = new long[(int)(n / L + 1)];
-
-        for (int i = 0; i < sieve.length; i++) {
-            sieve[i] = i;
-        }
-
-        for (int p = 2; p <= L; p++) {
-            if (p == sieve[p])
-                for (int k = p; k <= L; k += p)
-                    sieve[k] -= sieve[k] / p;
-            sieve[p] = (sieve[p] + sieve[p - 1]) % m;
-        }
-
-        for (int x = (int)(n / L); x >= 1; x--) {
-            long k = n / x;
-            int  klimit = (int)isqrt(k);
-            long res;
-
-            if ((k & 1) == 0) {
-                res = modmul(k + 1, k / 2, m);
-            } else {
-                res = modmul(k, (k + 1) / 2, m);
-            }
-
-            for (int g = 2; g <= klimit; g++) {
-                if (k / g <= L) {
-                    res -= sieve[(int)(k / g)];
-                } else {
-                    res -= bigV[x * g];
-                }
-            }
-
-            for (int z = 1; z <= klimit; z++) {
-                if (z != k / z) {
-                    res -= (k / z - k / (z + 1)) * sieve[z] % m;
-                }
-            }
-
-            res %= m;
-            if (res < 0)
-                res += m;
-            bigV[x] = res;
-        }
-
-        return bigV[1];
-    }
-
     private static final long[][] binomial = new long[64][];
     static {
         for (int i = 0; i < binomial.length; i++) {
@@ -423,26 +336,6 @@ public final class Utils {
         for (int i = 1; i <= k; i++)
             r = r.multiply(BigInteger.valueOf(n - i + 1))
                  .divide(BigInteger.valueOf(i));
-        return r;
-    }
-
-    public static int reverse(int n) {
-        return reverse(n, 10);
-    }
-
-    public static int reverse(int n, int b) {
-        int r = 0;
-        if (b == 2) {
-            while (n != 0) {
-                r = (r << 1) | (n & 1);
-                n >>= 1;
-            }
-        } else {
-            while (n != 0) {
-                r = b * r + n % b;
-                n /= b;
-            }
-        }
         return r;
     }
 

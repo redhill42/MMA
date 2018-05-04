@@ -16,14 +16,9 @@ public final class Problem36 {
     }
 
     public static void main(String[] args) {
-        int limit = 1_000_000;
+        long limit = 1_000_000;
         if (args.length != 0)
-            limit = Integer.valueOf(args[0]);
+            limit = Long.valueOf(args[0]);
         System.out.println(solve(limit));
-
-        Palindrome p = new Palindrome(1, 16);
-        for (int i = 0; i < 1000; i++) {
-            System.out.print(Long.toHexString(p.next()) + " ");
-        }
     }
 }

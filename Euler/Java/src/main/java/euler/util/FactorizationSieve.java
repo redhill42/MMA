@@ -27,7 +27,7 @@ public class FactorizationSieve {
         }
 
         public int value() {
-            return pow(p, a);
+            return (int)pow(p, a);
         }
 
         @Override
@@ -135,14 +135,18 @@ public class FactorizationSieve {
     }
 
     private int smallestFactor(int n) {
-        return pow(primes[n], powers[n]);
+        return (int)pow(primes[n], powers[n]);
+    }
+
+    private int next(int n) {
+        return n / smallestFactor(n);
     }
 
     public Set<Factor> factors(int n) {
         Set<Factor> result = new TreeSet<>();
         while (n != 1) {
             result.add(new Factor(primes[n], powers[n]));
-            n /= smallestFactor(n);
+            n = next(n);
         }
         return result;
     }
@@ -157,7 +161,7 @@ public class FactorizationSieve {
         while (n != 1) {
             int p = primes[n];
             r = r / p * (p - 1);
-            n /= smallestFactor(n);
+            n = next(n);
         }
         return r;
     }
@@ -171,7 +175,7 @@ public class FactorizationSieve {
         int s = 1;
         while (n != 1) {
             s *= powers[n] + 1;
-            n /= smallestFactor(n);
+            n = next(n);
         }
         return s;
     }
@@ -187,13 +191,13 @@ public class FactorizationSieve {
 
         long r = 1;
         while (n != 1) {
-            long p = primes[n];
+            int  p = primes[n];
             int  a = powers[n];
             long s = 1;
             for (int i = 1; i <= a; i++)
                 s += pow(p, i * k);
             r *= s;
-            n /= smallestFactor(n);
+            n = next(n);
         }
         return r;
     }
@@ -207,7 +211,7 @@ public class FactorizationSieve {
         int r = 1;
         while (n != 1) {
             r <<= 1;
-            n /= smallestFactor(n);
+            n = next(n);
         }
         return r;
     }
@@ -223,10 +227,10 @@ public class FactorizationSieve {
 
         long r = 1;
         while (n != 1) {
-            long p = primes[n];
-            int  a = powers[n];
+            int p = primes[n];
+            int a = powers[n];
             r *= 1 + pow(p, k * a);
-            n /= smallestFactor(n);
+            n = next(n);
         }
         return r;
     }
@@ -240,7 +244,7 @@ public class FactorizationSieve {
         int r = 1;
         while (n != 1) {
             r *= primes[n];
-            n /= smallestFactor(n);
+            n = next(n);
         }
         return r;
     }
@@ -255,10 +259,38 @@ public class FactorizationSieve {
         while (n != 1) {
             if (powers[n] > 1)
                 return 0;
-            n /= smallestFactor(n);
             len++;
+            n = next(n);
         }
         return len % 2 == 0 ? 1 : -1;
+    }
+
+    public int omega(int n) {
+        if (n < 0)
+            n = -n;
+        if (n <= 1)
+            return 0;
+
+        int r = 0;
+        while (n != 1) {
+            r += powers[n];
+            n = next(n);
+        }
+        return r;
+    }
+
+    public int nu(int n) {
+        if (n < 0)
+            n = -n;
+        if (n <= 1)
+            return 0;
+
+        int r = 0;
+        while (n != 1) {
+            r++;
+            n = next(n);
+        }
+        return r;
     }
 
     public int[] divisors(int n) {
@@ -281,7 +313,7 @@ public class FactorizationSieve {
                 p *= primes[n];
             }
             i = k;
-            n /= smallestFactor(n);
+            n = next(n);
         }
 
         Arrays.sort(d);
