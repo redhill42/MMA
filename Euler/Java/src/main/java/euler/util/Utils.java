@@ -262,58 +262,6 @@ public final class Utils {
         return true;
     }
 
-    private static double log2(double x) {
-        return Math.log(x) / Math.log(2);
-    }
-
-    private static final int[] totientSumCache = {
-        0, 1, 2, 4, 6, 10, 12, 18, 22, 28, 32
-    };
-
-    public static long totientSum(int n) {
-        if (n < 0)
-            return 0;
-        if (n < totientSumCache.length)
-            return totientSumCache[n];
-
-        int L = (int)(Math.pow(n / log2(log2(n)), 2./3));
-        long[] sieve = new long[L + 1];
-        long[] bigV  = new long[n / L + 1];
-
-        for (int i = 0; i < sieve.length; i++) {
-            sieve[i] = i;
-        }
-
-        for (int p = 2; p <= L; p++) {
-            if (p == sieve[p])
-                for (int k = p; k <= L; k += p)
-                    sieve[k] -= sieve[k] / p;
-            sieve[p] += sieve[p - 1];
-        }
-
-        for (int x = n / L; x >= 1; x--) {
-            int k = n / x, klimit = isqrt(k);
-            long res = (long)k * (k + 1) / 2;
-
-            for (int g = 2; g <= klimit; g++) {
-                if (k / g <= L) {
-                    res -= sieve[k / g];
-                } else {
-                    res -= bigV[x * g];
-                }
-            }
-
-            for (int z = 1; z <= klimit; z++) {
-                if (z != k / z)
-                    res -= (k / z - k / (z + 1)) * sieve[z];
-            }
-
-            bigV[x] = res;
-        }
-
-        return bigV[1];
-    }
-
     private static final long[][] binomial = new long[64][];
     static {
         for (int i = 0; i < binomial.length; i++) {

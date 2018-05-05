@@ -9,7 +9,7 @@ import static euler.util.Utils.isqrt;
 import static euler.util.Utils.pow;
 
 @SuppressWarnings("unused")
-public class FactorizationSieve {
+public class FactorizationSieve implements Sieve {
     public static final class Factor implements Comparable<Factor> {
         private final int p, a;
 
@@ -60,10 +60,10 @@ public class FactorizationSieve {
         int[] primes = new int[limit + 1];
         byte[] powers = new byte[limit + 1];
         int nprimes = 0;
-        int plimit = isqrt(limit);
+        int crossto = isqrt(limit);
         int p;
 
-        for (p = 2; p <= plimit; p++) {
+        for (p = 2; p <= crossto; p++) {
             if (primes[p] == 0) {
                 primes[p] = p;
                 powers[p] = 1;
@@ -89,10 +89,12 @@ public class FactorizationSieve {
         this.nprimes = nprimes;
     }
 
+    @Override
     public boolean isPrime(int n) {
         return primes[n] == n;
     }
 
+    @Override
     public int nextPrime(int n) {
         if (n < 2)
             return 2;
@@ -104,6 +106,7 @@ public class FactorizationSieve {
         return -1;
     }
 
+    @Override
     public int previousPrime(int n) {
         if (n < 0)
             n = primes.length;
@@ -119,10 +122,12 @@ public class FactorizationSieve {
         return -1;
     }
 
+    @Override
     public int cardinality() {
         return nprimes;
     }
 
+    @Override
     public int[] getPrimes() {
         int[] result = new int[nprimes];
         int i = 0;

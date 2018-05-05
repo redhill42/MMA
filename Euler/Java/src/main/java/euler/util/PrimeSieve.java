@@ -3,7 +3,7 @@ package euler.util;
 import java.util.BitSet;
 import static euler.util.Utils.isqrt;
 
-public class PrimeSieve {
+public class PrimeSieve implements Sieve {
     private final int limit;
     private final BitSet primes;
 
@@ -27,22 +27,27 @@ public class PrimeSieve {
         return limit;
     }
 
+    @Override
     public boolean isPrime(int n) {
         return primes.get(n);
     }
 
+    @Override
     public int nextPrime(int n) {
         return primes.nextSetBit(n + 1);
     }
 
+    @Override
     public int previousPrime(int n) {
         return primes.previousSetBit(n - 1);
     }
 
+    @Override
     public int cardinality() {
         return primes.cardinality();
     }
 
+    @Override
     public int[] getPrimes() {
         int[] result = new int[cardinality()];
         for (int i = 0, p = 2; p > 0; p = nextPrime(p))
