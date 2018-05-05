@@ -2,6 +2,9 @@ package euler;
 
 import java.util.Arrays;
 
+import static euler.util.IntegerPartitions.combinations;
+import static euler.util.IntegerPartitions.partitions;
+
 public final class Problem240 {
     private Problem240() {}
 
@@ -23,9 +26,11 @@ public final class Problem240 {
             tally = new int[maxPoint + 1];
         }
 
-        private long counting(int[] dice) {
+        private long counting(int[] top, int[] bottom) {
             Arrays.fill(tally, 0);
-            for (int point : dice)
+            for (int point : top)
+                tally[point]++;
+            for (int point : bottom)
                 tally[point]++;
 
             long result = factorial[numDice];
@@ -35,31 +40,11 @@ public final class Problem240 {
             return result;
         }
 
-        private long search(int[] dice, int next) {
-            if (next == numDice) {
-                return counting(dice);
-            }
-
-            if (next == numTop) {
-                int sum = 0;
-                for (int i = 0; i < next; i++)
-                    sum += dice[i];
-                if (sum != topSum)
-                    return 0;
-            }
-
-            long result = 0;
-            int point = next == 0 ? maxPoint : dice[next - 1];
-            while (point > 0) {
-                dice[next] = point;
-                result += search(dice, next + 1);
-                point--;
-            }
-            return result;
-        }
-
-        public long solve() {
-            return search(new int[numDice], 0);
+        public Long solve() {
+            return
+                partitions(topSum, numTop, maxPoint, 0L, (s1, top, k1) ->
+                combinations(numDice - numTop, top[0], s1, (s2, bottom, k2) ->
+                    s2 + counting(top, bottom)));
         }
     }
 
