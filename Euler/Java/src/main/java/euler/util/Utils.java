@@ -6,6 +6,14 @@ import java.math.BigInteger;
 public final class Utils {
     private Utils() {}
 
+    public static boolean even(int n) {
+        return (n & 1) == 0;
+    }
+
+    public static boolean odd(int n) {
+        return (n & 1) == 1;
+    }
+
     public static int gcd(int a, int b) {
         if (a < 0) a = -a;
         if (b < 0) b = -b;
@@ -36,66 +44,46 @@ public final class Utils {
         return a * b / gcd(a, b);
     }
 
-    public static int exgcd(int a, int b, int[] p) {
+    public static int exgcd(int a, int b, int[] r) {
         if (a < 0) a = -a;
         if (b < 0) b = -b;
 
-        int s0 = 1, s1 = 0;
-        int t0 = 0, t1 = 1;
-        int q;
+        int x0 = 1, x1 = 0;
+        int y0 = 0, y1 = 1;
+        int x2, y2, q, t;
 
-        while (true) {
-            q = a / b;
-            a %= b;
-            s0 -= q * s1;
-            t0 -= q * t1;
-            if (a == 0) {
-                p[0] = s1;
-                p[1] = t1;
-                return b;
-            }
-
-            q = b / a;
-            b %= a;
-            s1 -= q * s0;
-            t1 -= q * t0;
-            if (b == 0) {
-                p[0] = s0;
-                p[1] = t0;
-                return a;
-            }
+        while (b > 0) {
+            x2 = x1; y2 = y1; t = b;
+            q  = a / b;
+            b  = a % b;
+            x1 = x0 - q * x1;
+            y1 = y0 - q * y1;
+            x0 = x2; y0 = y2; a = t;
         }
+        r[0] = x0;
+        r[1] = y0;
+        return a;
     }
 
-    public static long exgcd(long a, long b, long[] p) {
+    public static long exgcd(long a, long b, long[] r) {
         if (a < 0) a = -a;
         if (b < 0) b = -b;
 
-        long s0 = 1, s1 = 0;
-        long t0 = 0, t1 = 1;
-        long q;
+        long x0 = 1, x1 = 0;
+        long y0 = 0, y1 = 1;
+        long x2, y2, q, t;
 
-        while (true) {
-            q = a / b;
-            a %= b;
-            s0 -= q * s1;
-            t0 -= q * t1;
-            if (a == 0) {
-                p[0] = s1;
-                p[1] = t1;
-                return b;
-            }
-
-            q = b / a;
-            b %= a;
-            s1 -= q * s0;
-            t1 -= q * t0;
-            if (b == 0) {
-                p[0] = s0;
-                p[1] = t0;
-                return a;
-            }
+        while (b > 0) {
+            x2 = x1; y2 = y1; t = b;
+            q  = a / b;
+            b  = a % b;
+            x1 = x0 - q * x1;
+            y1 = y0 - q * y1;
+            x0 = x2; y0 = y2; a = t;
         }
+        r[0] = x0;
+        r[1] = y0;
+        return a;
     }
 
     private static boolean merge(long a, long b, long m, long[] p) {
