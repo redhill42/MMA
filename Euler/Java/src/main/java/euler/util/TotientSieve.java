@@ -25,7 +25,7 @@ public class TotientSieve implements Sieve{
                 phi[p] = p - 1;
                 nprimes++;
                 for (n = p + p; n <= limit; n += p) {
-                    phi[n] = phi[n] / p * (p - 1);
+                    phi[n] -= phi[n] / p;
                 }
             }
         }
