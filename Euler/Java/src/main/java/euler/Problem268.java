@@ -2,6 +2,7 @@ package euler;
 
 import euler.util.PrimeSieve;
 import static euler.util.Utils.even;
+import static euler.util.Utils.mul128;
 import static euler.util.Utils.pow;
 
 public final class Problem268 {
@@ -57,31 +58,11 @@ public final class Problem268 {
         int i = 0;
         while (bitmask != 0 && result < limit) {
             if ((bitmask & 1) != 0)
-                result = mul(result, primes[i]);
+                result = mul128(result, primes[i]);
             bitmask >>= 1;
             i++;
         }
         return result;
-    }
-
-    private static final long LO_MASK = 0xFFFFFFFFL;
-    private static final int HI_SHIFT = 32;
-
-    private static long mul(long x, long y) {
-        if ((x | y) >>> 31 == 0)
-            return x * y;
-
-        long x0 = x & LO_MASK;
-        long x1 = x >>> HI_SHIFT;
-        long y0 = y & LO_MASK;
-        long y1 = y >>> HI_SHIFT;
-        long t  = (x1 * y0) + (x0 * y0 >>> HI_SHIFT);
-        long w1 = t & LO_MASK;
-        long w2 = t >>> HI_SHIFT;
-
-        long u = (x1 * y1 + w2) + ((x0 * y1 + w1) >>> HI_SHIFT);
-        long v = x * y;
-        return (u == 0 && v >= 0) ? v : Long.MAX_VALUE;
     }
 
     public static void main(String[] args) {

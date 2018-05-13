@@ -36,12 +36,26 @@ public final class Utils {
         return a;
     }
 
+    public static long gcd(long x, long... xs) {
+        long res = x;
+        for (long a : xs)
+            res = gcd(res, a);
+        return res;
+    }
+
     public static int lcm(int a, int b) {
         return a * b / gcd(a, b);
     }
 
     public static long lcm(long a, long b) {
         return a * b / gcd(a, b);
+    }
+
+    public static long lcm(long x, long... xs) {
+        long res = x;
+        for (long a : xs)
+            res = lcm(res, a);
+        return res;
     }
 
     public static int exgcd(int a, int b, int[] r) {
@@ -156,6 +170,26 @@ public final class Utils {
             x *= x;
         }
         return y;
+    }
+
+    private static final long LO_MASK = 0xFFFFFFFFL;
+    private static final int HI_SHIFT = 32;
+
+    public static long mul128(long x, long y) {
+        if ((x | y) >>> 31 == 0)
+            return x * y;
+
+        long x0 = x & LO_MASK;
+        long x1 = x >>> HI_SHIFT;
+        long y0 = y & LO_MASK;
+        long y1 = y >>> HI_SHIFT;
+        long t  = (x1 * y0) + (x0 * y0 >>> HI_SHIFT);
+        long w1 = t & LO_MASK;
+        long w2 = t >>> HI_SHIFT;
+
+        long u = (x1 * y1 + w2) + ((x0 * y1 + w1) >>> HI_SHIFT);
+        long v = x * y;
+        return (u == 0 && v >= 0) ? v : Long.MAX_VALUE;
     }
 
     public static long modmul(long a, long b, long m) {
