@@ -266,6 +266,10 @@ public final class Library {
         return r * r == n;
     }
 
+    public static boolean isPowerOfTwo(long x) {
+        return (x & (x - 1)) == 0;
+    }
+
     public static boolean isPrime(long n) {
         if (n <= 1)
             return false;
@@ -307,6 +311,14 @@ public final class Library {
             r = r.multiply(BigInteger.valueOf(n - i + 1))
                  .divide(BigInteger.valueOf(i));
         return r;
+    }
+
+    public static long fibonacci(int n) {
+        long a = 1, b = 1;
+        while (--n > 0) {
+            long t = b; b = a + b; a = t;
+        }
+        return a;
     }
 
     public static long reverse(long n) {

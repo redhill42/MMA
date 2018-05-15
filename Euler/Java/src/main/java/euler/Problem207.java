@@ -1,5 +1,7 @@
 package euler;
 
+import static euler.algo.Library.isPowerOfTwo;
+
 public final class Problem207 {
     private Problem207() {}
 
@@ -14,10 +16,6 @@ public final class Problem207 {
             x++;
         }
         return x * (x - 1);
-    }
-
-    private static boolean isPowerOfTwo(long x) {
-        return (x & (x - 1)) == 0;
     }
 
     public static void main(String[] args) {
