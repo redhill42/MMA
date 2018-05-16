@@ -2,8 +2,8 @@ package euler;
 
 import java.util.BitSet;
 
-import euler.algorithms.TonelliShanks;
-import euler.util.PrimeSieve;
+import euler.algo.TonelliShanks;
+import euler.algo.PrimeSieve;
 
 public final class Problem216 {
     private Problem216() {}

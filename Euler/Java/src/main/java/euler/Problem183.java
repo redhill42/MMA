@@ -1,6 +1,6 @@
 package euler;
 
-import static euler.util.Utils.gcd;
+import static euler.algo.Library.gcd;
 import static java.lang.Math.ceil;
 import static java.lang.Math.floor;
 import static java.lang.Math.log;

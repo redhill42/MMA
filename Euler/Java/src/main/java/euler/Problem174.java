@@ -9,7 +9,7 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import static euler.util.Utils.isqrt;
+import static euler.algo.Library.isqrt;
 
 public final class Problem174 {
     private Problem174() {}

@@ -1,6 +1,6 @@
 package euler;
 
-import static euler.util.Utils.isSquare;
+import static euler.algo.Library.isSquare;
 
 public final class Problem171 {
     private Problem171() {}

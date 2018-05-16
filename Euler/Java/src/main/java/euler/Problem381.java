@@ -2,7 +2,7 @@ package euler;
 
 import java.util.Scanner;
 import java.util.concurrent.ForkJoinPool;
-import euler.util.PrimeSieve;
+import euler.algo.PrimeSieve;
 import euler.util.RangedTask;
 
 public final class Problem381 {

@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import euler.util.Utils;
+import euler.algo.Library;
 
 public final class Problem248 {
     private Problem248() {}
@@ -62,7 +62,7 @@ public final class Problem248 {
 
             return divisors.stream()
                            .mapToLong(x->x+1)
-                           .filter(Utils::isPrime)
+                           .filter(Library::isPrime)
                            .sorted()
                            .toArray();
         }

@@ -1,6 +1,6 @@
 package euler;
 
-import euler.util.FactorizationSieve;
+import euler.algo.FactorizationSieve;
 
 public final class Problem76 {
     private Problem76() {}

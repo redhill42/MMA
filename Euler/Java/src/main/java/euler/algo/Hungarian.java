@@ -1,4 +1,4 @@
-package euler.algorithms;
+package euler.algo;
 
 import java.util.Arrays;
 

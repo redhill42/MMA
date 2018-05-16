@@ -1,7 +1,7 @@
 package euler;
 
 import java.util.Scanner;
-import static euler.util.Utils.isPrime;
+import static euler.algo.Library.isPrime;
 
 public final class Problem7 {
     private Problem7() {}

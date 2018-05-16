@@ -2,8 +2,8 @@ package euler;
 
 import java.util.Arrays;
 
-import euler.util.Permutations;
-import static euler.util.Utils.gcd;
+import euler.algo.Permutations;
+import static euler.algo.Library.gcd;
 
 public final class Problem170 {
     private Problem170() {}

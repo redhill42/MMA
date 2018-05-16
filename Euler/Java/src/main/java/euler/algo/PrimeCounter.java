@@ -1,6 +1,6 @@
-package euler.util;
+package euler.algo;
 
-import static euler.util.Utils.isqrt;
+import static euler.algo.Library.isqrt;
 import static java.lang.Math.abs;
 
 public class PrimeCounter {

@@ -1,7 +1,7 @@
 package euler;
 
 import java.math.BigInteger;
-import euler.algorithms.PellEquation;
+import euler.algo.PellEquation;
 
 public final class Problem66 {
     private Problem66() {}

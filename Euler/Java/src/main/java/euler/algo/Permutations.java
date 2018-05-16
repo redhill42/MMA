@@ -1,4 +1,4 @@
-package euler.util;
+package euler.algo;
 
 import java.util.Comparator;
 

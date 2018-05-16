@@ -1,10 +1,10 @@
 package euler;
 
 import java.util.concurrent.ForkJoinPool;
-import euler.util.FactorizationSieve;
+import euler.algo.FactorizationSieve;
 import euler.util.RangedTask;
 
-import static euler.util.Utils.isSquare;
+import static euler.algo.Library.isSquare;
 
 public final class Problem211 {
     private Problem211() {}

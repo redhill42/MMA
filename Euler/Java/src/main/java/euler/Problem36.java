@@ -1,7 +1,7 @@
 package euler;
 
-import euler.util.Palindrome;
-import static euler.util.Utils.reverse;
+import euler.algo.Palindrome;
+import static euler.algo.Library.reverse;
 
 public final class Problem36 {
     private Problem36() {}

@@ -2,8 +2,8 @@ package euler;
 
 import java.util.concurrent.ForkJoinPool;
 import euler.util.RangedTask;
-import euler.util.TotientSieve;
-import static euler.util.Utils.chineseRemainder;
+import euler.algo.TotientSieve;
+import static euler.algo.Library.chineseRemainder;
 
 public final class Problem531 {
     private Problem531() {}

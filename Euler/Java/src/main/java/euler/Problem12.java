@@ -1,7 +1,7 @@
 package euler;
 
 import java.util.Scanner;
-import euler.util.FactorizationSieve;
+import euler.algo.FactorizationSieve;
 
 public final class Problem12 {
     private Problem12() {}

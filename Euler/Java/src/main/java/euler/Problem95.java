@@ -1,7 +1,7 @@
 package euler;
 
 import java.util.Arrays;
-import static euler.util.Utils.isqrt;
+import static euler.algo.Library.isqrt;
 
 public final class Problem95 {
     private Problem95() {}

@@ -1,4 +1,4 @@
-package euler.util;
+package euler.algo;
 
 /**
  * Champernowne constant is defined by concatenating representations

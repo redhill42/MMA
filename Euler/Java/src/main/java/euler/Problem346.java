@@ -3,8 +3,8 @@ package euler;
 import java.util.concurrent.ForkJoinPool;
 import euler.util.RangedTask;
 
-import static euler.util.Utils.isqrt;
-import static euler.util.Utils.pow;
+import static euler.algo.Library.isqrt;
+import static euler.algo.Library.pow;
 import static java.lang.Math.log;
 
 public final class Problem346 {

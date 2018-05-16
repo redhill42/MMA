@@ -1,7 +1,7 @@
 package euler;
 
-import euler.util.PrimeSieve;
-import static euler.util.Utils.gcd;
+import euler.algo.PrimeSieve;
+import static euler.algo.Library.gcd;
 
 public final class Problem518 {
     private Problem518() {}

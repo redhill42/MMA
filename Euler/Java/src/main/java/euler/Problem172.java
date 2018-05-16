@@ -1,7 +1,7 @@
 package euler;
 
-import euler.util.IntegerPartitions;
-import static euler.util.Utils.choose;
+import euler.algo.IntegerPartitions;
+import static euler.algo.Library.choose;
 
 public final class Problem172 {
     private Problem172() {}

@@ -1,9 +1,9 @@
 package euler;
 
 import java.util.concurrent.ForkJoinPool;
-import euler.util.PrimeSieve;
+import euler.algo.PrimeSieve;
 import euler.util.RangedTask;
-import static euler.util.Utils.isqrt;
+import static euler.algo.Library.isqrt;
 
 public final class Problem357 {
     private Problem357() {}

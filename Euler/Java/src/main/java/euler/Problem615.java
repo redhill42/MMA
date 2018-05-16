@@ -6,7 +6,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import euler.util.PrimeSieve;
+import euler.algo.PrimeSieve;
 
 public final class Problem615 {
     private Problem615() {}

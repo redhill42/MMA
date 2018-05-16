@@ -3,7 +3,7 @@ package euler;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import static euler.util.Utils.isPrime;
+import static euler.algo.Library.isPrime;
 
 public final class Problem516 {
     private Problem516() {}

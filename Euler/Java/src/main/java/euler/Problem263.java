@@ -1,7 +1,7 @@
 package euler;
 
-import euler.util.SegmentedSieve;
-import static euler.util.Utils.isqrt;
+import euler.algo.SegmentedSieve;
+import static euler.algo.Library.isqrt;
 
 public final class Problem263 {
     private Problem263() {}

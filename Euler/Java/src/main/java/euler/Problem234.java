@@ -1,7 +1,7 @@
 package euler;
 
-import euler.util.SegmentedSieve;
-import euler.util.SegmentedSieve.Segment;
+import euler.algo.SegmentedSieve;
+import euler.algo.SegmentedSieve.Segment;
 
 public final class Problem234 {
     private Problem234() {}

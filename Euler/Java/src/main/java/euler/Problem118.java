@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import euler.util.PrimeSieve;
+import euler.algo.PrimeSieve;
 
 public final class Problem118 {
     private Problem118() {}

@@ -1,4 +1,4 @@
-package euler.util;
+package euler.algo;
 
 public class Palindrome {
     private final int base;

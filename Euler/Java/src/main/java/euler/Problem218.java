@@ -1,8 +1,8 @@
 package euler;
 
-import euler.util.Pythagorean;
-import static euler.util.Utils.isSquare;
-import static euler.util.Utils.isqrt;
+import euler.algo.Pythagorean;
+import static euler.algo.Library.isSquare;
+import static euler.algo.Library.isqrt;
 
 public final class Problem218 {
     private Problem218() {}

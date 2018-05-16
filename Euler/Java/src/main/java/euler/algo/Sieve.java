@@ -1,4 +1,4 @@
-package euler.util;
+package euler.algo;
 
 /**
  * The base interface for prime sieves.

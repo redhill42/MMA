@@ -2,7 +2,7 @@ package euler;
 
 import java.util.stream.LongStream;
 
-import euler.util.Permutations;
+import euler.algo.Permutations;
 
 public final class Problem571 {
     private Problem571() {}

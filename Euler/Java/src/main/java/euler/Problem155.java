@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static euler.util.Utils.gcd;
+import static euler.algo.Library.gcd;
 
 public final class Problem155 {
     private Problem155() {}

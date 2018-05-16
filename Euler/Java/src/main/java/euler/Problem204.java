@@ -1,7 +1,7 @@
 package euler;
 
 import java.util.Scanner;
-import euler.util.PrimeSieve;
+import euler.algo.PrimeSieve;
 import static java.lang.Math.log;
 
 public final class Problem204 {

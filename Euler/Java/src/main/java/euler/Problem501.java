@@ -1,8 +1,8 @@
 package euler;
 
-import euler.util.PrimeCounter;
-import euler.util.PrimeSieve;
-import static euler.util.Utils.isqrt;
+import euler.algo.PrimeCounter;
+import euler.algo.PrimeSieve;
+import static euler.algo.Library.isqrt;
 
 public final class Problem501 {
     private Problem501() {}

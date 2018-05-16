@@ -1,7 +1,7 @@
-package euler.util;
+package euler.algo;
 
-import static euler.util.Utils.gcd;
-import static euler.util.Utils.isqrt;
+import static euler.algo.Library.gcd;
+import static euler.algo.Library.isqrt;
 import static java.lang.Long.min;
 
 @SuppressWarnings("unused")

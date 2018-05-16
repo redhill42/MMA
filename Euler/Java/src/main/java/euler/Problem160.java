@@ -2,8 +2,8 @@ package euler;
 
 import java.util.Scanner;
 
-import static euler.util.Utils.modmul;
-import static euler.util.Utils.modpow;
+import static euler.algo.Library.modmul;
+import static euler.algo.Library.modpow;
 
 public final class Problem160 {
     private Problem160() {}

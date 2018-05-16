@@ -3,8 +3,8 @@ package euler;
 import java.util.concurrent.ForkJoinPool;
 import euler.util.RangedTask;
 
-import static euler.util.Utils.gcd;
-import static euler.util.Utils.isSquare;
+import static euler.algo.Library.gcd;
+import static euler.algo.Library.isSquare;
 
 public final class Problem504 {
     private Problem504() {}

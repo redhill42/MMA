@@ -8,8 +8,8 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-import euler.util.PrimeSieve;
-import static euler.util.Utils.exponent;
+import euler.algo.PrimeSieve;
+import static euler.algo.Library.exponent;
 
 public final class Problem179 {
     private Problem179() {}

@@ -6,8 +6,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 
-import euler.util.SegmentedSieve;
-import static euler.util.Utils.factorialExponent;
+import euler.algo.SegmentedSieve;
+import static euler.algo.Library.factorialExponent;
 
 public final class Problem231 {
     private Problem231() {}

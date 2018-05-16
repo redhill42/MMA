@@ -1,4 +1,4 @@
-package euler.util;
+package euler.algo;
 
 /**
  * The PrimePi class is a compressed lookup table for small prime counts.

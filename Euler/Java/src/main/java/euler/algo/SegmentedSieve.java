@@ -1,9 +1,9 @@
-package euler.util;
+package euler.algo;
 
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import static euler.util.Utils.isqrt;
+import static euler.algo.Library.isqrt;
 
 @SuppressWarnings("unused")
 public class SegmentedSieve {

@@ -5,8 +5,8 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 
-import euler.util.Permutations;
-import static euler.util.Utils.pow;
+import euler.algo.Permutations;
+import static euler.algo.Library.pow;
 
 public final class Problem303 {
     private Problem303() {}

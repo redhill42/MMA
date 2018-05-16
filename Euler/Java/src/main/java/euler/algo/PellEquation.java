@@ -1,8 +1,8 @@
-package euler.algorithms;
+package euler.algo;
 
 import java.math.BigInteger;
 
-import static euler.util.Utils.isqrt;
+import static euler.algo.Library.isqrt;
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;
 

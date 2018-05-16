@@ -1,12 +1,12 @@
-package euler.util;
+package euler.algo;
 
 import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static euler.util.Utils.exponent;
-import static euler.util.Utils.isqrt;
-import static euler.util.Utils.pow;
+import static euler.algo.Library.exponent;
+import static euler.algo.Library.isqrt;
+import static euler.algo.Library.pow;
 
 @SuppressWarnings("unused")
 public class FactorizationSieve implements Sieve {

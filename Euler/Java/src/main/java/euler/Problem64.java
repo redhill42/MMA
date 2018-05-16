@@ -1,7 +1,7 @@
 package euler;
 
-import static euler.util.Utils.isqrt;
-import static euler.util.Utils.odd;
+import static euler.algo.Library.isqrt;
+import static euler.algo.Library.odd;
 
 public final class Problem64 {
     private Problem64() {}

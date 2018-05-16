@@ -1,8 +1,8 @@
 package euler;
 
 import java.util.stream.LongStream;
-import euler.util.Palindrome;
-import static euler.util.Utils.isqrt;
+import euler.algo.Palindrome;
+import static euler.algo.Library.isqrt;
 
 public final class Problem348 {
     private Problem348() {}

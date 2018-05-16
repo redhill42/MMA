@@ -1,6 +1,6 @@
 package euler;
 
-import euler.algorithms.PellEquation;
+import euler.algo.PellEquation;
 
 public final class Problem94 {
     private Problem94() {}

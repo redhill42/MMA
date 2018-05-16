@@ -1,6 +1,6 @@
 package euler;
 
-import euler.util.TotientSieve;
+import euler.algo.TotientSieve;
 
 public final class Problem512 {
     private Problem512() {}

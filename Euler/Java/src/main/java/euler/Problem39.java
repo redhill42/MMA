@@ -3,8 +3,8 @@ package euler;
 import java.util.HashMap;
 import java.util.Map;
 
-import euler.util.Pythagorean;
-import euler.util.Pythagorean.TripletFunction;
+import euler.algo.Pythagorean;
+import euler.algo.Pythagorean.TripletFunction;
 
 public final class Problem39 {
     private Problem39() {}

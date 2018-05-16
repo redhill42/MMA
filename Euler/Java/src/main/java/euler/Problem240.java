@@ -2,8 +2,8 @@ package euler;
 
 import java.util.Arrays;
 
-import static euler.util.IntegerPartitions.combinations;
-import static euler.util.IntegerPartitions.partitions;
+import static euler.algo.IntegerPartitions.combinations;
+import static euler.algo.IntegerPartitions.partitions;
 
 public final class Problem240 {
     private Problem240() {}

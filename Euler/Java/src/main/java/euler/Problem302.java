@@ -1,12 +1,12 @@
 package euler;
 
 import java.util.Arrays;
-import euler.util.FactorizationSieve;
-import euler.util.FactorizationSieve.Factor;
+import euler.algo.FactorizationSieve;
+import euler.algo.FactorizationSieve.Factor;
 
-import static euler.util.Utils.gcd;
-import static euler.util.Utils.mul128;
-import static euler.util.Utils.pow;
+import static euler.algo.Library.gcd;
+import static euler.algo.Library.mul128;
+import static euler.algo.Library.pow;
 import static java.lang.Math.cbrt;
 
 public final class Problem302 {

@@ -1,6 +1,6 @@
 package euler;
 
-import static euler.util.Utils.modmul;
+import static euler.algo.Library.modmul;
 
 public final class Problem258 {
     private Problem258() {}

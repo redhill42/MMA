@@ -1,10 +1,10 @@
-package euler.util;
+package euler.algo;
 
 import java.math.BigInteger;
 
 @SuppressWarnings("unused")
-public final class Utils {
-    private Utils() {}
+public final class Library {
+    private Library() {}
 
     public static boolean even(int n) {
         return (n & 1) == 0;

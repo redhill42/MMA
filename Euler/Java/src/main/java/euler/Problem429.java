@@ -6,9 +6,9 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.Future;
 
-import euler.util.SegmentedSieve;
-import static euler.util.Utils.factorialExponent;
-import static euler.util.Utils.modpow;
+import euler.algo.SegmentedSieve;
+import static euler.algo.Library.factorialExponent;
+import static euler.algo.Library.modpow;
 
 public final class Problem429 {
     private Problem429() {}

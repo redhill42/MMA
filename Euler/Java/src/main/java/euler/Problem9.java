@@ -2,7 +2,7 @@ package euler;
 
 import java.util.Scanner;
 
-import static euler.util.Utils.gcd;
+import static euler.algo.Library.gcd;
 import static java.lang.Math.ceil;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.min;

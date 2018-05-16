@@ -1,8 +1,8 @@
 package euler;
 
-import euler.util.PrimeSieve;
-import static euler.util.Utils.exponent;
-import static euler.util.Utils.pow;
+import euler.algo.PrimeSieve;
+import static euler.algo.Library.exponent;
+import static euler.algo.Library.pow;
 import static java.lang.Math.log;
 
 public final class Problem549 {

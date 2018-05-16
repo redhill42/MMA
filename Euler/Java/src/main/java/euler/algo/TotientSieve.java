@@ -1,6 +1,6 @@
-package euler.util;
+package euler.algo;
 
-import static euler.util.Utils.isqrt;
+import static euler.algo.Library.isqrt;
 
 public class TotientSieve implements Sieve{
     private final int[] phi;

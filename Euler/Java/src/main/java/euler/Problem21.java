@@ -6,7 +6,7 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeSet;
 
-import euler.util.FactorizationSieve;
+import euler.algo.FactorizationSieve;
 
 public final class Problem21 {
     private Problem21() {}

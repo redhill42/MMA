@@ -1,7 +1,7 @@
 package euler;
 
 import java.util.Scanner;
-import static euler.util.Utils.isPalindrome;
+import static euler.algo.Library.isPalindrome;
 
 public final class Problem4 {
     private Problem4() {}

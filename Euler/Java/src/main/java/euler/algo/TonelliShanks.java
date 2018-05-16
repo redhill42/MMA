@@ -1,6 +1,6 @@
-package euler.algorithms;
+package euler.algo;
 
-import static euler.util.Utils.modpow;
+import static euler.algo.Library.modpow;
 
 public final class TonelliShanks {
     private TonelliShanks() {}

@@ -1,6 +1,6 @@
 package euler;
 
-import static euler.util.Utils.pow;
+import static euler.algo.Library.pow;
 
 public final class Problem288 {
     private Problem288() {}

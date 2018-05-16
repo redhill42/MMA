@@ -1,7 +1,7 @@
 package euler;
 
-import euler.util.SegmentedSieve;
-import static euler.util.Utils.modmul;
+import euler.algo.SegmentedSieve;
+import static euler.algo.Library.modmul;
 
 public final class Problem304 {
     private Problem304() {}

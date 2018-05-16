@@ -2,8 +2,8 @@ package euler;
 
 import java.util.Arrays;
 
-import euler.util.PrimeSieve;
-import static euler.util.Utils.pow;
+import euler.algo.PrimeSieve;
+import static euler.algo.Library.pow;
 
 public final class Problem249 {
     private Problem249() {}

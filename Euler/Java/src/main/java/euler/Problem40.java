@@ -1,6 +1,6 @@
 package euler;
 
-import euler.util.Champernowne;
+import euler.algo.Champernowne;
 
 public final class Problem40 {
     private Problem40() {}

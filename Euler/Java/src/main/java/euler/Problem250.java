@@ -2,8 +2,8 @@ package euler;
 
 import java.util.Arrays;
 
-import static euler.util.Utils.modpow;
-import static euler.util.Utils.pow;
+import static euler.algo.Library.modpow;
+import static euler.algo.Library.pow;
 
 public final class Problem250 {
     private Problem250() {}

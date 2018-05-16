@@ -1,9 +1,9 @@
 package euler;
 
-import euler.util.PrimeSieve;
-import static euler.util.Utils.even;
-import static euler.util.Utils.mul128;
-import static euler.util.Utils.pow;
+import euler.algo.PrimeSieve;
+import static euler.algo.Library.even;
+import static euler.algo.Library.mul128;
+import static euler.algo.Library.pow;
 
 public final class Problem268 {
     private Problem268() {}

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import euler.util.PrimeSieve;
-import static euler.util.Utils.isqrt;
+import euler.algo.PrimeSieve;
+import static euler.algo.Library.isqrt;
 
 public final class Problem193 {
     private Problem193() {}

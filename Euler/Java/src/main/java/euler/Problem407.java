@@ -2,9 +2,9 @@ package euler;
 
 import java.util.BitSet;
 import java.util.concurrent.ForkJoinPool;
-import euler.util.FactorizationSieve;
+import euler.algo.FactorizationSieve;
 import euler.util.RangedTask;
-import static euler.util.Utils.modinv;
+import static euler.algo.Library.modinv;
 
 public final class Problem407 {
     private Problem407() {}
