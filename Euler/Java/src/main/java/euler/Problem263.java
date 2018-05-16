@@ -27,7 +27,6 @@ public final class Problem263 {
                 isPracticalNumber(n - 4) && isPracticalNumber(n + 4) &&
                 isPracticalNumber(n - 8) && isPracticalNumber(n + 8))
             {
-                System.out.println(n);
                 sum += n;
                 count--;
             }

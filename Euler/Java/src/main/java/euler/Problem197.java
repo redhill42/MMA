@@ -27,6 +27,6 @@ public final class Problem197 {
     }
 
     public static void main(String[] args) {
-        System.out.println(solve());
+        System.out.printf("%.9f%n", solve());
     }
 }

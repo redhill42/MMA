@@ -1,7 +1,5 @@
 package euler;
 
-import java.util.Scanner;
-
 import static euler.algo.Library.modmul;
 import static euler.algo.Library.modpow;
 
@@ -35,8 +33,9 @@ public final class Problem160 {
     }
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        long n = in.nextLong();
-        System.out.println(solve(n));
+        long n = 1_000_000_000_000L;
+        if (args.length > 0)
+            n = Long.parseLong(args[0]);
+        System.out.println(solve(n) % 100000);
     }
 }

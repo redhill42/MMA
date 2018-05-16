@@ -2,6 +2,7 @@ package euler;
 
 import java.math.BigInteger;
 
+import static euler.algo.Library.digitSum;
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;
 
@@ -33,6 +34,6 @@ public final class Problem65 {
     }
 
     public static void main(String[] args) {
-        System.out.println(solve(100));
+        System.out.println(digitSum(solve(100)));
     }
 }

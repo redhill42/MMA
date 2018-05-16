@@ -89,6 +89,6 @@ public final class Problem607 {
 
     public static void main(String[] args) {
         double[] v = {10, 9, 8, 7, 6, 5, 10};
-        System.out.println(solve(100, 50, v));
+        System.out.printf("%.10f%n", solve(100, 50, v));
     }
 }

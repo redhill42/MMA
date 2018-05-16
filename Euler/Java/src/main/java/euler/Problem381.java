@@ -1,6 +1,5 @@
 package euler;
 
-import java.util.Scanner;
 import java.util.concurrent.ForkJoinPool;
 import euler.algo.PrimeSieve;
 import euler.util.RangedTask;
@@ -48,8 +47,9 @@ public final class Problem381 {
     }
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        int n = in.nextInt();
-        System.out.println(solve(n));
+        int limit = 100_000_000;
+        if (args.length > 0)
+            limit = Integer.parseInt(args[0]);
+        System.out.println(solve(limit));
     }
 }

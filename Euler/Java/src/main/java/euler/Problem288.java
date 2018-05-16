@@ -22,7 +22,6 @@ public final class Problem288 {
     }
 
     public static void main(String[] args) {
-        System.out.println(solve(3, 10000, 20));
         System.out.println(solve(61, 10_000_000, 10));
     }
 }

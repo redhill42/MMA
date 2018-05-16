@@ -57,7 +57,6 @@ public final class Problem231 {
     public static void main(String[] args)
         throws ExecutionException, InterruptedException
     {
-        System.out.println(solve(10, 3));
         System.out.println(solve(20_000_000, 15_000_000));
     }
 }

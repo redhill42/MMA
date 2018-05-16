@@ -30,8 +30,6 @@ public final class Problem234 {
     }
 
     public static void main(String[] args) {
-        System.out.println(solve(15));
-        System.out.println(solve(1000));
         System.out.println(solve(999966663333L));
     }
 }

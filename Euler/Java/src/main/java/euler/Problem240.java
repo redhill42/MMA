@@ -54,7 +54,6 @@ public final class Problem240 {
     }
 
     public static void main(String[] args) {
-        System.out.println(solve(5, 6, 3, 15));
         System.out.println(solve(20, 12, 10, 70));
     }
 }

@@ -54,9 +54,6 @@ public final class Problem501 {
     }
 
     public static void main(String[] args) {
-        System.out.println(solve(100));
-        System.out.println(solve(1000));
-        System.out.println(solve(1_000_000));
         System.out.println(solve(1_000_000_000_000L));
     }
 }

@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import euler.algo.Permutations;
+import static euler.algo.Library.fromDigits;
 import static euler.algo.Library.pow;
 
 public final class Problem303 {
@@ -66,13 +67,6 @@ public final class Problem303 {
             }
         }
         return sum;
-    }
-
-    private static long fromDigits(int[] digits) {
-        long r = 0;
-        for (int d : digits)
-            r = r * 10 + d;
-        return r;
     }
 
     private static long toTernary(long n) {

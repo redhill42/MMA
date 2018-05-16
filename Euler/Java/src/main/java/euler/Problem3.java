@@ -1,6 +1,5 @@
 package euler;
 
-import java.util.Scanner;
 import static euler.algo.Library.isqrt;
 
 public final class Problem3 {
@@ -33,11 +32,9 @@ public final class Problem3 {
     }
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        int t = in.nextInt();
-        while (--t >= 0) {
-            long n = in.nextLong();
-            System.out.println(solve(n));
-        }
+        long n = 600851475143L;
+        if (args.length > 0)
+            n = Long.parseLong(args[0]);
+        System.out.println(solve(n));
     }
 }

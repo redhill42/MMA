@@ -16,13 +16,13 @@ public final class Problem76 {
                 s += sieve.sigma(1, i - k) * p[k];
             p[i] = s / i;
         }
-        return p[n];
+        return p[n] - 1;
     }
 
     public static void main(String[] args) {
         int n = 100;
         if (args.length > 0)
             n = Integer.parseInt(args[0]);
-        System.out.println(solve(n) - 1);
+        System.out.println(solve(n));
     }
 }

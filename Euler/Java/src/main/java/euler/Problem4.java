@@ -1,6 +1,5 @@
 package euler;
 
-import java.util.Scanner;
 import static euler.algo.Library.isPalindrome;
 
 public final class Problem4 {
@@ -35,11 +34,6 @@ public final class Problem4 {
     }
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        int t = in.nextInt();
-        while (--t >= 0) {
-            int n = in.nextInt();
-            System.out.println(solve(n));
-        }
+        System.out.println(solve());
     }
 }

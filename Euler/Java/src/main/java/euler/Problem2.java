@@ -1,7 +1,5 @@
 package euler;
 
-import java.util.Scanner;
-
 public final class Problem2 {
     private Problem2() {}
 
@@ -17,11 +15,9 @@ public final class Problem2 {
     }
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        int t = in.nextInt();
-        while (--t >= 0) {
-            long n = in.nextLong();
-            System.out.println(solve(n));
-        }
+        long limit = 4_000_000;
+        if (args.length > 0)
+            limit = Long.parseLong(args[0]);
+        System.out.println(solve(limit));
     }
 }

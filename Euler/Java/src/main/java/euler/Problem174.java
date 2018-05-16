@@ -1,14 +1,5 @@
 package euler;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import static euler.algo.Library.isqrt;
 
 public final class Problem174 {
@@ -49,35 +40,10 @@ public final class Problem174 {
         return new Solver(limit).solve(limit);
     }
 
-    public static void main(String[] args)
-        throws IOException
-    {
-        List<Integer> inputs = new ArrayList<>();
-        int limit = 0;
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        PrintStream out = new PrintStream(new BufferedOutputStream(System.out));
-        int t = nextInt(in);
-        while (--t >= 0) {
-            int k = nextInt(in);
-            if (k > limit)
-                limit = k;
-            inputs.add(k);
-        }
-
-        Solver solver = new Solver(limit);
-        for (int k : inputs) {
-            out.println(solver.solve(k));
-        }
-        out.flush();
-    }
-
-    private static int nextInt(BufferedReader in)
-        throws IOException
-    {
-        String line = in.readLine();
-        if (line == null)
-            throw new EOFException();
-        return Integer.valueOf(line);
+    public static void main(String[] args) {
+        int limit = 1_000_000;
+        if (args.length > 0)
+            limit = Integer.parseInt(args[0]);
+        System.out.println(solve(limit));
     }
 }

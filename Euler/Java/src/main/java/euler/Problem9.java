@@ -1,7 +1,5 @@
 package euler;
 
-import java.util.Scanner;
-
 import static euler.algo.Library.gcd;
 import static java.lang.Math.ceil;
 import static java.lang.Math.sqrt;
@@ -46,11 +44,9 @@ public final class Problem9 {
     }
 
     public static void main(String[] args) {
-        Scanner in = new Scanner(System.in);
-        int t = in.nextInt();
-        while (--t >= 0) {
-            int n = in.nextInt();
-            System.out.println(solve(n));
-        }
+        int s = 1000;
+        if (args.length > 0)
+            s = Integer.parseInt(args[0]);
+        System.out.println(solve(s));
     }
 }

@@ -37,7 +37,6 @@ public final class Problem277 {
     }
 
     public static void main(String[] args) {
-        System.out.println(solve("DdDddUUdDD", (long)1e6));
         System.out.println(solve("UDDDUdddDDUDDddDdDddDDUDDdUUDd", (long)1e15));
     }
 }

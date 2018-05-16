@@ -344,4 +344,31 @@ public final class Library {
     public static boolean isPalindrome(long n) {
         return n == reverse(n);
     }
+
+    public static long fromDigits(int[] digits) {
+        return fromDigits(digits, 10, 0, digits.length);
+    }
+
+    public static long fromDigits(int[] digits, int from, int to) {
+        return fromDigits(digits, 10, from, to);
+    }
+
+    public static long fromDigits(int[] digits, int radix) {
+        return fromDigits(digits, radix, 0, digits.length);
+    }
+
+    public static long fromDigits(int[] digits, int radix, int from, int to) {
+        long n = 0;
+        for (int i = from; i < to; i++)
+            n = n * radix + digits[i];
+        return n;
+    }
+
+    public static int digitSum(BigInteger n) {
+        String digits = n.toString();
+        int s = 0;
+        for (int i = digits.length(); --i >= 0; )
+            s += digits.charAt(i) - '0';
+        return s;
+    }
 }

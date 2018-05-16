@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import euler.algo.Permutations;
 import static euler.algo.Library.gcd;
+import static euler.algo.Library.fromDigits;
 
 public final class Problem170 {
     private Problem170() {}
@@ -30,13 +31,6 @@ public final class Problem170 {
         throw new IllegalStateException("not found");
     }
 
-    private static long fromDigits(int[] digits, int from, int to) {
-        long n = 0;
-        for (int i = from; i < to; i++)
-            n = n * 10 + digits[i];
-        return n;
-    }
-
     private static boolean isPandigital(long factor, long left, long right) {
         if (left % factor != 0 || right % factor != 0)
             return false;
@@ -52,8 +46,6 @@ public final class Problem170 {
         for (int i = 0; i < 10; i++)
             if (digits[i] != '0' + i)
                 return false;
-
-        System.out.printf("%d x (%d, %d)%n", factor, left / factor, right / factor);
         return true;
     }
 

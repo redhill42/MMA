@@ -1,13 +1,5 @@
 package euler;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.util.ArrayList;
-
 import euler.algo.PrimeSieve;
 import static euler.algo.Library.exponent;
 
@@ -50,34 +42,10 @@ public final class Problem179 {
         return new Solver(limit).solve(limit);
     }
 
-    public static void main(String[] args)
-        throws IOException
-    {
-        ArrayList<Integer> inputs = new ArrayList<>();
-        int limit = 0;
-
-        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-        PrintStream out = new PrintStream(new BufferedOutputStream(System.out));
-        int t = nextInt(in);
-        while (--t >= 0) {
-            int n = nextInt(in);
-            if (n > limit)
-                limit = n;
-            inputs.add(n);
-        }
-
-        Solver solver = new Solver(limit);
-        for (int n : inputs)
-            out.println(solver.solve(n));
-        out.flush();
-    }
-
-    private static int nextInt(BufferedReader in)
-        throws IOException
-    {
-        String line = in.readLine();
-        if (line == null)
-            throw new EOFException();
-        return Integer.valueOf(line);
+    public static void main(String[] args) {
+        int limit = 10_000_000;
+        if (args.length > 0)
+            limit = Integer.parseInt(args[0]);
+        System.out.println(solve(limit));
     }
 }

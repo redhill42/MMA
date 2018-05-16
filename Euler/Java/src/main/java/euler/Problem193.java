@@ -1,9 +1,5 @@
 package euler;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-
 import euler.algo.PrimeSieve;
 import static euler.algo.Library.isqrt;
 
@@ -52,21 +48,6 @@ public final class Problem193 {
     }
 
     public static void main(String[] args) {
-        List<Long> inputs = new ArrayList<>();
-        long limit = 0;
-
-        Scanner in = new Scanner(System.in);
-        int t = in.nextInt();
-        while (--t >= 0) {
-            long n = in.nextLong();
-            if (n > limit)
-                limit = n;
-            inputs.add(n);
-        }
-
-        Solver solver = new Solver(limit);
-        for (long n : inputs) {
-            System.out.println(solver.solve(n));
-        }
+        System.out.println(solve(1L << 50));
     }
 }

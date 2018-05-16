@@ -3,6 +3,7 @@ package euler;
 import java.util.stream.LongStream;
 
 import euler.algo.Permutations;
+import static euler.algo.Library.fromDigits;
 
 public final class Problem571 {
     private Problem571() {}
@@ -18,17 +19,10 @@ public final class Problem571 {
         int i = 0;
         do {
             long n = fromDigits(digits, radix);
-            if (checkAll(n, radix))
+            if (checkAll(n, radix - 1))
                 numbers[i++] = n;
         } while (i < count && Permutations.next(digits));
         return numbers;
-    }
-
-    private static long fromDigits(int[] digits, int radix) {
-        long n = 0;
-        for (int d : digits)
-            n = n * radix + d;
-        return n;
     }
 
     private static boolean checkAll(long n, int radix) {
@@ -39,12 +33,12 @@ public final class Problem571 {
     }
 
     private static boolean check(long n, int b) {
-        int mask = 0;
-        while (n != 0) {
+        int mask = 0, pan = (1 << b) - 1;
+        while (n != 0 && mask != pan) {
             mask |= 1 << (n % b);
             n /= b;
         }
-        return mask == (1L << b) - 1;
+        return mask == pan;
     }
 
     public static void main(String[] args) {

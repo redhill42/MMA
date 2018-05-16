@@ -34,6 +34,6 @@ public final class Problem239 {
     }
 
     public static void main(String[] args) {
-        System.out.println(solve(100, 25, 22));
+        System.out.printf("%.12f%n", solve(100, 25, 22));
     }
 }
