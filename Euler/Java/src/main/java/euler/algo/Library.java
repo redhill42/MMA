@@ -10,7 +10,15 @@ public final class Library {
         return (n & 1) == 0;
     }
 
+    public static boolean even(long n) {
+        return (n & 1) == 0;
+    }
+
     public static boolean odd(int n) {
+        return (n & 1) == 1;
+    }
+
+    public static boolean odd(long n) {
         return (n & 1) == 1;
     }
 
