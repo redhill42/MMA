@@ -2,6 +2,7 @@ package euler;
 
 import euler.algo.IntegerPartitions;
 import static euler.algo.Library.choose;
+import static euler.algo.Library.factorials;
 
 public final class Problem172 {
     private Problem172() {}
@@ -13,12 +14,7 @@ public final class Problem172 {
         Solver(int numDigits, int maxRepeats) {
             this.numDigits = numDigits;
             this.maxRepeats = maxRepeats;
-
-            factorials = new long[numDigits + 1];
-            factorials[0] = 1;
-            for (int n = 1; n <= numDigits; n++) {
-                factorials[n] = factorials[n-1] * n;
-            }
+            this.factorials = factorials(numDigits);
         }
 
         class Partitioner implements IntegerPartitions.PartitionOperator<Long> {

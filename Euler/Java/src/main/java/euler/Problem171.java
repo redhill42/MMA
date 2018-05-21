@@ -1,5 +1,6 @@
 package euler;
 
+import static euler.algo.Library.factorials;
 import static euler.algo.Library.isSquare;
 
 public final class Problem171 {
@@ -13,12 +14,7 @@ public final class Problem171 {
         public Solver(int length, long modulo) {
             this.length = length;
             this.modulo = modulo;
-            this.factorials = new long[length + 1];
-
-            factorials[0] = 1;
-            for (int i = 1; i <= length; i++) {
-                factorials[i] = factorials[i-1] * i;
-            }
+            this.factorials = factorials(length);
         }
 
         public long solve() {

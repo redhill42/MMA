@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import static euler.algo.IntegerPartitions.combinations;
 import static euler.algo.IntegerPartitions.partitions;
+import static euler.algo.Library.factorials;
 
 public final class Problem240 {
     private Problem240() {}
@@ -14,16 +15,12 @@ public final class Problem240 {
         private final int[] tally;
 
         Solver(int numDice, int maxPoint, int numTop, int topSum) {
-            this.numDice  = numDice;
-            this.maxPoint = maxPoint;
-            this.numTop   = numTop;
-            this.topSum   = topSum;
-
-            factorial = new long[numDice + 1];
-            factorial[0] = 1;
-            for (int n = 1; n <= numDice; n++)
-                factorial[n] = n * factorial[n - 1];
-            tally = new int[maxPoint + 1];
+            this.numDice   = numDice;
+            this.maxPoint  = maxPoint;
+            this.numTop    = numTop;
+            this.topSum    = topSum;
+            this.factorial = factorials(numDice);
+            this.tally     = new int[maxPoint + 1];
         }
 
         private long counting(int[] top, int[] bottom) {

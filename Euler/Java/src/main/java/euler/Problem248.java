@@ -7,6 +7,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import euler.algo.Library;
+import static euler.algo.Library.factorial;
 
 public final class Problem248 {
     private Problem248() {}
@@ -94,13 +95,6 @@ public final class Problem248 {
     public static long solve(long factorial, int index) {
         Solver solver = new Solver(factorial);
         return solver.solve(index);
-    }
-
-    private static long factorial(int n) {
-        long res = 1;
-        for (int i = 2; i <= n; i++)
-            res *= i;
-        return res;
     }
 
     public static void main(String[] args) {

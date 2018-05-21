@@ -134,9 +134,9 @@ public final class Library {
         if (m < 0)
             m = -m;
         if ((a %= n) < 0)
-            a = -a;
+            a += n;
         if ((b %= m) < 0)
-            b = -b;
+            b += m;
 
         long[] p = new long[2];
         if (!merge(n, b - a, m, p))
@@ -147,6 +147,9 @@ public final class Library {
     }
 
     public static int exponent(long n, long k) {
+        if (k == 2)
+            return Long.numberOfTrailingZeros(n);
+
         int a = 0;
         while (n % k == 0) {
             a++;
@@ -172,7 +175,7 @@ public final class Library {
 
         long y = 1;
         while (n != 0) {
-            if (n % 2 == 1)
+            if ((n & 1) == 1)
                 y *= x;
             n >>= 1;
             x *= x;
@@ -294,6 +297,21 @@ public final class Library {
             if (n % f == 0 || n % (f + 2) == 0)
                 return false;
         return true;
+    }
+
+    public static long factorial(int n) {
+        long r = 1;
+        for (int i = 2; i <= n; i++)
+            r *= i;
+        return r;
+    }
+
+    public static long[] factorials(int n) {
+        long[] r = new long[n + 1];
+        r[0] = r[1] = 1;
+        for (int i = 2; i <= n; i++)
+            r[i] = i * r[i - 1];
+        return r;
     }
 
     private static final long[][] binomial = new long[64][];

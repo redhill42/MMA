@@ -1,8 +1,8 @@
 package euler.algo;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.List;
 
 import static euler.algo.Library.exponent;
 import static euler.algo.Library.isqrt;
@@ -147,8 +147,8 @@ public class FactorizationSieve implements Sieve {
         return n / smallestFactor(n);
     }
 
-    public Set<Factor> factors(int n) {
-        Set<Factor> result = new TreeSet<>();
+    public List<Factor> factors(int n) {
+        List<Factor> result = new ArrayList<>();
         while (n != 1) {
             result.add(new Factor(primes[n], powers[n]));
             n = next(n);
