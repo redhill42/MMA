@@ -26,6 +26,8 @@ public final class Problem571 {
     }
 
     private static boolean checkAll(long n, int radix) {
+        if (radix >= 11 && !check(n, 11)) // this optimization is weird
+            return false;
         for (int b = radix; b >= 2; b--)
             if (!check(n, b))
                 return false;
