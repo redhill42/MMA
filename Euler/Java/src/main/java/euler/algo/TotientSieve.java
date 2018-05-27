@@ -1,6 +1,8 @@
 package euler.algo;
 
+import static euler.algo.Library.even;
 import static euler.algo.Library.isqrt;
+import static euler.algo.Library.modmul;
 
 public class TotientSieve implements Sieve{
     private final int[] phi;
@@ -121,10 +123,10 @@ public class TotientSieve implements Sieve{
         }
 
         for (int x = n / L; x >= 1; x--) {
-            long k = n / x, klimit = isqrt(k);
+            long k = n / x, maxk = isqrt(k);
             long res = k * (k + 1) / 2;
 
-            for (int g = 2; g <= klimit; g++) {
+            for (int g = 2; g <= maxk; g++) {
                 if (k / g <= L) {
                     res -= sieve[(int)(k / g)];
                 } else {
@@ -132,11 +134,58 @@ public class TotientSieve implements Sieve{
                 }
             }
 
-            for (int z = 1; z <= klimit; z++) {
+            for (int z = 1; z <= maxk; z++) {
                 if (z != k / z)
                     res -= (k / z - k / (z + 1)) * sieve[z];
             }
 
+            bigV[x] = res;
+        }
+
+        return bigV[1];
+    }
+
+    public static long modsum(long n, long m) {
+        if (n < 0)
+            return 0;
+        if (n < totientSumCache.length)
+            return totientSumCache[(int)n] % m;
+
+        long L = (long)(Math.pow(n / log2(log2(n)), 2.0/3.0));
+        if (L >= Integer.MAX_VALUE)
+            throw new IllegalArgumentException("overflow");
+
+        long[] sieve = new long[(int)(L + 1)];
+        long[] bigV =  new long[(int)(n / L + 1)];
+
+        for (int i = 0; i < sieve.length; i++)
+            sieve[i] = i;
+        for (int p = 2; p <= L; p++) {
+            if (sieve[p] == p)
+                for (int k = p; k <= L; k += p)
+                    sieve[k] -= sieve[k] / p;
+            sieve[p] += sieve[p - 1];
+        }
+
+        for (int x = (int)(n / L); x >= 1; x--) {
+            long k = n / x, maxk = isqrt(k);
+            long res = even(k) ? modmul(k>>1, k+1, m) : modmul(k, (k+1)>>1, m);
+
+            for (int g = 2; g <= maxk; g++) {
+                if (k / g <= L) {
+                    res -= sieve[(int)(k / g)];
+                } else {
+                    res -= bigV[x * g];
+                }
+            }
+
+            for (int z = 1; z <= maxk; z++) {
+                if (z != k / z)
+                    res -= (k / z - k / (z + 1)) * sieve[z];
+            }
+
+            if ((res %= m) < 0)
+                res += m;
             bigV[x] = res;
         }
 
