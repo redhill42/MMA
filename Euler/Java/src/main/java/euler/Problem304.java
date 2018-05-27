@@ -1,7 +1,7 @@
 package euler;
 
 import euler.algo.SegmentedSieve;
-import static euler.algo.Library.modmul;
+import static euler.algo.Library.fibonacciMod;
 
 public final class Problem304 {
     private Problem304() {}
@@ -15,9 +15,10 @@ public final class Problem304 {
             this.modulus = modulus;
             this.next = start;
 
-            long[] matrix = matrixPowerMod(start, modulus);
-            a = matrix[3];
-            b = matrix[2];
+            long[] fib = new long[2];
+            fibonacciMod(start, modulus, fib);
+            a = fib[0];
+            b = fib[1];
         }
 
         long next(long n) {
@@ -28,28 +29,6 @@ public final class Problem304 {
                 next++;
             }
             return a;
-        }
-
-        private static long[] matrixPowerMod(long n, long m) {
-            long a = 1, b = 1, c = 1, d = 0;
-            long x = 1, y = 1, z = 1, w = 0;
-
-            for (; n != 0; n >>= 1) {
-                if ((n & 1) != 0) {
-                    long x1 = (modmul(a, x, m) + modmul(c, y, m)) % m;
-                    long y1 = (modmul(b, x, m) + modmul(d, y, m)) % m;
-                    long z1 = (modmul(c, w, m) + modmul(a, z, m)) % m;
-                    long w1 = (modmul(d, w, m) + modmul(b, z, m)) % m;
-                    x = x1; y = y1; z = z1; w = w1;
-                }
-
-                long a1 = (modmul(a, a, m) + modmul(c, b, m)) % m;
-                long b1 = (modmul(b, a, m) + modmul(d, b, m)) % m;
-                long c1 = (modmul(a, c, m) + modmul(c, d, m)) % m;
-                long d1 = (modmul(b, c, m) + modmul(d, d, m)) % m;
-                a = a1; b = b1; c = c1; d = d1;
-            }
-            return new long[] {x, y, z, w};
         }
     }
 

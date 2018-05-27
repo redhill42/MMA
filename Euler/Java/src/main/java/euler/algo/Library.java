@@ -347,6 +347,33 @@ public final class Library {
         return a;
     }
 
+    public static long fibonacciMod(long n, long m, long[] r) {
+        long a = 1, b = 1, c = 1, d = 0;
+        long x = 1, y = 1, z = 1, w = 0;
+
+        for (; n != 0; n >>= 1) {
+            if ((n & 1) != 0) {
+                long x1 = (modmul(a, x, m) + modmul(c, y, m)) % m;
+                long y1 = (modmul(b, x, m) + modmul(d, y, m)) % m;
+                long z1 = (modmul(c, w, m) + modmul(a, z, m)) % m;
+                long w1 = (modmul(d, w, m) + modmul(b, z, m)) % m;
+                x = x1; y = y1; z = z1; w = w1;
+            }
+
+            long a1 = (modmul(a, a, m) + modmul(c, b, m)) % m;
+            long b1 = (modmul(b, a, m) + modmul(d, b, m)) % m;
+            long c1 = (modmul(a, c, m) + modmul(c, d, m)) % m;
+            long d1 = (modmul(b, c, m) + modmul(d, d, m)) % m;
+            a = a1; b = b1; c = c1; d = d1;
+        }
+
+        if (r != null) {
+            r[0] = w;
+            r[1] = z;
+        }
+        return w;
+    }
+
     public static long reverse(long n) {
         return reverse(n, 10);
     }
