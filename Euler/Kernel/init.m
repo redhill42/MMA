@@ -16,3 +16,4 @@ With[{base = FileNameJoin[{ParentDirectory@DirectoryName[$InputFileName], "Java"
 End[]
 
 Get["Euler`Euler`"];
+Get["Euler`kempnerSums`"];
