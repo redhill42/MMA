@@ -1,6 +1,10 @@
 package euler.algo;
 
 import java.math.BigInteger;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
+import static java.lang.Math.abs;
 
 @SuppressWarnings("unused")
 public final class Library {
@@ -108,26 +112,6 @@ public final class Library {
         return a;
     }
 
-    private static boolean merge(long a, long b, long m, long[] p) {
-        if (m < 0)
-            m = -m;
-        if ((a %= m) < 0)
-            a += m;
-        if ((b %= m)  < 0)
-            b += m;
-
-        long d = exgcd(a, m, p);
-        if (b % d != 0)
-            return false;
-
-        long x = (p[0] % m + m) % m;
-        x = x * (b / d) % m;
-
-        p[0] = m / d;
-        p[1] = x % p[0];
-        return true;
-    }
-
     public static long chineseRemainder(long a, long n, long b, long m) {
         if (n < 0)
             n = -n;
@@ -139,11 +123,32 @@ public final class Library {
             b += m;
 
         long[] p = new long[2];
-        if (!merge(n, b - a, m, p))
-            return 0;
+        long d = exgcd(n, m, p);
+        if ((b - a) % d != 0)
+            return -1;
+        m /= d;
 
-        long t = p[0] * n;
-        return ((a + p[1] * n) % t + t) % t;
+        long x = p[0] * ((b - a) / d) % m;
+        if (x < 0) x += m;
+        return (a + x * n) % (m * n);
+    }
+
+    public static long chineseRemainder(long[] b, long[] m) {
+        if (b.length != m.length)
+            throw new IllegalArgumentException(
+                "chineseRemainder: Remainders and modulus doesn't have same length");
+
+        if (m.length == 0)
+            return -1;
+
+        long a = b[0], n = m[0];
+        for (int i = 1; i < m.length; i++) {
+            a = chineseRemainder(a, n, b[i], m[i]);
+            if (a == -1)
+                break;
+            n *= m[i];
+        }
+        return a;
     }
 
     public static int exponent(long n, long k) {
@@ -263,12 +268,54 @@ public final class Library {
         }
     }
 
+    /**
+     * Jacobi symbol (and Legendre symbol) computation
+     */
+    public static int jacobi(long a, long n) {
+        if (a == 0)
+            return 0;
+        if (a == 1)
+            return 1;
+
+        int e = exponent(a, 2);
+        long a1 = a >> e;
+
+        int s;
+        if (even(e)) {
+            s = 1;
+        } else {
+            switch ((int)(n % 8)) {
+            case 1: case 7:
+                s = 1;
+                break;
+            case 3: case 5:
+                s = -1;
+                break;
+            default:
+                s = 0;
+                break;
+            }
+        }
+
+        if (n % 4 == 3 && a1 % 4 == 3)
+            s = -s;
+        if (a1 == 1)
+            return s;
+        if (s == 0)
+            return 0;
+        return s * jacobi(n % a1, a1);
+    }
+
     public static int isqrt(int n) {
         return (int)Math.sqrt(n);
     }
 
     public static long isqrt(long n) {
         return (long)Math.sqrt(n);
+    }
+
+    public static int icbrt(long n) {
+        return (int)Math.cbrt(n);
     }
 
     public static boolean isSquare(long n) {
@@ -281,21 +328,49 @@ public final class Library {
         return (x & (x - 1)) == 0;
     }
 
-    public static boolean isPrime(long n) {
-        if (n <= 1)
-            return false;
-        if (n < 4)  // 2 and 3 are prime
-            return true;
-        if (n % 2 == 0)
-            return false;
-        if (n < 9)  // we have already excluded 4, 6, and 8
-            return true;
-        if (n % 3 == 0)
-            return false;
+    private static final int smallPrimes =
+        (1 <<  2) | (1 <<  3) | (1 <<  5) | (1 <<  7) | (1 << 11) |
+        (1 << 13) | (1 << 17) | (1 << 19) | (1 << 23) | (1 << 29) |
+        (1 << 31);
 
+    public static boolean isPrime(long n) {
+        if (n < 0)
+            return false;
+        if (n < 32)
+            return (smallPrimes & (1 << n)) != 0;
+        if (n % 2 == 0 || n % 3 == 0)
+            return false;
         for (long f = 5, w = isqrt(n); f <= w; f += 6)
             if (n % f == 0 || n % (f + 2) == 0)
                 return false;
+        return true;
+    }
+
+    public static boolean isProbablePrime(long n, int t) {
+        if (n < 0)
+            return false;
+        if (n < 32)
+            return (smallPrimes & (1 << n)) != 0;
+        if (even(n))
+            return false;
+
+        Random pr = ThreadLocalRandom.current();
+        int  s = exponent(n - 1, 2);
+        long r = (n - 1) >> s;
+
+        for (int i = 1; i <= t; i++) {
+            long a = abs(pr.nextLong()) % (n - 3) + 2;
+            long y = modpow(a, r, n);
+            if (y != 1 && y != n - 1) {
+                for (int j = 1; j < s && y != n - 1; j++) {
+                    y = modpow(y, 2, n);
+                    if (y == 1)
+                        return false;
+                }
+                if (y != n - 1)
+                    return false;
+            }
+        }
         return true;
     }
 

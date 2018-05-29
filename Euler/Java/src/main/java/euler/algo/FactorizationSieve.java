@@ -5,7 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static euler.algo.Library.exponent;
+import static euler.algo.Library.gcd;
 import static euler.algo.Library.isqrt;
+import static euler.algo.Library.modpow;
 import static euler.algo.Library.pow;
 
 @SuppressWarnings("unused")
@@ -347,5 +349,25 @@ public class FactorizationSieve implements Sieve {
 
         Arrays.sort(d);
         return d;
+    }
+
+    public int ord(int a, int n) {
+        if (gcd(a, n) != 1)
+            throw new IllegalArgumentException(
+                String.format("Multiplicative order: %d and %d must coprime", a, n));
+
+        int n1 = phi(n);
+        int t = 1;
+        int f = n1;
+        while (f > 1) {
+            int p = primes[f], u = smallestFactor(f);
+            int x = modpow(a, n1 / u, n);
+            while (x > 1) {
+                x = modpow(x, p, n);
+                t *= p;
+            }
+            f /= u;
+        }
+        return t;
     }
 }

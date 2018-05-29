@@ -23,8 +23,10 @@ public final class Problem531 {
         public Long compute(int from, int to) {
             long sum = 0;
             for (int n = from; n <= to; n++) {
-                for (int m = n + 1; m < end; m++)
-                    sum += chineseRemainder(sieve.phi(n), n, sieve.phi(m), m);
+                for (int m = n + 1; m < end; m++) {
+                    long r = chineseRemainder(sieve.phi(n), n, sieve.phi(m), m);
+                    if (r > 0) sum += r;
+                }
             }
             return sum;
         }
