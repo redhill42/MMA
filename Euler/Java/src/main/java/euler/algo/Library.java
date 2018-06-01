@@ -264,7 +264,8 @@ public final class Library {
         if (x == 1) {
             return a >= 0 ? a : a + m;
         } else {
-            throw new IllegalArgumentException("Inverse modulo does not exist");
+            throw new IllegalArgumentException(
+                String.format("Inverse modulo does not exist: %d^-1 (mod %d)", x, m));
         }
     }
 
