@@ -3,9 +3,9 @@ package euler;
 import java.util.List;
 import java.util.concurrent.ForkJoinPool;
 
-import euler.algo.FactorizationSieve.Factor;
-import euler.util.RangedTask;
 import euler.algo.FactorizationSieve;
+import euler.algo.PrimeFactor;
+import euler.util.RangedTask;
 import static euler.algo.Library.chineseRemainder;
 import static euler.algo.Library.even;
 import static euler.algo.Library.isPowerOfTwo;
@@ -46,7 +46,7 @@ public final class Problem451 {
             if (isPowerOfTwo(n))
                 return (n >> 1) + 1;
 
-            List<Factor> factors = sieve.factors(n);
+            List<PrimeFactor> factors = sieve.factors(n);
             if (factors.size() == 1)
                 return 1;
 
@@ -54,7 +54,7 @@ public final class Problem451 {
             int k = 0;
 
             // get the generating set of square roots of unity modulo n
-            for (Factor f : factors) {
+            for (PrimeFactor f : factors) {
                 int a = f.value();
                 gene[k++] = (int)chineseRemainder(-1, a, 1, n / a);
             }

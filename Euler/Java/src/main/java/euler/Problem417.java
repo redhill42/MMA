@@ -3,6 +3,7 @@ package euler;
 import java.util.concurrent.ForkJoinPool;
 
 import euler.algo.FactorizationSieve;
+import euler.algo.PrimeFactor;
 import euler.util.RangedTask;
 
 import static euler.algo.Library.lcm;
@@ -34,7 +35,7 @@ public final class Problem417 {
                 return primePeriods[n];
 
             long l = 1;
-            for (FactorizationSieve.Factor f : sieve.factors(n)) {
+            for (PrimeFactor f : sieve.factors(n)) {
                 int p = f.prime(), a = f.power();
                 a -= (p == 3 || p == 487) ? 2 : 1;
                 if (a > 0) {

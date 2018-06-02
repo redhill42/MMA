@@ -12,48 +12,6 @@ import static euler.algo.Library.pow;
 
 @SuppressWarnings("unused")
 public class FactorizationSieve implements Sieve {
-    public static final class Factor implements Comparable<Factor> {
-        private final int p, a;
-
-        Factor(int p, int a) {
-            this.p = p;
-            this.a = a;
-        }
-
-        public int prime() {
-            return p;
-        }
-
-        public int power() {
-            return a;
-        }
-
-        public int value() {
-            return (int)pow(p, a);
-        }
-
-        @Override
-        public int compareTo(Factor other) {
-            return Integer.compare(p, other.p);
-        }
-
-        public boolean equals(Object obj) {
-            if (obj instanceof Factor) {
-                Factor other = (Factor)obj;
-                return p == other.p && a == other.a;
-            }
-            return false;
-        }
-
-        public int hashCode() {
-            return p * 31 + a;
-        }
-
-        public String toString() {
-            return "{" + p + "," + a + "}";
-        }
-    }
-
     private final int[] primes;
     private final byte[] powers;
     private final int nprimes;
@@ -149,10 +107,10 @@ public class FactorizationSieve implements Sieve {
         return n / smallestFactor(n);
     }
 
-    public List<Factor> factors(int n) {
-        List<Factor> result = new ArrayList<>();
+    public List<PrimeFactor> factors(int n) {
+        List<PrimeFactor> result = new ArrayList<>();
         while (n != 1) {
-            result.add(new Factor(primes[n], powers[n]));
+            result.add(new PrimeFactor(primes[n], powers[n]));
             n = next(n);
         }
         return result;

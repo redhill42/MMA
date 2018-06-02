@@ -3,6 +3,7 @@ package euler;
 import java.util.BitSet;
 import java.util.concurrent.ForkJoinPool;
 import euler.algo.FactorizationSieve;
+import euler.algo.PrimeFactor;
 import euler.util.RangedTask;
 import static euler.algo.Library.modinv;
 
@@ -50,7 +51,7 @@ public final class Problem407 {
                 solen = 1;
                 modulus = 1;
 
-                for (FactorizationSieve.Factor f : sieve.factors(n)) {
+                for (PrimeFactor f : sieve.factors(n)) {
                     int q = f.value();
                     int recip = (int)modinv(q % modulus, modulus);
                     int newmod = q * modulus;

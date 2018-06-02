@@ -2,7 +2,7 @@ package euler;
 
 import java.util.Arrays;
 import euler.algo.FactorizationSieve;
-import euler.algo.FactorizationSieve.Factor;
+import euler.algo.PrimeFactor;
 
 import static euler.algo.Library.gcd;
 import static euler.algo.Library.mul128;
@@ -75,7 +75,7 @@ public final class Problem302 {
 
             int h = k;
             for (int i = 0; i < k; i++) {
-                for (Factor f : sieve.factors(primes[i] - 1)) {
+                for (PrimeFactor f : sieve.factors(primes[i] - 1)) {
                     int j = Arrays.binarySearch(phi_primes, 0, h, f.prime());
                     if (j < 0) {
                         j = -(j + 1);
