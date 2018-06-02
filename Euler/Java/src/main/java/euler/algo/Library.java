@@ -416,8 +416,13 @@ public final class Library {
     }
 
     public static long fibonacci(int n) {
-        long a = 1, b = 1;
-        while (--n > 0) {
+        if (n < 0) {
+            long f = fibonacci(-n);
+            return even(n) ? -f : f;
+        }
+
+        long a = 0, b = 1;
+        while (n-- > 0) {
             long t = b; b = a + b; a = t;
         }
         return a;
