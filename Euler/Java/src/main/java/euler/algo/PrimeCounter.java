@@ -2,8 +2,30 @@ package euler.algo;
 
 import static euler.algo.Library.isqrt;
 import static java.lang.Math.abs;
+import static java.lang.Math.ceil;
+import static java.lang.Math.log;
 
 public class PrimeCounter {
+    private static final int[] smallPrimes = {0, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
+
+    public static int approximate(int n) {
+        if (n < smallPrimes.length)
+            return smallPrimes[n];
+
+        double logn = log(n), log2n = log(logn);
+        double upper;
+
+        if (n >= 688383)
+            upper = n * (logn + log2n - 1.0 + ((log2n - 2.0)/logn));
+        else if (n >= 178974)
+            upper = n * (logn + log2n - 1.0 + ((log2n - 1.95)/logn));
+        else if (n >= 39017)
+            upper = n * (logn + log2n - 0.9484);
+        else
+            upper = n * (logn + 0.6 * log2n);
+        return (int)ceil(upper);
+    }
+
     private final int[] primes;
     private final PrimePi pi;
     private final PhiCache cache;
