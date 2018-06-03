@@ -113,10 +113,9 @@ public final class Library {
             n = -n;
         if (m < 0)
             m = -m;
-        if ((a %= n) < 0)
-            a += n;
-        if ((b %= m) < 0)
-            b += m;
+
+        a = mod(a, n);
+        b = mod(b, m);
 
         long[] p = new long[2];
         long d = exgcd(n, m, p);
@@ -124,8 +123,7 @@ public final class Library {
             return -1;
         m /= d;
 
-        long x = p[0] * ((b - a) / d) % m;
-        if (x < 0) x += m;
+        long x = mod(p[0] * ((b - a) / d), m);
         return (a + x * n) % (m * n);
     }
 
@@ -204,27 +202,41 @@ public final class Library {
         return (u == 0 && v >= 0) ? v : Long.MAX_VALUE;
     }
 
-    public static long modmul(long a, long b, long m) {
-        if (a == 0 || b == 0) {
-            return 0;
-        }
+    public static int mod(long n, int m) {
+        if ((n %= m) < 0)
+            n += m;
+        return (int)n;
+    }
 
-        long r = (a %= m) * (b %= m);
-        if ((a | b) >>> 31 != 0 && r / b != a) {
-            r = 0;
-            while (b > 0) {
-                if ((b & 1) != 0 && (r += a) >= m)
-                    r -= m;
-                if ((a <<= 1) >= m)
-                    a -= m;
-                b >>= 1;
-            }
+    public static long mod(long n, long m) {
+        if ((n %= m) < 0)
+            n += m;
+        return n;
+    }
+
+    public static long modmul(long a, long b, long m) {
+        if (a == 0 || b == 0)
+            return 0;
+
+        a = mod(a, m);
+        b = mod(b, m);
+
+        if ((a | b) >>> 31 == 0)
+            return a * b % m;
+
+        long r = 0;
+        while (b > 0) {
+            if ((b & 1) != 0 && (r += a) >= m)
+                r -= m;
+            if ((a <<= 1) >= m)
+                a -= m;
+            b >>= 1;
         }
-        return r % m;
+        return r;
     }
 
     public static int modmul(int a, int b, int m) {
-        return (int)((long)a * b % m);
+        return mod((long)a * b, m);
     }
 
     public static long modpow(long a, long n, long m) {
@@ -258,7 +270,7 @@ public final class Library {
             x = y; y = z; a = b; b = c;
         }
         if (x == 1) {
-            return a >= 0 ? a : a + m;
+            return a < 0 ? a + m : a;
         } else {
             throw new IllegalArgumentException(
                 String.format("Inverse modulo does not exist: %d^-1 (mod %d)", x, m));

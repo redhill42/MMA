@@ -1,5 +1,7 @@
 package euler;
 
+import static euler.algo.Library.even;
+
 public final class Problem14 {
     private Problem14() {}
 
@@ -10,7 +12,7 @@ public final class Problem14 {
             int k = 1;
             while (chain != 1) {
                 ++k;
-                chain = (chain % 2 == 0) ? chain / 2 : 3 * chain + 1;
+                chain = even(chain) ? chain / 2 : 3 * chain + 1;
             }
             if (k >= max_len) {
                 max_len = k;

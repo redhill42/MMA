@@ -1,5 +1,6 @@
 package euler;
 
+import static euler.algo.Library.mod;
 import static euler.algo.Library.modmul;
 import static java.lang.Math.sqrt;
 
@@ -37,10 +38,7 @@ public final class Problem374 {
             r -= modmul((m - 1) * (m + 1), h - f, M);
         }
 
-        r %= M;
-        if (r < 0)
-            r += M;
-        return r;
+        return mod(r, M);
     }
 
     public static void main(String[] args) {

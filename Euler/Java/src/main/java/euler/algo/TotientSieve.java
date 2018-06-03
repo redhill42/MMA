@@ -2,6 +2,7 @@ package euler.algo;
 
 import static euler.algo.Library.even;
 import static euler.algo.Library.isqrt;
+import static euler.algo.Library.mod;
 import static euler.algo.Library.modmul;
 
 public class TotientSieve implements Sieve{
@@ -94,10 +95,6 @@ public class TotientSieve implements Sieve{
         return Math.log(x) / Math.log(2);
     }
 
-    private static final int[] totientSumCache = {
-        0, 1, 2, 4, 6, 10, 12, 18, 22, 28, 32
-    };
-
     /**
      * Compute the totient summation up to the given number.
      *
@@ -106,8 +103,8 @@ public class TotientSieve implements Sieve{
     public static long sum(int n) {
         if (n < 0)
             return 0;
-        if (n < totientSumCache.length)
-            return totientSumCache[n];
+        if (n <= 2)
+            return n;
 
         int L = (int)(Math.pow(n / log2(log2(n)), 2.0/3.0));
         long[] sieve = new long[L + 1];
@@ -148,8 +145,8 @@ public class TotientSieve implements Sieve{
     public static long modsum(long n, long m) {
         if (n < 0)
             return 0;
-        if (n < totientSumCache.length)
-            return totientSumCache[(int)n] % m;
+        if (n <= 2)
+            return n % m;
 
         long L = (long)(Math.pow(n / log2(log2(n)), 2.0/3.0));
         if (L >= Integer.MAX_VALUE)
@@ -184,9 +181,7 @@ public class TotientSieve implements Sieve{
                     res -= (k / z - k / (z + 1)) * sieve[z];
             }
 
-            if ((res %= m) < 0)
-                res += m;
-            bigV[x] = res;
+            bigV[x] = mod(res, m);
         }
 
         return bigV[1];

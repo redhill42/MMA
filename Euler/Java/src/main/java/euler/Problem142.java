@@ -1,5 +1,6 @@
 package euler;
 
+import static euler.algo.Library.even;
 import static euler.algo.Library.isSquare;
 
 public final class Problem142 {
@@ -14,7 +15,7 @@ public final class Problem142 {
                 f = a - c;
                 if (f <= 0 || !isSquare(f))
                     continue;
-                for (int k = (n % 2 == 0) ? 2 : 1; k < n; k += 2) {
+                for (int k = even(n) ? 2 : 1; k < n; k += 2) {
                     d = k * k;
                     e = a - d;
                     b = c - e;

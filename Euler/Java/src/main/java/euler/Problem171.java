@@ -119,9 +119,8 @@ public final class Problem171 {
         }
 
         long sum = 0;
-        for (int i = 0; i*i <= 81 * length; i++) {
+        for (int i = 0; i*i <= 81 * length; i++)
             sum += S[i*i];
-        }
         return sum % modulo;
     }
 
