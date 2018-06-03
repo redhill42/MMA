@@ -1,10 +1,6 @@
 package euler.algo;
 
 import java.math.BigInteger;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-
-import static java.lang.Math.abs;
 
 @SuppressWarnings("unused")
 public final class Library {
@@ -334,20 +330,16 @@ public final class Library {
         (1 << 13) | (1 << 17) | (1 << 19) | (1 << 23) | (1 << 29) |
         (1 << 31);
 
-    public static boolean isPrime(long n) {
-        if (n < 0)
-            return false;
-        if (n < 32)
-            return (smallPrimes & (1 << n)) != 0;
-        if (n % 2 == 0 || n % 3 == 0)
-            return false;
-        for (long f = 5, w = isqrt(n); f <= w; f += 6)
-            if (n % f == 0 || n % (f + 2) == 0)
-                return false;
-        return true;
-    }
+    // Deterministic variants of the Miller-Rabin primality test
+    // https://en.wikipedia.org/wiki/Miller–Rabin_primality_test#Deterministic_variants
+    private static final int[] TestBase1 = { 377687 };
+    private static final int[] TestBase2 = { 31, 73 };
+    private static final int[] TestBase3 = { 2, 7, 61 };
+    private static final int[] TestBase4 = { 2, 13, 23, 1662803 };
+    // at least 2^64, http://miller-rabin.appspot.com
+    private static final int[] TestBase7 = { 2, 325, 9375, 28178, 450775, 9780504, 1795265022 };
 
-    public static boolean isProbablePrime(long n, int t) {
+    public static boolean isPrime(long n) {
         if (n < 0)
             return false;
         if (n < 32)
@@ -355,24 +347,58 @@ public final class Library {
         if (even(n))
             return false;
 
-        Random pr = ThreadLocalRandom.current();
+        int[] testBase;
+        if (n < 5329)
+            testBase = TestBase1;
+        else if (n < 9_080_191)
+            testBase = TestBase2;
+        else if (n < 4_759_123_141L)
+            testBase = TestBase3;
+        else if (n < 1_122_004_669_633L)
+            testBase = TestBase4;
+        else
+            testBase = TestBase7;
+
         int  s = exponent(n - 1, 2);
         long r = (n - 1) >> s;
 
-        for (int i = 1; i <= t; i++) {
-            long a = abs(pr.nextLong()) % (n - 3) + 2;
-            long y = modpow(a, r, n);
-            if (y != 1 && y != n - 1) {
-                for (int j = 1; j < s && y != n - 1; j++) {
-                    y = modpow(y, 2, n);
-                    if (y == 1)
-                        return false;
-                }
-                if (y != n - 1)
+    WitnessLoop:
+        for (int a : testBase) {
+            long x = modpow(a, r, n);
+            if (x == 1 || x == n - 1)
+                continue;
+            for (int i = 1; i < s; i++) {
+                x = modmul(x, x, n);
+                if (x == 1)
                     return false;
+                if (x == n - 1)
+                    continue WitnessLoop;
             }
+            return false;
         }
         return true;
+    }
+
+    public static long nextPrime(long n) {
+        if (n < 2)
+            return 2;
+        if (even(++n))
+            ++n;
+        while (n > 0 && !isPrime(n))
+            n += 2;
+        return n;
+    }
+
+    public static long previousPrime(long n) {
+        if (n == 3)
+            return 2;
+        if (n <= 2)
+            return -1;
+        if (even(--n))
+            --n;
+        while (!isPrime(n))
+            n -= 2;
+        return n;
     }
 
     public static long factorial(int n) {
