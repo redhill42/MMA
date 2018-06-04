@@ -8,8 +8,8 @@ public final class Problem218 {
     private Problem218() {}
 
     public static long solve(long limit) {
-        return Pythagorean.<Long>withHypotenuse(isqrt(limit), 0L, (z, a, b, c) ->
-            z + (isSquare(c) ? 0 : perfect(a, b, limit)));
+        return Pythagorean.<Long>withHypotenuse(isqrt(limit), 0L, (z,t) ->
+            z + (isSquare(t.c) ? 0 : perfect(t.a, t.b, limit)));
     }
 
     private static long perfect(long a, long b, long limit) {

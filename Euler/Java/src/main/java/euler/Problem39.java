@@ -4,12 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import euler.algo.Pythagorean;
-import euler.algo.Pythagorean.TripletFunction;
 
 public final class Problem39 {
     private Problem39() {}
 
-    private static class Solver implements TripletFunction<Void> {
+    private static class Solver {
         private final int limit;
         private final Map<Integer, Integer> pyth = new HashMap<>();
         private int max_k, max_v;
@@ -18,9 +17,7 @@ public final class Problem39 {
             this.limit = limit;
         }
 
-        @Override
-        public Void compute(Void z, long a, long b, long c) {
-            int p = (int)(a + b + c);
+        private void collect(int p) {
             for (int k = p; k <= limit; k += p) {
                 int v = pyth.merge(k, 1, Integer::sum);
                 if (v > max_v) {
@@ -28,11 +25,13 @@ public final class Problem39 {
                     max_k = k;
                 }
             }
-            return null;
         }
 
         public int solve() {
-            Pythagorean.withPerimeter(limit, null, this);
+            Pythagorean.<Void>withPerimeter(limit, null, (z, t) -> {
+                collect((int)t.perimeter());
+                return null;
+            });
             return max_k;
         }
     }
