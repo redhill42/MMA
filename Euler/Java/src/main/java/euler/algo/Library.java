@@ -467,10 +467,21 @@ public final class Library {
     }
 
     public static long fibonacciMod(long n, long m, long[] r) {
+        if (n < 0)
+            throw new IllegalStateException("not implemented");
+
+        if (n == 0) {
+            if (r != null) {
+                r[0] = 1; r[1] = 0; r[2] = 0; r[3] = 1; // identity matrix
+            }
+            return 0;
+        }
+        n--;
+
         long a = 1, b = 1, c = 1, d = 0;
         long x = 1, y = 1, z = 1, w = 0;
 
-        for (; n != 0; n >>= 1) {
+        for (; n > 0; n >>= 1) {
             if ((n & 1) != 0) {
                 long x1 = (modmul(a, x, m) + modmul(c, y, m)) % m;
                 long y1 = (modmul(b, x, m) + modmul(d, y, m)) % m;
@@ -487,10 +498,9 @@ public final class Library {
         }
 
         if (r != null) {
-            r[0] = w;
-            r[1] = z;
+            r[0] = x; r[1] = y; r[2] = z; r[3] = w;
         }
-        return w;
+        return y;
     }
 
     public static long reverse(long n) {

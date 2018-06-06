@@ -7,23 +7,23 @@ public final class Problem304 {
     private Problem304() {}
 
     private static class Fibonacci {
-        private final long modulus;
+        private final long modulo;
         private long a, b;
         private long next;
 
-        Fibonacci(long start, long modulus) {
-            this.modulus = modulus;
+        Fibonacci(long start, long modulo) {
+            this.modulo = modulo;
             this.next = start;
 
-            long[] fib = new long[2];
-            fibonacciMod(start, modulus, fib);
-            a = fib[0];
-            b = fib[1];
+            long[] fib = new long[4];
+            fibonacciMod(start, modulo, fib);
+            a = fib[1];
+            b = fib[0];
         }
 
         long next(long n) {
             while (next < n) {
-                long t = (a + b) % modulus;
+                long t = (a + b) % modulo;
                 a = b;
                 b = t;
                 next++;
