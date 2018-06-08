@@ -1,35 +1,21 @@
 package euler;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
+import euler.algo.PrimeFactor;
+import static euler.algo.Library.factorize;
 
 public final class Problem284 {
     private Problem284() {}
 
     public static long solve(int n, int radix) {
         long sum = 1;
-        for (int p : factorize(radix)) {
+        for (PrimeFactor f : factorize(radix)) {
+            long p = f.value();
             BigInteger a = BigInteger.valueOf(p).pow(n);
             BigInteger b = BigInteger.valueOf(radix / p).pow(n);
             sum += accumulate(chineseRemainder(a, b), radix);
         }
         return sum;
-    }
-
-    private static List<Integer> factorize(int n) {
-        List<Integer> result = new ArrayList<>();
-        for (int p = 2; p <= n; p++) {
-            if (n % p == 0) {
-                int f = 1;
-                while (n % p == 0) {
-                    f *= p;
-                    n /= p;
-                }
-                result.add(f);
-            }
-        }
-        return result;
     }
 
     private static long accumulate(BigInteger n, int radix) {

@@ -1,6 +1,9 @@
 package euler.algo;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @SuppressWarnings("unused")
 public final class Library {
@@ -411,6 +414,84 @@ public final class Library {
         while (!isPrime(n))
             n -= 2;
         return n;
+    }
+
+    private static final int[] wheel = {4, 2, 4, 2, 4, 6, 2, 6};
+
+    public static List<PrimeFactor> factorize(long n) {
+        return factorize(n, Integer.MAX_VALUE);
+    }
+
+    public static List<PrimeFactor> factorize(long n, int limit) {
+        List<PrimeFactor> factors = new ArrayList<>();
+
+        if (n % 2 == 0) {
+            int a = exponent(n, 2);
+            factors.add(new PrimeFactor(2, a));
+            n >>= a;
+        }
+        if (n % 3 == 0)
+            n = addPrimeFactor(n, 3, factors);
+        if (n % 5 == 0)
+            n = addPrimeFactor(n, 5, factors);
+
+        int maxFactor = (int)Math.min(limit, isqrt(n));
+        int p = 7, i = 0;
+        while (p <= maxFactor) {
+            if (n % p == 0) {
+                n = addPrimeFactor(n, p, factors);
+                maxFactor = (int)Math.min(limit, isqrt(n));
+            }
+            p += wheel[i];
+            i = (i + 1) & 7;
+        }
+
+        if (n != 1 && n < limit) {
+            factors.add(new PrimeFactor((int)n, 1));
+        }
+
+        return factors;
+    }
+
+    private static long addPrimeFactor(long n, int p, List<PrimeFactor> factors) {
+        int a = 0;
+        while (n % p == 0) {
+            a++;
+            n /= p;
+        }
+        factors.add(new PrimeFactor(p, a));
+        return n;
+    }
+
+    public static long[] divisors(long n) {
+        if (n < 0)
+            n = -n;
+        if (n <= 1)
+            return new long[]{n};
+
+        List<PrimeFactor> factors = factorize(n);
+        int sigma = 1;
+        for (PrimeFactor f : factors) {
+            sigma *= f.power() + 1;
+        }
+
+        long[] divisors = new long[sigma];
+        divisors[0] = 1;
+
+        int i = 1;
+        for (PrimeFactor f : factors) {
+            int k = i, p = f.prime(), a = f.power();
+            long q = p;
+            while (--a >= 0) {
+                for (int j = 0; j < i; j++)
+                    divisors[k++] = divisors[j] * q;
+                q *= p;
+            }
+            i = k;
+        }
+
+        Arrays.sort(divisors);
+        return divisors;
     }
 
     public static long factorial(int n) {

@@ -1,12 +1,12 @@
 package euler;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import euler.algo.Library;
+import static euler.algo.Library.divisors;
 import static euler.algo.Library.factorial;
 
 public final class Problem248 {
@@ -19,7 +19,9 @@ public final class Problem248 {
 
         Solver(long factorial) {
             this.factorial = factorial;
-            this.candidates = factorize(factorial);
+
+            this.candidates = Arrays.stream(divisors(factorial))
+                .map(x->x+1).filter(Library::isPrime).toArray();
 
             SortedSet<Long> results = new TreeSet<>();
             search(0, 1, 1, results);
@@ -32,40 +34,6 @@ public final class Problem248 {
 
         public long solve(int index) {
             return results[index - 1];
-        }
-
-        private static long[] factorize(long n) {
-            List<Long> divisors = new ArrayList<>();
-            divisors.add(1L);
-
-            for (long p = 2; p * p <= n; p++) {
-                if (n % p == 0) {
-                    int a = 0;
-                    while (n % p == 0) {
-                        a++;
-                        n /= p;
-                    }
-
-                    int k = divisors.size();
-                    long q = p;
-                    while (--a >= 0) {
-                        for (int i = 0; i < k; i++)
-                            divisors.add(divisors.get(i) * q);
-                        q *= p;
-                    }
-                }
-            }
-            if (n != 0) {
-                int k = divisors.size();
-                for (int i = 0; i < k; i++)
-                    divisors.add(divisors.get(i) * n);
-            }
-
-            return divisors.stream()
-                           .mapToLong(x->x+1)
-                           .filter(Library::isPrime)
-                           .sorted()
-                           .toArray();
         }
 
         private void search(int from, long number, long phi, Set<Long> results) {
