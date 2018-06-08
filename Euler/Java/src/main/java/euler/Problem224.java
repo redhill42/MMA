@@ -7,7 +7,7 @@ public final class Problem224 {
 
     public static long solve(int limit) {
         long[][] start = {{2, 2, 3}};
-        return Pythagorean.solve(start, limit, null);
+        return Pythagorean.count(start, limit);
     }
 
     public static void main(String[] args) {

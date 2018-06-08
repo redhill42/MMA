@@ -33,7 +33,7 @@ public final class Problem223 {
                 if (t.a == 1 && t.b != n)
                     return false;
                 return true;
-            }, null);
+            }, null, null);
         }
 
         @Override

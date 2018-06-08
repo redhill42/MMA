@@ -2,9 +2,9 @@ package euler.algo;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
@@ -86,23 +86,28 @@ public final class Pythagorean {
                            3 * c - 2 * b + 2 * a);
     }
 
-    // Solve the Diophantine equation with the form: x^2+y^2=z^2+k.
-    // Given the starting triplets as the base solutions.
-    public static long solve(long[][] start, Predicate<Triplet> pred, Collection<Triplet> solutions) {
-        Queue<Triplet> q = new ArrayDeque<>();
+    /**
+     * Solve the Diophantine equation with the form: x^2+y^2=z^2+k.
+     * Given the starting triple as the base solutions.
+     */
+    public static long solve(long[][] start,
+                             Predicate<Triplet> pred,
+                             Predicate<Triplet> cosumer,
+                             Comparator<Triplet> order)
+    {
+        Queue<Triplet> q = (order != null) ? new PriorityQueue<>(order): new ArrayDeque<>();
         for (long[] t : start) {
             q.offer(new Triplet(t[0], t[1], t[2]));
         }
 
-        int count = 0;
+        long count = 0;
         while (!q.isEmpty()) {
             Triplet t = q.poll();
-            if (!pred.test(t))
+            if (pred != null && !pred.test(t))
                 continue;
-
-            if (solutions != null)
-                solutions.add(t);
             count++;
+            if (cosumer != null && !cosumer.test(t))
+                break;
 
             long a = t.a, b = t.b, c = t.c;
             if (a != b)
@@ -113,14 +118,12 @@ public final class Pythagorean {
         return count;
     }
 
-    public static long solve(long[][] start, int limit, Collection<Triplet> solutions) {
-        return solve(start, t -> t.perimeter() <= limit, solutions);
-    }
-
-    public static long[][] solve(long[][] start, int limit) {
+    /**
+     * Convenient method to enumerate triplet with limitted perimeter.
+     */
+    public static long[][] enumerate(long[][] start, int limit) {
         List<Triplet> solutions = new ArrayList<>();
-        solve(start, t -> t.c <= limit, solutions);
-        solutions.sort(Comparator.naturalOrder());
+        solve(start, t -> t.perimeter() <= limit, solutions::add, Comparator.naturalOrder());
 
         long[][] result = new long[solutions.size()][3];
         for (int i = 0; i < result.length; i++) {
@@ -130,5 +133,12 @@ public final class Pythagorean {
             result[i][2] = t.c;
         }
         return result;
+    }
+
+    /**
+     * Convenient method to count triplet with limitted perimeter.
+     */
+    public static long count(long[][] start, int limit) {
+        return solve(start, t -> t.perimeter() <= limit, null, null);
     }
 }
