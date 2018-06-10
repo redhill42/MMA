@@ -2,6 +2,7 @@ package euler;
 
 import java.math.BigInteger;
 import euler.algo.PellEquation;
+import euler.algo.Rational;
 
 public final class Problem66 {
     private Problem66() {}
@@ -9,12 +10,13 @@ public final class Problem66 {
     public static int solve(int limit) {
         BigInteger max_x = BigInteger.ZERO;
         int max_d = 0;
-        BigInteger[] r = new BigInteger[2];
 
         for (int d = 1; d <= limit; d++) {
-            if (PellEquation.solve(d, 1, r)) {
-                if (r[0].compareTo(max_x) > 0) {
-                    max_x = r[0];
+            Rational r = PellEquation.solve(d, 1);
+            if (r != null) {
+                BigInteger n = r.getNumerator();
+                if (n.compareTo(max_x) > 0) {
+                    max_x = n;
                     max_d = d;
                 }
             }

@@ -55,13 +55,26 @@ public final class PellEquation {
     }
 
     /**
-     * Solve the minimum solution of a Pell's equation. Returns the
-     * solution as a fraction of BigInteger.
+     * Solve the fundamental solution of a Pell's equation. Given a rational
+     * number d/b as the parameter.
      */
-    public static boolean solve(long d, int c, BigInteger[] r) {
+    public static boolean solve(long d, int b, int c, long[] r) {
+        if (solve(b * d, c, r)) {
+            r[1] *= b;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Solve the minimum solution of a Pell's equation. Returns the
+     * solution as a fraction of BigInteger. Returns null if no solution
+     * found.
+     */
+    public static Rational solve(long d, int c) {
         long a0 = isqrt(d);
         if (a0 * a0 == d)
-            return false;
+            return null;
 
         long a = a0, P = 0, Q = 1;
         BigInteger p0 = ONE, q0 = ZERO;
@@ -75,9 +88,7 @@ public final class PellEquation {
             // check for solution
             BigInteger t = p.multiply(p).subtract(D.multiply(q).multiply(q));
             if (t.compareTo(C) == 0) {
-                r[0] = p;
-                r[1] = q;
-                return true;
+                return Rational.valueOf(p, q);
             }
 
             // calculate the terms in the continued fraction
@@ -88,7 +99,7 @@ public final class PellEquation {
             // for equation x^2-dy^2=-1, there must be odd period of terms
             // in the continued fraction
             if (Q == 1 && c == -1 && k % 2 == 0)
-                return false;
+                return null;
 
             // calculate convergents of the continued fraction
             p1 = p; q1 = q;
@@ -99,12 +110,14 @@ public final class PellEquation {
     }
 
     /**
-     * Solve the minimum solution of a Pell's equation. Returns the
-     * solution as a fraction of BigInteger.
+     * Solve the fundamental solution of a Pell's equation. Given a rational
+     * number b/d as the parameter.
      */
-    public static BigInteger[] solve(long d, int c) {
-        BigInteger[] r = new BigInteger[2];
-        return solve(d, c, r) ? r : null;
+    public static Rational solve(long d, long b, int c) {
+        Rational r = solve(b * d, c);
+        if (r != null)
+            r = r.divide(Rational.valueOf(b));
+        return r;
     }
 
     /**
@@ -129,7 +142,7 @@ public final class PellEquation {
      * Solve the Pell equation and process each solution with the supplied
      * function.
      */
-    public static <T> T series(int d, int c, SeriesFunction<T> f) {
+    public static <T> T series(long d, int c, SeriesFunction<T> f) {
         long p, q, x, y;
         T z;
 
@@ -151,5 +164,13 @@ public final class PellEquation {
             }
         }
         return z;
+    }
+
+    /**
+     * Solve the Pell equation and process each solution with the supplied
+     * function. Given a rational number d/b as the parameter.
+     */
+    public static <T> T series(long d, long b, int c, SeriesFunction<T> f) {
+        return series(b * d, c, (x, y) -> f.apply(x, y * b));
     }
 }
