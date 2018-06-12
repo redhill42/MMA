@@ -1,14 +1,15 @@
 package euler.algo;
 
 public class PrimeFactor {
-    private final int p, a;
+    private final long p;
+    private final int a;
 
-    public PrimeFactor(int p, int a) {
+    public PrimeFactor(long p, int a) {
         this.p = p;
         this.a = a;
     }
 
-    public int prime() {
+    public long prime() {
         return p;
     }
 
@@ -16,8 +17,8 @@ public class PrimeFactor {
         return a;
     }
 
-    public int value() {
-        return (int)Library.pow(p, a);
+    public long value() {
+        return Library.pow(p, a);
     }
 
     public boolean equals(Object obj) {
@@ -29,7 +30,7 @@ public class PrimeFactor {
     }
 
     public int hashCode() {
-        return p * 31 + a;
+        return Long.hashCode(p) * 31 + a;
     }
 
     public String toString() {

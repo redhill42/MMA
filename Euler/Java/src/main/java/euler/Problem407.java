@@ -52,7 +52,7 @@ public final class Problem407 {
                 modulus = 1;
 
                 for (PrimeFactor f : sieve.factors(n)) {
-                    int q = f.value();
+                    int q = (int)f.value();
                     int recip = (int)modinv(q % modulus, modulus);
                     int newmod = q * modulus;
                     int newsolen = 0;

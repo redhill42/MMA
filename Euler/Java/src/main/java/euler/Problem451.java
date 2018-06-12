@@ -55,7 +55,7 @@ public final class Problem451 {
 
             // get the generating set of square roots of unity modulo n
             for (PrimeFactor f : factors) {
-                int a = f.value();
+                int a = (int)f.value();
                 gene[k++] = (int)chineseRemainder(-1, a, 1, n / a);
             }
 

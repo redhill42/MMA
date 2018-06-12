@@ -6,8 +6,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import euler.algo.Library;
-import static euler.algo.Library.divisors;
 import static euler.algo.Library.factorial;
+import static euler.algo.Library.factorize;
 
 public final class Problem248 {
     private Problem248() {}
@@ -20,7 +20,7 @@ public final class Problem248 {
         Solver(long factorial) {
             this.factorial = factorial;
 
-            this.candidates = Arrays.stream(divisors(factorial))
+            this.candidates = Arrays.stream(factorize(factorial).divisors())
                 .map(x->x+1).filter(Library::isPrime).toArray();
 
             SortedSet<Long> results = new TreeSet<>();

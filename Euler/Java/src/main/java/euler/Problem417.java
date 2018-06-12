@@ -36,7 +36,7 @@ public final class Problem417 {
 
             long l = 1;
             for (PrimeFactor f : sieve.factors(n)) {
-                int p = f.prime(), a = f.power();
+                int p = (int)f.prime(), a = f.power();
                 a -= (p == 3 || p == 487) ? 2 : 1;
                 if (a > 0) {
                     l = lcm(l, pow(p, a) * primePeriods[p]);

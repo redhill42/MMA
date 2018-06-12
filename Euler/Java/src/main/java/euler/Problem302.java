@@ -76,14 +76,14 @@ public final class Problem302 {
             int h = k;
             for (int i = 0; i < k; i++) {
                 for (PrimeFactor f : sieve.factors(primes[i] - 1)) {
-                    int j = Arrays.binarySearch(phi_primes, 0, h, f.prime());
+                    int j = Arrays.binarySearch(phi_primes, 0, h, (int)f.prime());
                     if (j < 0) {
                         j = -(j + 1);
                         if (j < h) {
                             System.arraycopy(phi_primes, j, phi_primes, j+1, h-j);
                             System.arraycopy(phi_powers, j, phi_powers, j+1, h-j);
                         }
-                        phi_primes[j] = f.prime();
+                        phi_primes[j] = (int)f.prime();
                         phi_powers[j] = f.power();
                         h++;
                     } else {

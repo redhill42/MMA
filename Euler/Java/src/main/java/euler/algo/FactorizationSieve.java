@@ -107,6 +107,10 @@ public class FactorizationSieve implements Sieve {
         return n / smallestFactor(n);
     }
 
+    public Factorization factorize(int n) {
+        return new Factorization(n, factors(n));
+    }
+
     public List<PrimeFactor> factors(int n) {
         List<PrimeFactor> result = new ArrayList<>();
         while (n != 1) {
@@ -327,5 +331,9 @@ public class FactorizationSieve implements Sieve {
             f /= u;
         }
         return t;
+    }
+
+    public boolean isPrimitiveRoot(int a, int n) {
+        return ord(a, n) == phi(n);
     }
 }
