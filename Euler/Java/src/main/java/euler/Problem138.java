@@ -1,36 +1,22 @@
 package euler;
 
+import euler.algo.Pair;
 import euler.algo.PellEquation;
 
 public final class Problem138 {
     private Problem138() {}
 
-    private static class Solver implements PellEquation.SeriesFunction<Long> {
-        private int count;
-        private long sum;
-
-        Solver(int count) {
-            this.count = count;
-        }
-
-        @Override
-        public Long apply(long x, long y) {
-            if (x != 2 && x != -2) {
-                sum += y;
-                if (--count == 0)
-                    return sum;
-            }
-            return null;
-        }
-
-        public long solve() {
-            return PellEquation.series(5, -1, this);
-        }
-    }
-
     public static long solve(int count) {
-        Solver solver = new Solver(count);
-        return solver.solve();
+        long sum = 0;
+        for (Pair p : PellEquation.series(5, -1)) {
+            if (count == 0)
+                break;
+            if (p.x != 2 && p.x != -2) {
+                sum += p.y;
+                count--;
+            }
+        }
+        return sum;
     }
 
     public static void main(String[] args) {

@@ -2,12 +2,12 @@ package euler.algo;
 
 import java.io.Serializable;
 
-public class Triplet implements Comparable<Triplet>, Serializable {
+public class Triple implements Comparable<Triple>, Serializable {
     private static final long serialVersionUID = -1411614514320661827L;
 
     public final long a, b, c;
 
-    public Triplet(long a, long b, long c) {
+    public Triple(long a, long b, long c) {
         this.a = a;
         this.b = b;
         this.c = c;
@@ -23,8 +23,8 @@ public class Triplet implements Comparable<Triplet>, Serializable {
     }
 
     public boolean equals(Object o) {
-        if (o instanceof Triplet) {
-            Triplet t = (Triplet)o;
+        if (o instanceof Triple) {
+            Triple t = (Triple)o;
             return a == t.a && b == t.b && c == t.c;
         }
         return false;
@@ -42,7 +42,7 @@ public class Triplet implements Comparable<Triplet>, Serializable {
     }
 
     @Override
-    public int compareTo(Triplet o) {
+    public int compareTo(Triple o) {
         int r = Long.compare(a, o.a);
         if (r != 0) return r;
         r = Long.compare(b, o.b);

@@ -1,6 +1,7 @@
 package euler.algo;
 
 import java.math.BigInteger;
+import java.util.Iterator;
 
 import static euler.algo.Library.isqrt;
 import static java.math.BigInteger.ONE;
@@ -15,7 +16,7 @@ public final class PellEquation {
     private PellEquation() {}
 
     /**
-     * Solve the minimum solution of a Pell's equation. Returns the
+     * Solve the fundamental solution of a Pell's equation. Returns the
      * solution as a fraction of long.
      */
     public static boolean solve(long d, int c, long[] r) {
@@ -56,7 +57,7 @@ public final class PellEquation {
 
     /**
      * Solve the fundamental solution of a Pell's equation. Given a rational
-     * number d/b as the parameter.
+     * number {@code d/b} as the parameter.
      */
     public static boolean solve(long d, int b, int c, long[] r) {
         if (solve(b * d, c, r)) {
@@ -67,7 +68,7 @@ public final class PellEquation {
     }
 
     /**
-     * Solve the minimum solution of a Pell's equation. Returns the
+     * Solve the fundamental solution of a Pell's equation. Returns the
      * solution as a fraction of BigInteger. Returns null if no solution
      * found.
      */
@@ -111,7 +112,7 @@ public final class PellEquation {
 
     /**
      * Solve the fundamental solution of a Pell's equation. Given a rational
-     * number b/d as the parameter.
+     * number {@code b/d} as the parameter.
      */
     public static Rational solve(long d, long b, int c) {
         Rational r = solve(b * d, c);
@@ -121,40 +122,56 @@ public final class PellEquation {
     }
 
     /**
-     * The functional interface that passed to pell equation solution
-     * series. Since the solution is infinite, the function should return
-     * a non-null value to terminate the series computation.
+     * Solve the Pell equation and returns the collection of all solutions.
      */
-    @FunctionalInterface
-    public interface SeriesFunction<T> {
-        /**
-         * Applies this function with a pair of solution.
-         *
-         * @param x the x value in the solution
-         * @param y the y value in the solution
-         * @return the result of computation, a non-null value
-         * to terminate the series.
-         */
-        T apply(long x, long y);
+    public static Iterable<Pair> series(long d, int c) {
+        return series(d, 1, c);
     }
 
     /**
-     * Solve the Pell equation and process each solution with the supplied
-     * function.
+     * Solve the Pell equation and returns the collection of all solutions.
+     * Given a rational number {@code d/b} as the parameter.
      */
-    public static <T> T series(long d, int c, SeriesFunction<T> f) {
-        long p, q, x, y;
-        T z;
-
+    public static Iterable<Pair> series(long d, long b, int c) {
         long[] r = new long[2];
-        if (!solve(d, c, r)) {
+        if (!solve(b * d, c, r)) {
             throw new IllegalArgumentException("Unsolvable Pell's equation");
         }
 
-        x = p = r[0];
-        y = q = r[1];
-        while ((z = f.apply(x, y)) == null) {
-            long x0 = x, y0 = y;
+        return new Iterable<Pair>() {
+            @Override
+            public Iterator<Pair> iterator() {
+                return new SeriesIterator(r[0], r[1], b * d, b, c);
+            }
+        };
+    }
+
+    private static class SeriesIterator implements Iterator<Pair> {
+        private final long p, q;
+        private final long d, b;
+        private final int c;
+        private final Pair pair = new Pair();
+        private long x, y;
+
+        SeriesIterator(long p, long q, long d, long b, int c) {
+            this.p = this.x = p;
+            this.q = this.y = q;
+            this.d = d;
+            this.b = b;
+            this.c = c;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return true;
+        }
+
+        @Override
+        @SuppressWarnings("IteratorNextCanNotThrowNoSuchElementException")
+        public Pair next() {
+            long x0 = pair.x = this.x;
+            long y0 = pair.y = this.y;
+
             x = p * x0 + d * q * y0;
             y = p * y0 + q * x0;
             if (c == -1) {
@@ -162,15 +179,9 @@ public final class PellEquation {
                 x = p * x0 + d * q * y0;
                 y = p * y0 + q * x0;
             }
-        }
-        return z;
-    }
 
-    /**
-     * Solve the Pell equation and process each solution with the supplied
-     * function. Given a rational number d/b as the parameter.
-     */
-    public static <T> T series(long d, long b, int c, SeriesFunction<T> f) {
-        return series(b * d, c, (x, y) -> f.apply(x, y * b));
+            pair.y *= b;
+            return pair;
+        }
     }
 }

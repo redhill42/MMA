@@ -18,7 +18,7 @@ public final class Pythagorean {
     private Pythagorean() {}
 
     // Enumerate pythagorean triplet with limitted legs
-    public static <V> V withLegs(long limit, V z, BiFunction<V, Triplet, V> fn) {
+    public static <V> V withLegs(long limit, V z, BiFunction<V, Triple, V> fn) {
         long max_m = isqrt(2 * limit + 1);
         for (long m = 1; m <= max_m; m += 2) {
             long max_n = min(m - 1, limit / m);
@@ -27,7 +27,7 @@ public final class Pythagorean {
                     long a = m * n;
                     long b = (m * m - n * n) / 2;
                     long c = (m * m + n * n) / 2;
-                    z = fn.apply(z, new Triplet(a, b, c));
+                    z = fn.apply(z, new Triple(a, b, c));
                 }
             }
         }
@@ -35,7 +35,7 @@ public final class Pythagorean {
     }
 
     // Enumerate pythagorean triplet with limitted hypotenuse
-    public static <V> V withHypotenuse(long limit, V z, BiFunction<V, Triplet, V> fn) {
+    public static <V> V withHypotenuse(long limit, V z, BiFunction<V, Triple, V> fn) {
         long max_m = isqrt(2 * limit - 1);
         for (long m = 1; m <= max_m; m += 2) {
             long max_n = min(m - 1, isqrt(2 * limit - m * m));
@@ -44,7 +44,7 @@ public final class Pythagorean {
                     long a = m * n;
                     long b = (m * m - n * n) / 2;
                     long c = (m * m + n * n) / 2;
-                    z = fn.apply(z, new Triplet(a, b, c));
+                    z = fn.apply(z, new Triple(a, b, c));
                 }
             }
         }
@@ -52,7 +52,7 @@ public final class Pythagorean {
     }
 
     // Enumerate pythagorean triplet with limitted perimeter
-    public static <V> V withPerimeter(long limit, V z, BiFunction<V, Triplet, V> fn) {
+    public static <V> V withPerimeter(long limit, V z, BiFunction<V, Triple, V> fn) {
         long max_m = (isqrt(4 * limit + 1) - 1) / 2;
         for (long m = 1; m <= max_m; m += 2) {
             long max_n = min(m - 1, limit / m - m);
@@ -61,27 +61,27 @@ public final class Pythagorean {
                     long a = m * n;
                     long b = (m * m - n * n) / 2;
                     long c = (m * m + n * n) / 2;
-                    z = fn.apply(z, new Triplet(a, b, c));
+                    z = fn.apply(z, new Triple(a, b, c));
                 }
             }
         }
         return z;
     }
 
-    private static Triplet f1(long a, long b, long c) {
-        return new Triplet(2 * c + b - 2 * a,
+    private static Triple f1(long a, long b, long c) {
+        return new Triple(2 * c + b - 2 * a,
                            2 * c + 2 * b - a,
                            3 * c + 2 * b - 2 * a);
     }
 
-    private static Triplet f2(long a, long b, long c) {
-        return new Triplet(2 * c + b + 2 * a,
+    private static Triple f2(long a, long b, long c) {
+        return new Triple(2 * c + b + 2 * a,
                            2 * c + 2 * b + a,
                            3 * c + 2 * b + 2 * a);
     }
 
-    private static Triplet f3(long a, long b, long c) {
-        return new Triplet(2 * c - 2 * b + a,
+    private static Triple f3(long a, long b, long c) {
+        return new Triple(2 * c - 2 * b + a,
                            2 * c - b + 2 * a,
                            3 * c - 2 * b + 2 * a);
     }
@@ -91,18 +91,18 @@ public final class Pythagorean {
      * Given the starting triple as the base solutions.
      */
     public static long solve(long[][] start,
-                             Predicate<Triplet> pred,
-                             Predicate<Triplet> cosumer,
-                             Comparator<Triplet> order)
+                             Predicate<Triple> pred,
+                             Predicate<Triple> cosumer,
+                             Comparator<Triple> order)
     {
-        Queue<Triplet> q = (order != null) ? new PriorityQueue<>(order): new ArrayDeque<>();
+        Queue<Triple> q = (order != null) ? new PriorityQueue<>(order): new ArrayDeque<>();
         for (long[] t : start) {
-            q.offer(new Triplet(t[0], t[1], t[2]));
+            q.offer(new Triple(t[0], t[1], t[2]));
         }
 
         long count = 0;
         while (!q.isEmpty()) {
-            Triplet t = q.poll();
+            Triple t = q.poll();
             if (pred != null && !pred.test(t))
                 continue;
             count++;
@@ -122,12 +122,12 @@ public final class Pythagorean {
      * Convenient method to enumerate triplet with limitted perimeter.
      */
     public static long[][] enumerate(long[][] start, int limit) {
-        List<Triplet> solutions = new ArrayList<>();
+        List<Triple> solutions = new ArrayList<>();
         solve(start, t -> t.perimeter() <= limit, solutions::add, Comparator.naturalOrder());
 
         long[][] result = new long[solutions.size()][3];
         for (int i = 0; i < result.length; i++) {
-            Triplet t = solutions.get(i);
+            Triple t = solutions.get(i);
             result[i][0] = t.a;
             result[i][1] = t.b;
             result[i][2] = t.c;

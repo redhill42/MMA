@@ -1,20 +1,21 @@
 package euler;
 
+import euler.algo.Pair;
 import euler.algo.PellEquation;
 
 public final class Problem94 {
     private Problem94() {}
 
     public static long solve(long limit) {
-        long[] sum = new long[1];
-        return PellEquation.series(3, 1, (x, y) -> {
-            long s = (2*x+1) % 3 == 0 ? 2*x+2 : 2*x-2;
+        long sum = 0;
+        for (Pair p : PellEquation.series(3, 1)) {
+            long s = (2*p.x+1) % 3 == 0 ? 2*p.x+2 : 2*p.x-2;
             if (s > limit)
-                return sum[0];
+                break;
             if (s > 2)
-                sum[0] += s;
-            return null;
-        });
+                sum += s;
+        }
+        return sum;
     }
 
     public static void main(String[] args) {
