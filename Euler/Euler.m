@@ -19,6 +19,8 @@ PalindromeList::usage = "Generate a list of palindrome numbers";
 
 MatrixPowerMod::usage = "Compute the matrix power with modulus";
 
+TOC::usage = "Generate table of contents";
+
 Begin["`Private`"]
 
 SetAttributes[Let, HoldAll];
@@ -151,6 +153,37 @@ MatrixPowerMod[a_, n_, m_] :=
   Fold[With[{b = Mod[#1.#1, m]},
     If[#2 == 1, Mod[a.b, m], b]]&,
     a, Rest@IntegerDigits[n, 2]];
+
+TOC[total_Integer] := Module[{entries, cell},
+  entries = First@Last@Reap@Scan[
+    With[{tag = Lookup[Options[#], CellTags]},
+      If[Head[tag] === String, Sow[ToExpression[tag]]]]&,
+    Cells[EvaluationNotebook[], CellStyle->"Subsubsection"]];
+
+  cell[num_] :=
+    If[MemberQ[entries, num],
+      Item[
+        Button[
+          Style[num, FontFamily->"Helvetica", FontSize->12],
+          NotebookLocate@ToString[num],
+          Appearance->"Frameless"],
+        Background->RGBColor[0.8, 0.9, 0.72]],
+      Item[
+        Style[num, FontFamily->"Helvetica", FontSize->13],
+        Background->White]];
+
+  Column[
+    Map[
+      Grid[
+        Partition[Map[cell, #], 20, 20, {1, 1}, {}],
+        Frame->All,
+        FrameStyle->Gray,
+        ItemSize->{1.7, 1.5},
+        Spacings->{0.6, Automatic}
+      ]&,
+      Partition[Range[total], 100, 100, {1, 1}, {}]],
+    Center, 1]
+];
 
 End[]
 
