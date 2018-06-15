@@ -56,7 +56,7 @@ JavaSolve[num_Integer, args___] := JavaBlock[
 
 TotientSum[n_] := JavaBlock[
   LoadJavaClass["euler.algo.TotientSieve"];
-  euler`algo`TotientSieve`sum[n]
+  euler`algo`TotientSieve`totientSum[n]
 ];
 
 Hungarian[costMatrix_List] := JavaBlock[

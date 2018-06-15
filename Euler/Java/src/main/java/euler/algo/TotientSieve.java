@@ -23,7 +23,7 @@ public class TotientSieve implements Sieve{
             phi[n] = n;
         }
 
-        for (int p = 3; p < limit; p += 2) {
+        for (int p = 3; p <= limit; p += 2) {
             if (p == phi[p]) {
                 phi[p] = p - 1;
                 nprimes++;
@@ -100,7 +100,7 @@ public class TotientSieve implements Sieve{
      *
      * @return the totient summation up to the given number
      */
-    public static long sum(int n) {
+    public static long totientSum(int n) {
         if (n < 0)
             return 0;
         if (n <= 2)
@@ -121,34 +121,31 @@ public class TotientSieve implements Sieve{
 
         for (int x = n / L; x >= 1; x--) {
             long k = n / x, maxk = isqrt(k);
-            long res = k * (k + 1) / 2;
+            long res = k * (k + 1) / 2 - (k + 1) / 2;
 
-            for (int g = 2; g <= maxk; g++) {
-                if (k / g <= L) {
-                    res -= sieve[(int)(k / g)];
+            for (int z = 2; z <= maxk; z++) {
+                long i = k / z;
+                if (i <= L) {
+                    res -= sieve[(int)i];
                 } else {
-                    res -= bigV[x * g];
+                    res -= bigV[x * z];
+                }
+                if (z != i) {
+                    res -= (i - k / (z + 1)) * sieve[z];
                 }
             }
-
-            for (int z = 1; z <= maxk; z++) {
-                if (z != k / z)
-                    res -= (k / z - k / (z + 1)) * sieve[z];
-            }
-
             bigV[x] = res;
         }
 
         return bigV[1];
     }
 
-    public static long modsum(long n, long m) {
+    public static long[] totientSumList(long n, long m, long L) {
         if (n < 0)
-            return 0;
+            return new long[2];
         if (n <= 2)
-            return n % m;
+            return new long[]{0, n % m};
 
-        long L = (long)(Math.pow(n / log2(log2(n)), 2.0/3.0));
         if (L >= Integer.MAX_VALUE)
             throw new IllegalArgumentException("overflow");
 
@@ -168,22 +165,26 @@ public class TotientSieve implements Sieve{
             long k = n / x, maxk = isqrt(k);
             long res = even(k) ? modmul(k>>1, k+1, m) : modmul(k, (k+1)>>1, m);
 
-            for (int g = 2; g <= maxk; g++) {
-                if (k / g <= L) {
-                    res -= sieve[(int)(k / g)];
+            res -= (k + 1) / 2;
+            for (int z = 2; z <= maxk; z++) {
+                long i = k / z;
+                if (i <= L) {
+                    res -= sieve[(int)i];
                 } else {
-                    res -= bigV[x * g];
+                    res -= bigV[x * z];
+                }
+                if (z != i) {
+                    res -= (i - k / (z + 1)) * sieve[z];
                 }
             }
-
-            for (int z = 1; z <= maxk; z++) {
-                if (z != k / z)
-                    res -= (k / z - k / (z + 1)) * sieve[z];
-            }
-
             bigV[x] = mod(res, m);
         }
 
-        return bigV[1];
+        return bigV;
+    }
+
+    public static long totientSumMod(long n, long m) {
+        long L = (long)(Math.pow(n / log2(log2(n)), 2.0/3.0));
+        return totientSumList(n, m, L)[1];
     }
 }

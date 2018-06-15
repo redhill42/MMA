@@ -1,12 +1,12 @@
 package euler;
 
-import euler.algo.TotientSieve;
+import static euler.algo.TotientSieve.totientSum;
 
 public final class Problem351 {
     private Problem351() {}
 
     public static long solve(int n) {
-        return 6 * ((long)n * (n + 1) / 2 - TotientSieve.sum(n));
+        return 3L*n*(n + 1) - 6*totientSum(n);
     }
 
     public static void main(String[] args) {

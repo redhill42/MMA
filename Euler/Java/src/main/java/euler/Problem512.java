@@ -1,14 +1,14 @@
 package euler;
 
-import euler.algo.TotientSieve;
+import static euler.algo.TotientSieve.totientSum;
 
 public final class Problem512 {
     private Problem512() {}
 
     public static long solve(int n) {
-        long count = TotientSieve.sum(n);
+        long count = totientSum(n);
         while (n > 0)
-            count -= TotientSieve.sum(n >>= 1);
+            count -= totientSum(n >>= 1);
         return count;
     }
 
