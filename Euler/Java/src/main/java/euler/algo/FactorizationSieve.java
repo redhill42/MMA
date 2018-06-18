@@ -140,7 +140,7 @@ public class FactorizationSieve implements Sieve {
         return r;
     }
 
-    public int sigma(int n) {
+    public int tau(int n) {
         if (n < 0)
             n = -n;
         if (n <= 1)
@@ -156,7 +156,7 @@ public class FactorizationSieve implements Sieve {
 
     public long sigma(int k, int n) {
         if (k == 0)
-            return sigma(n);
+            return tau(n);
 
         if (n < 0)
             n = -n;
@@ -176,28 +176,13 @@ public class FactorizationSieve implements Sieve {
         return r;
     }
 
-    public int unitarySigma(int n) {
-        if (n < 0)
-            n = -n;
-        if (n <= 1)
-            return n;
-
-        int r = 1;
-        while (n != 1) {
-            r <<= 1;
-            n = next(n);
-        }
-        return r;
-    }
-
     public long unitarySigma(int k, int n) {
-        if (k == 0)
-            return unitarySigma(n);
-
         if (n < 0)
             return -n;
         if (n <= 1)
             return n;
+        if (k == 0)
+            return 1L << nu(n);
 
         long r = 1;
         while (n != 1) {
@@ -271,7 +256,7 @@ public class FactorizationSieve implements Sieve {
         if (n < 0)
             n = -n;
 
-        int[] d = new int[sigma(n)];
+        int[] d = new int[tau(n)];
         int i = 0;
 
         if (n != 0)
@@ -298,7 +283,7 @@ public class FactorizationSieve implements Sieve {
         if (n < 0)
             n = -n;
 
-        int[] d = new int[unitarySigma(n)];
+        int[] d = new int[n == 0 ? 0 : 1 << nu(n)];
         int i = 0;
 
         if (n != 0)

@@ -19,9 +19,9 @@ public class FareySequence {
     }
 
     /**
-     * <p>Given <em>p/q</em> in lowest terms, with <em>p,q ∈ ℕ</em> and <em>q > 0</em>.
-     * We want the nearest neighbours of <em>p/q</em>, <em>a/b < p/q < c/d</em>,
-     * subject to <em>a,b,c,d ∈ ℕ</em> and <em>c,d > 0</em>.</p>
+     * <p>Given <em>p/q</em> in lowest terms, with <em>p,q ∈ ℕ</em> and <em>q &gt; 0</em>.
+     * We want the nearest neighbours of <em>p/q</em>, <em>a/b &lt; p/q &lt; c/d</em>,
+     * subject to <em>a,b,c,d ∈ ℕ</em> and <em>c,d &gt; 0</em>.</p>
      *
      * <p>Consider <em>c/d</em>. It is the element after <em>p/q</em> in the Farey
      * Sequence <em>F<sub>n</sub></em>, which means that <em>cq - dp = 1</em>.

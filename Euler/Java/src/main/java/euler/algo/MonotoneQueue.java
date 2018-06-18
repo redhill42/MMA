@@ -7,7 +7,7 @@ package euler.algo;
  * <p>The head element in the queue is the maximum/minimum value, it can retrieive
  * the maximum/minimum value in O(1) times.</p>
  *
- * <p>And the elements in queue are monotonous, that is a[i]<=a[i+1], i=1,2,...,k.</p>
+ * <p>And the elements in queue are monotonous, that is a[i]&lt;=a[i+1], i=1,2,...,k.</p>
  *
  * <p>Here are the classical usage:</p>
  * <p>Given an array with size N and value k, calculate:</p>
@@ -25,8 +25,8 @@ package euler.algo;
  *
  * <ol>
  * <li>Scan the elements from the end of the queue to front, pop all elements until
- *     first facing one element which queue[j]>v, and the add element v after position j.</li>
- * <li>If the head element satisfy v.index - queue[head].index >= k, pop it, and the
+ *     first facing one element which queue[j]&gt;v, and the add element v after position j.</li>
+ * <li>If the head element satisfy v.index - queue[head].index &gt;= k, pop it, and the
  *     following maximum will be queue[head+1].value.</li>
  * </ol>
  */

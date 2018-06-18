@@ -290,7 +290,7 @@ public abstract class ContinuedFraction {
      *      (a) a<sub>k</sub> = floor((P<sub>k</sub> + sqrt(b)) / Q<sub>k</sub>)
      *      (b) P<sub>k+1</sub> = a<sub>k</sub>Q<sub>k</sub> - P<sub>k</sub>
      *      (c) Q<sub>k+1</sub> = (b - P<sub>k+1</sub><sup>2</sup>) / Q<sub>k</sub>
-     *   5. Let k < l be the first pair of integers which satisfy that
+     *   5. Let k &lt; l be the first pair of integers which satisfy that
      *              (P<sub>k</sub>, Q<sub>k</sub>) = (P<sub>l</sub>, Q<sub>l</sub>)
      *      then the period is (a<sub>k</sub>, ..., a<sub>l-1</sub>)
      * </pre>

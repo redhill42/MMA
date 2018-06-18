@@ -3,7 +3,7 @@ package euler.algo;
 /**
  * The PrimePi class is a compressed lookup table for small prime counts.
  * It uses only (n / 4) bytes of memory and returns the number of
- * primes <= n in O(1) operations. It uses Eratosthenes sieve to counting
+ * primes &lt;= n in O(1) operations. It uses Eratosthenes sieve to counting
  * primes, so it can not be used for very large numbers.
  */
 public class PrimePi {
