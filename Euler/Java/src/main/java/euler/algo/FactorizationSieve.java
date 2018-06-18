@@ -50,6 +50,11 @@ public class FactorizationSieve implements Sieve {
     }
 
     @Override
+    public int getLimit() {
+        return primes.length - 1;
+    }
+
+    @Override
     public boolean isPrime(int n) {
         return primes[n] == n;
     }

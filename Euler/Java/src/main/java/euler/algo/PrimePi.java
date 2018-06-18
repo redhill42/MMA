@@ -15,7 +15,7 @@ public class PrimePi {
         this(new PrimeSieve(limit));
     }
 
-    public PrimePi(PrimeSieve sieve) {
+    public PrimePi(Sieve sieve) {
         this.limit = sieve.getLimit();
         this.count = new int[limit / 64 + 1];
         this.bits = new long[limit / 64 + 1];

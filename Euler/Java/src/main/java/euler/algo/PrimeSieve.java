@@ -23,6 +23,7 @@ public class PrimeSieve implements Sieve {
         }
     }
 
+    @Override
     public int getLimit() {
         return limit;
     }

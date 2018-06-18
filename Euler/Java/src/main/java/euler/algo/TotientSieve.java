@@ -42,6 +42,11 @@ public class TotientSieve implements Sieve{
     }
 
     @Override
+    public int getLimit() {
+        return phi.length - 1;
+    }
+
+    @Override
     public boolean isPrime(int n) {
         return phi[n] == n - 1;
     }
