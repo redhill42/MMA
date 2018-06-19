@@ -1,5 +1,7 @@
 package euler.algo;
 
+import java.math.BigInteger;
+
 import static euler.algo.Library.even;
 import static euler.algo.Library.isqrt;
 import static euler.algo.Library.mod;
@@ -115,7 +117,7 @@ public class TotientSieve implements Sieve{
         long[] sieve = new long[L + 1];
         long[] bigV  = new long[n / L + 1];
 
-        for (int i = 0; i < sieve.length; i++)
+        for (int i = 0; i <= L; i++)
             sieve[i] = i;
         for (int p = 2; p <= L; p++) {
             if (p == sieve[p])
@@ -127,16 +129,62 @@ public class TotientSieve implements Sieve{
         for (int x = n / L; x >= 1; x--) {
             long k = n / x, maxk = isqrt(k);
             long res = k * (k + 1) / 2 - (k + 1) / 2;
+            for (int z = 2; z <= maxk; z++) {
+                long i = k / z;
+                res -= (i <= L) ? sieve[(int)i] : bigV[x * z];
+                if (z != i) {
+                    res -= (i - k / (z + 1)) * sieve[z];
+                }
+            }
+            bigV[x] = res;
+        }
+
+        return bigV[1];
+    }
+
+    private static BigInteger big(long n) {
+        return BigInteger.valueOf(n);
+    }
+
+    /**
+     * Compute the totient summation up to the given number in high precision.
+     *
+     * @return the totient summation up to the given number
+     */
+    public static BigInteger totientSum(long n) {
+        if (n < 0)
+            return BigInteger.ZERO;
+        if (n <= 2)
+            return BigInteger.valueOf(n);
+
+        long L = (long)(Math.pow(n / log2(log2(n)), 2.0/3.0));
+        if (L >= Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("overflow");
+        }
+
+        long[] sieve = new long[(int)(L + 1)];
+        for (int i = 0; i <= L; i++)
+            sieve[i] = i;
+        for (int p = 2; p <= L; p++) {
+            if (sieve[p] == p)
+                for (int k = p; k <= L; k += p)
+                    sieve[k] -= sieve[k] / p;
+            sieve[p] += sieve[p - 1];
+        }
+
+        BigInteger[] bigV = new BigInteger[(int)(n / L + 1)];
+        for (int x = (int)(n / L); x >= 1; x--) {
+            long k = n / x, maxk = isqrt(k);
+            BigInteger res;
+
+            res = big(k).multiply(big(k + 1)).shiftRight(1);
+            res = res.subtract(big(k + 1).shiftRight(1));
 
             for (int z = 2; z <= maxk; z++) {
                 long i = k / z;
-                if (i <= L) {
-                    res -= sieve[(int)i];
-                } else {
-                    res -= bigV[x * z];
-                }
+                res = res.subtract((i <= L) ? big(sieve[(int)i]) : bigV[x*z]);
                 if (z != i) {
-                    res -= (i - k / (z + 1)) * sieve[z];
+                    res = res.subtract(big(i - k / (z + 1)).multiply(big(sieve[z])));
                 }
             }
             bigV[x] = res;
@@ -157,7 +205,7 @@ public class TotientSieve implements Sieve{
         long[] sieve = new long[(int)(L + 1)];
         long[] bigV =  new long[(int)(n / L + 1)];
 
-        for (int i = 0; i < sieve.length; i++)
+        for (int i = 0; i <= L; i++)
             sieve[i] = i;
         for (int p = 2; p <= L; p++) {
             if (sieve[p] == p)
@@ -169,15 +217,10 @@ public class TotientSieve implements Sieve{
         for (int x = (int)(n / L); x >= 1; x--) {
             long k = n / x, maxk = isqrt(k);
             long res = even(k) ? modmul(k>>1, k+1, m) : modmul(k, (k+1)>>1, m);
-
             res -= (k + 1) / 2;
             for (int z = 2; z <= maxk; z++) {
                 long i = k / z;
-                if (i <= L) {
-                    res -= sieve[(int)i];
-                } else {
-                    res -= bigV[x * z];
-                }
+                res -= (i <= L) ? sieve[(int)i] : bigV[x * z];
                 if (z != i) {
                     res -= (i - k / (z + 1)) * sieve[z];
                 }

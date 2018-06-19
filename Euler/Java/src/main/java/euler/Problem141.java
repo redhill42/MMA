@@ -1,29 +1,16 @@
 package euler;
 
-import java.util.concurrent.ForkJoinPool;
-import euler.util.RangedTask;
+import euler.util.LongRangedTask;
 
 import static euler.algo.Library.gcd;
+import static euler.algo.Library.icbrt;
 import static euler.algo.Library.isSquare;
 
 public final class Problem141 {
     private Problem141() {}
 
-    @SuppressWarnings("serial")
-    private static class SolveTask extends RangedTask<Long> {
-        private final long limit;
-
-        SolveTask(long limit) {
-            this(2, (int)Math.pow(limit, 1.0/3), limit);
-        }
-
-        SolveTask(int from, int to, long limit) {
-            super(from, to);
-            this.limit = limit;
-        }
-
-        @Override
-        protected Long compute(int from, int to) {
+    public static long solve(long limit) {
+        return LongRangedTask.parallel(2, icbrt(limit), (from, to) -> {
             long sum = 0;
             for (long a = from; a <= to; a++) {
                 for (long b = 1; b < a; b++) {
@@ -39,24 +26,7 @@ public final class Problem141 {
                 }
             }
             return sum;
-        }
-
-        @Override
-        protected Long combine(Long v1, Long v2) {
-            return v1 + v2;
-        }
-
-        @Override
-        protected SolveTask fork(int from, int to) {
-            return new SolveTask(from, to, limit);
-        }
-    }
-
-    public static long solve(long limit) {
-        ForkJoinPool pool = new ForkJoinPool();
-        long result = pool.invoke(new SolveTask(limit));
-        pool.shutdown();
-        return result;
+        });
     }
 
     public static void main(String[] args) {

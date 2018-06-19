@@ -1,8 +1,7 @@
 package euler;
 
-import java.util.concurrent.ForkJoinPool;
 import euler.algo.PrimeSieve;
-import euler.util.RangedTask;
+import euler.util.LongRangedTask;
 
 public final class Problem315 {
     private Problem315() {}
@@ -95,36 +94,16 @@ public final class Problem315 {
             return r + power(n);
         }
 
-        @SuppressWarnings("serial")
-        class SolveTask extends RangedTask<Long> {
-            SolveTask(int from, int to) {
-                super(from, to, 1000);
-            }
-
-            @Override
-            protected Long compute(int from, int to) {
+        public long solve(int low, int high) {
+            return LongRangedTask.parallel(low, high, 1000, (from, to) -> {
                 long ret = 0;
-                for (int p = sieve.nextPrime(from-1); p > 0 && p <= to; p = sieve.nextPrime(p))
+                int p = sieve.nextPrime(from - 1);
+                while (p > 0 && p <= to) {
                     ret += samClock(p) - maxClock(p);
+                    p = sieve.nextPrime(p);
+                }
                 return ret;
-            }
-
-            @Override
-            protected Long combine(Long v1, Long v2) {
-                return v1 + v2;
-            }
-
-            @Override
-            protected SolveTask fork(int from, int to) {
-                return new SolveTask(from, to);
-            }
-        }
-
-        public long solve(int from, int to) {
-            ForkJoinPool pool = new ForkJoinPool();
-            long result = pool.invoke(new SolveTask(from, to));
-            pool.shutdown();
-            return result;
+            });
         }
     }
 

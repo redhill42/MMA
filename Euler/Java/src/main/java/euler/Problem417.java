@@ -1,10 +1,8 @@
 package euler;
 
-import java.util.concurrent.ForkJoinPool;
-
 import euler.algo.FactorizationSieve;
 import euler.algo.PrimeFactor;
-import euler.util.RangedTask;
+import euler.util.LongRangedTask;
 
 import static euler.algo.Library.lcm;
 import static euler.algo.Library.pow;
@@ -47,61 +45,22 @@ public final class Problem417 {
             return l;
         }
 
-        @SuppressWarnings("serial")
-        class SieveTask extends RangedTask<Void> {
-            SieveTask(int from, int to) {
-                super(from, to);
-            }
-
-            @Override
-            protected Void compute(int from, int to) {
-                for (int p = sieve.nextPrime(from-1); p > 0 && p <= to; p = sieve.nextPrime(p))
+        public long solve() {
+            LongRangedTask.parallel(7, limit, (from, to) -> {
+                int p = sieve.nextPrime(from - 1);
+                while (p > 0 && p <= to) {
                     primePeriods[p] = sieve.ord(10, p);
-                return null;
-            }
+                    p = sieve.nextPrime(p);
+                }
+                return 0;
+            });
 
-            @Override
-            protected Void combine(Void v1, Void v2) {
-                return null;
-            }
-
-            @Override
-            protected SieveTask fork(int from, int to) {
-                return new SieveTask(from, to);
-            }
-        }
-
-        @SuppressWarnings("serial")
-        class SolveTask extends RangedTask<Long> {
-            SolveTask(int from, int to) {
-                super(from, to);
-            }
-
-            @Override
-            protected Long compute(int from, int to) {
+            return LongRangedTask.parallel(3, limit, (from, to) -> {
                 long sum = 0;
                 for (int n = from; n <= to; n++)
                     sum += period(n);
                 return sum;
-            }
-
-            @Override
-            protected Long combine(Long v1, Long v2) {
-                return v1 + v2;
-            }
-
-            @Override
-            protected SolveTask fork(int from, int to) {
-                return new SolveTask(from, to);
-            }
-        }
-
-        public long solve() {
-            ForkJoinPool pool = new ForkJoinPool();
-            pool.invoke(new SieveTask(7, limit));
-            long result = pool.invoke(new SolveTask(3, limit));
-            pool.shutdown();
-            return result;
+            });
         }
     }
 

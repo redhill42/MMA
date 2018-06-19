@@ -1,7 +1,6 @@
 package euler;
 
-import java.util.concurrent.ForkJoinPool;
-import euler.util.RangedTask;
+import euler.util.LongRangedTask;
 
 public final class Problem154 {
     private Problem154() {}
@@ -38,6 +37,10 @@ public final class Problem154 {
             this.sum2 = sum2;
         }
 
+        public long solve() {
+            return LongRangedTask.parallel(0, layers, this::solve);
+        }
+
         public long solve(int from, int to) {
             int[] sum1 = this.sum1;
             int[] sum2 = this.sum2;
@@ -65,35 +68,6 @@ public final class Problem154 {
 
         private static int choose(int[] sums, int n, int k) {
             return sums[n] - (sums[n - k] + sums[k]);
-        }
-
-        @SuppressWarnings("serial")
-        class SolveTask extends RangedTask<Long> {
-            SolveTask(int from, int to) {
-                super(from, to);
-            }
-
-            @Override
-            protected Long compute(int from, int to) {
-                return Solver.this.solve(from, to);
-            }
-
-            @Override
-            protected Long combine(Long v1, Long v2) {
-                return v1 + v2;
-            }
-
-            @Override
-            protected RangedTask<Long> fork(int from, int to) {
-                return new SolveTask(from, to);
-            }
-        }
-
-        public long solve() {
-            ForkJoinPool pool = new ForkJoinPool();
-            long result = pool.invoke(new SolveTask(0, layers));
-            pool.shutdown();
-            return result;
         }
     }
 

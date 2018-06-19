@@ -1,49 +1,22 @@
 package euler;
 
-import java.util.concurrent.ForkJoinPool;
 import euler.algo.FactorizationSieve;
-import euler.util.RangedTask;
+import euler.util.LongRangedTask;
 
 import static euler.algo.Library.isSquare;
 
 public final class Problem211 {
     private Problem211() {}
 
-    @SuppressWarnings("serial")
-    private static class SolveTask extends RangedTask<Long> {
-        private final FactorizationSieve sieve;
-
-        SolveTask(FactorizationSieve sieve, int from, int to) {
-            super(from, to, 10000);
-            this.sieve = sieve;
-        }
-
-        @Override
-        public Long compute(int from, int to) {
+    public static long solve(int low, int high) {
+        FactorizationSieve sieve = new FactorizationSieve(high);
+        return LongRangedTask.parallel(low, high, 10000, (from, to) -> {
             long sum = 0;
             for (int n = from; n <= to; n++)
                 if (isSquare(sieve.sigma(2, n)))
                     sum += n;
             return sum;
-        }
-
-        @Override
-        protected Long combine(Long v1, Long v2) {
-            return v1 + v2;
-        }
-
-        @Override
-        protected SolveTask fork(int from, int to) {
-            return new SolveTask(sieve, from, to);
-        }
-    }
-
-    public static long solve(int from, int to) {
-        ForkJoinPool pool = new ForkJoinPool();
-        FactorizationSieve sieve = new FactorizationSieve(to);
-        long result = pool.invoke(new SolveTask(sieve, from, to-1));
-        pool.shutdown();
-        return result;
+        });
     }
 
     public static void main(String[] args) {

@@ -1,10 +1,9 @@
 package euler;
 
 import java.util.BitSet;
-import java.util.concurrent.ForkJoinPool;
 import euler.algo.FactorizationSieve;
 import euler.algo.PrimeFactor;
-import euler.util.RangedTask;
+import euler.util.LongRangedTask;
 import static euler.algo.Library.modinv;
 
 public final class Problem407 {
@@ -81,33 +80,8 @@ public final class Problem407 {
             return result;
         }
 
-        @SuppressWarnings("serial")
-        class SolveTask extends RangedTask<Long> {
-            SolveTask(int from, int to) {
-                super(from, to);
-            }
-
-            @Override
-            protected Long compute(int from, int to) {
-                return Solver.this.compute(from, to);
-            }
-
-            @Override
-            protected Long combine(Long v1, Long v2) {
-                return v1 + v2;
-            }
-
-            @Override
-            protected SolveTask fork(int from, int to) {
-                return new SolveTask(from, to);
-            }
-        }
-
         public long solve(int n) {
-            ForkJoinPool pool = new ForkJoinPool();
-            long result = pool.invoke(new SolveTask(1, n));
-            pool.shutdown();
-            return result;
+            return LongRangedTask.parallel(1, n, this::compute);
         }
     }
 

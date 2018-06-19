@@ -1,23 +1,21 @@
 package euler;
 
-import java.util.concurrent.ForkJoinPool;
-import euler.util.RangedTask;
+import euler.util.LongRangedTask;
 import static euler.algo.Library.modpow;
 
 public final class Problem455 {
     private Problem455() {}
 
-    @SuppressWarnings("serial")
-    private static class SolveTask extends RangedTask<Long> {
+    private static class Solver {
         private final int digits;
-        private final int[] seed = new int[100];
+        private final int[] seed;
 
-        SolveTask(int from, int to, int digits) {
-            super(from, to);
+        Solver(int digits) {
             this.digits = digits;
 
+            seed = new int[100];
             seed[0] = 0; seed[1] = 1;
-            for (int n = 2; n < 100; n ++) {
+            for (int n = 2; n < 100; n++) {
                 if (n % 10 == 0)
                     continue;
                 int x = 1, y;
@@ -27,19 +25,20 @@ public final class Problem455 {
             }
         }
 
-        @Override
-        protected Long compute(int from, int to) {
-            long sum = 0;
-            for (int n = from; n <= to; n++)
-                sum += f(n);
-            return sum;
+        public long solve(int n) {
+            return LongRangedTask.parallel(2, n, (from, to) -> {
+                long sum = 0;
+                for (int i = from; i <= to; i++)
+                    sum += f(i);
+                return sum;
+            });
         }
 
         /**
          * <pre>
          * For integer n which is not a multiple of 10, find the solution x for
          *     n<sup>x</sup> ≡ x (mod 100),
-         * Reapeat x := n<sup>x</sup> mod 10<sup>k</sup>, 2 ≤ k ≤ 9
+         * Repeat x := n<sup>x</sup> mod 10<sup>k</sup>, 2 ≤ k ≤ 9
          * </pre>
          */
         private int f(int n) {
@@ -52,23 +51,10 @@ public final class Problem455 {
                 x = modpow(n, x, m);
             return x;
         }
-
-        @Override
-        protected Long combine(Long v1, Long v2) {
-            return v1 + v2;
-        }
-
-        @Override
-        protected RangedTask<Long> fork(int from, int to) {
-            return new SolveTask(from, to, digits);
-        }
     }
 
     public static long solve(int n, int d) {
-        ForkJoinPool pool = new ForkJoinPool();
-        long result = pool.invoke(new SolveTask(2, n, d));
-        pool.shutdown();
-        return result;
+        return new Solver(d).solve(n);
     }
 
     public static void main(String[] args) {

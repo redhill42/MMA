@@ -3,7 +3,6 @@ package euler;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
 
 import euler.algo.FactorizationSieve;
 import euler.util.RangedTask;
@@ -63,10 +62,9 @@ public final class Problem399 {
     public static String solve(int n, long m) {
         int limit = n * 2;
         int nprimes = n < 10000 ? n : n / 50;
+
         FactorizationSieve sieve = new FactorizationSieve(nprimes);
-        ForkJoinPool pool = new ForkJoinPool();
-        List<Integer> entries = pool.invoke(new SolveTask(sieve, limit, 2, nprimes));
-        pool.shutdown();
+        List<Integer> entries = new SolveTask(sieve, limit, 2, nprimes).invoke();
 
         BitSet squarefree = new BitSet(limit);
         entries.forEach(x -> {

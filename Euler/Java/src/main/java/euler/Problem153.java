@@ -1,7 +1,6 @@
 package euler;
 
-import java.util.concurrent.ForkJoinPool;
-import euler.util.RangedTask;
+import euler.util.LongRangedTask;
 
 import static euler.algo.Library.gcd;
 import static euler.algo.Library.isqrt;
@@ -10,8 +9,19 @@ import static java.lang.Math.min;
 public final class Problem153 {
     private Problem153() {}
 
-    private static long T(long n) {
-        return n * (n + 1) / 2;
+    public static long solve(int limit) {
+        return sigma(limit) + LongRangedTask.parallel(1, isqrt(limit), (from, to) -> {
+            long sum = 0;
+            for (long a = from; a <= to; a++) {
+                long m = min(a, isqrt(limit - a * a));
+                for (long b = 1; b <= m; b++) {
+                    if (gcd(a, b) == 1) {
+                        sum += 2 * (a == b ? a : a + b) * sigma(limit / (a * a + b * b));
+                    }
+                }
+            }
+            return sum;
+        });
     }
 
     private static long sigma(long n) {
@@ -27,49 +37,8 @@ public final class Problem153 {
         return s;
     }
 
-    @SuppressWarnings("serial")
-    private static class SolveTask extends RangedTask<Long> {
-        private final long limit;
-
-        SolveTask(long limit) {
-            this(1, (int)isqrt(limit), limit);
-        }
-
-        SolveTask(int from, int to, long limit) {
-            super(from, to, 1000);
-            this.limit = limit;
-        }
-
-        @Override
-        public Long compute(int from, int to) {
-            long sum = 0;
-            for (long a = from; a <= to; a++) {
-                long m = min(a, isqrt(limit - a * a));
-                for (long b = 1; b <= m; b++) {
-                    if (gcd(a, b) == 1) {
-                        sum += 2 * (a == b ? a : a + b) * sigma(limit / (a * a + b * b));
-                    }
-                }
-            }
-            return sum;
-        }
-
-        @Override
-        protected Long combine(Long v1, Long v2) {
-            return v1 + v2;
-        }
-
-        @Override
-        protected SolveTask fork(int from, int to) {
-            return new SolveTask(from, to, limit);
-        }
-    }
-
-    public static long solve(int limit) {
-        ForkJoinPool pool = new ForkJoinPool();
-        long result = sigma(limit) + pool.invoke(new SolveTask(limit));
-        pool.shutdown();
-        return result;
+    private static long T(long n) {
+        return n * (n + 1) / 2;
     }
 
     public static void main(String[] args) {
