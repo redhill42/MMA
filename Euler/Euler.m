@@ -54,9 +54,17 @@ JavaSolve[num_Integer, args___] := JavaBlock[
   Symbol["euler`Problem" <> ToString[num] <> "`solve"][args]
 ];
 
-TotientSum[n_] := JavaBlock[
-  LoadJavaClass["euler.algo.TotientSieve"];
-  euler`algo`TotientSieve`totientSum[n]
+TotientSum[x_?Positive] := Module[{Phi, Res},
+  Phi[1] = 1;
+  Phi[n_] := Phi[n] =
+    n(n+1)/2 - Floor[(n+1)/2] -
+    Sum[
+      Phi@Floor[n/z] +
+      If[z == Floor[n/z], 0, (Floor[n/z] - Floor[n/(z+1)]) * Phi[z]],
+      {z, 2, Floor@Sqrt[n]}];
+  Res = Phi[x];
+  Clear[Phi];
+  Res
 ];
 
 Hungarian[costMatrix_List] := JavaBlock[

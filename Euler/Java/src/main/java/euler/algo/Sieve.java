@@ -1,7 +1,5 @@
 package euler.algo;
 
-import java.util.Arrays;
-
 /**
  * The base interface for prime sieves.
  */
@@ -48,27 +46,4 @@ public interface Sieve {
      * @return all prime numbers in the sieve
      */
     int[] getPrimes();
-
-    /**
-     * Returns an array that contains moebius μ function.
-     */
-    default byte[] moebius() {
-        int limit = getLimit();
-        byte[] mu = new byte[limit + 1];
-
-        Arrays.fill(mu, (byte)1);
-        mu[0] = 0;
-
-        for (int p = 2; p > 0; p = nextPrime(p)) {
-            // μ(n) = (-1)^k if n is a product of k distinct primes
-            for (int n = p; n <= limit; n += p)
-                mu[n] = (byte)-mu[n];
-
-            // μ(n) = 0 when n is not square-free
-            long q = (long)p*p;
-            for (long n = q; n <= limit; n += q)
-                mu[(int)n] = 0;
-        }
-        return mu;
-    }
 }

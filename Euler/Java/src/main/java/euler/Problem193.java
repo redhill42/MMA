@@ -1,7 +1,7 @@
 package euler;
 
 import static euler.algo.Library.isqrt;
-import static euler.algo.Library.moebius;
+import static euler.algo.Sublinear.moebius;
 
 public final class Problem193 {
     private Problem193() {}

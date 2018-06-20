@@ -1,14 +1,15 @@
 package euler;
 
-import static euler.algo.TotientSieve.totientSum;
+import euler.algo.Sublinear;
 
 public final class Problem512 {
     private Problem512() {}
 
     public static long solve(int n) {
-        long count = totientSum(n);
+        Sublinear.Result tsum = Sublinear.totientSumList(n);
+        long count = tsum.get(n);
         while (n > 0)
-            count -= totientSum(n >>= 1);
+            count -= tsum.get(n >>= 1);
         return count;
     }
 

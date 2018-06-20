@@ -468,10 +468,6 @@ public final class Library {
         return n;
     }
 
-    public static byte[] moebius(int limit) {
-        return new PrimeSieve(limit).moebius();
-    }
-
     public static long factorial(int n) {
         long r = 1;
         for (int i = 2; i <= n; i++)

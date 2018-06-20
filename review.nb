@@ -1,0 +1,136 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[      5377,        128]
+NotebookOptionsPosition[      3189,         98]
+NotebookOutlinePosition[      3576,        114]
+CellTagsIndexPosition[      3533,        111]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[StyleData[StyleDefinitions -> "Report/StandardReport.nb"],ExpressionUUID->"cc9fbb9a-d993-4e62-a08b-f43aabf8e958"],
+
+Cell[StyleData[All, "Working"],
+ Background->RGBColor[
+  1, 1, 1],ExpressionUUID->"20d563ba-f3f1-4b2d-ad09-6f08fdbc4d36"],
+
+Cell[StyleData["Title"],
+ TextAlignment->Center,
+ FontFamily->"Times New Roman",
+ FontColor->Automatic,ExpressionUUID->"1b3dfc8a-d0d5-49f0-9b91-608dc90fc8dc"],
+
+Cell[StyleData["Text"],
+ CellMargins->{{60, 10}, {2, 2}},
+ LineSpacing->{1.2, 0},
+ ParagraphSpacing->{0.1, 0},
+ ParagraphIndent->45,
+ FontFamily->
+  "Times New Roman",ExpressionUUID->"3dab9ef3-baab-4877-92d3-0bb4a25f3ec6"],
+
+Cell[StyleData["ItemNumbered"],
+ FontFamily->
+  "Times New Roman",ExpressionUUID->"0e5de145-705c-48f9-933a-ee067df436ab"],
+
+Cell[StyleData["Subsection"],
+ CellMargins->{{48, 10}, {8, 20}},
+ FontSize->22,
+ FontColor->Automatic,ExpressionUUID->"d0208dd6-fadd-4a56-89b6-17c6d365fe1f"],
+
+Cell[StyleData["Subsubsection"],
+ CellMargins->{{48, 10}, {12, 12}},
+ FontColor->Automatic,ExpressionUUID->"1e9ad81a-db67-4e89-b783-4426351aad95"],
+
+Cell[StyleData["DisplayFormula"],
+ CellMargins->{{60, 10}, {10, 10}},
+ TextAlignment->-0.5,
+ FontFamily->"Times New Roman",
+ FontSize->15,ExpressionUUID->"559cf2c7-3838-442d-9da2-632916f28dbe"],
+
+Cell[CellGroupData[{
+
+Cell[StyleData["DisplayFormulaNumbered"],
+ CellMargins->{{60, 10}, {10, 10}},
+ CellFrameLabels->{{None, 
+    Cell[
+     TextData[{"(", 
+       CounterBox["Subsection"], ".", 
+       CounterBox["Subsubsection"], ".", 
+       CounterBox["DisplayFormulaNumbered"], ")"}], 
+     "DisplayFormulaEquationNumber"]}, {None, None}},
+ TextAlignment->-0.5,
+ FontFamily->"Times New Roman",
+ FontSize->15,ExpressionUUID->"2e4dc683-74f8-4be0-aeed-1cea074a27d7"],
+
+Cell[StyleData["Text", "Printout"],
+ CellMargins->{{0, 10}, {2, 2}},
+ ParagraphIndent->21,ExpressionUUID->"7b254842-969f-4331-a0aa-c30e3dbca6a7"],
+
+Cell[StyleData["Subsection", "Printout"],
+ CellMargins->{{0, 10}, {8, 
+  20}},ExpressionUUID->"8a0e9702-3e80-4436-9ea4-66447165e6c1"],
+
+Cell[StyleData["Subsubsection", "Printout"],
+ CellMargins->{{0, 10}, {8, 
+  20}},ExpressionUUID->"0375ee64-4a8f-4d50-b8bb-46a7ab7847bb"],
+
+Cell[StyleData["DisplayFormula", "Printout"],
+ CellMargins->{{0, 10}, {10, 10}},
+ TextAlignment->Center,ExpressionUUID->"26e8d36f-8d82-4079-8c69-65fce5c4b5ab"],
+
+Cell[StyleData["DisplayFormulaNumbered", "Printout"],
+ CellMargins->{{0, 10}, {10, 10}},
+ TextAlignment->Center,ExpressionUUID->"a852960b-7203-4c59-8443-e415553b208d"],
+
+Cell[StyleData["Program", "Printout"],
+ CellMargins->{{0, 4}, {0, 
+  8}},ExpressionUUID->"23734fb6-69d1-491a-bd0d-7d8a214eb959"]
+}, Open  ]]
+},
+WindowSize->{808, 911},
+WindowMargins->{{Automatic, 346}, {Automatic, 71}},
+FrontEndVersion->"11.2 for Mac OS X x86 (32-bit, 64-bit Kernel) (2017\:5e7410\
+\:67083\:65e5)",
+StyleDefinitions->"PrivateStylesheetFormatting.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 118, 0, 46, 63, 0, "StyleData", "StyleDefinitions", "",ExpressionUUID->"cc9fbb9a-d993-4e62-a08b-f43aabf8e958"],
+Cell[679, 22, 121, 2, 70, 31, 0, "StyleData", "All", "Working",ExpressionUUID->"20d563ba-f3f1-4b2d-ad09-6f08fdbc4d36"],
+Cell[803, 26, 158, 3, 149, 24, 0, "StyleData", "Title", "All",ExpressionUUID->"1b3dfc8a-d0d5-49f0-9b91-608dc90fc8dc"],
+Cell[964, 31, 222, 6, 47, 23, 0, "StyleData", "Text", "All",ExpressionUUID->"3dab9ef3-baab-4877-92d3-0bb4a25f3ec6"],
+Cell[1189, 39, 121, 2, 53, 31, 0, "StyleData", "ItemNumbered", "All",ExpressionUUID->"0e5de145-705c-48f9-933a-ee067df436ab"],
+Cell[1313, 43, 157, 3, 100, 29, 0, "StyleData", "Subsection", "All",ExpressionUUID->"d0208dd6-fadd-4a56-89b6-17c6d365fe1f"],
+Cell[1473, 48, 146, 2, 74, 32, 0, "StyleData", "Subsubsection", "All",ExpressionUUID->"1e9ad81a-db67-4e89-b783-4426351aad95"],
+Cell[1622, 52, 193, 4, 60, 33, 0, "StyleData", "DisplayFormula", "All",ExpressionUUID->"559cf2c7-3838-442d-9da2-632916f28dbe"],
+Cell[CellGroupData[{
+Cell[1840, 60, 447, 11, 71, 41, 0, "StyleData", "DisplayFormulaNumbered", "All",ExpressionUUID->"2e4dc683-74f8-4be0-aeed-1cea074a27d7"],
+Cell[2290, 73, 145, 2, 40, 35, 0, "StyleData", "Text", "Printout",ExpressionUUID->"7b254842-969f-4331-a0aa-c30e3dbca6a7"],
+Cell[2438, 77, 133, 2, 76, 41, 0, "StyleData", "Subsection", "Printout",ExpressionUUID->"8a0e9702-3e80-4436-9ea4-66447165e6c1"],
+Cell[2574, 81, 136, 2, 76, 44, 0, "StyleData", "Subsubsection", "Printout",ExpressionUUID->"0375ee64-4a8f-4d50-b8bb-46a7ab7847bb"],
+Cell[2713, 85, 159, 2, 64, 45, 0, "StyleData", "DisplayFormula", "Printout",ExpressionUUID->"26e8d36f-8d82-4079-8c69-65fce5c4b5ab"],
+Cell[2875, 89, 167, 2, 64, 53, 0, "StyleData", "DisplayFormulaNumbered", "Printout",ExpressionUUID->"a852960b-7203-4c59-8443-e415553b208d"],
+Cell[3045, 93, 128, 2, 46, 38, 0, "StyleData", "Program", "Printout",ExpressionUUID->"23734fb6-69d1-491a-bd0d-7d8a214eb959"]
+}, Open  ]]
+}
+]
+*)
+

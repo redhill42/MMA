@@ -1,6 +1,6 @@
 package euler;
 
-import static euler.algo.TotientSieve.totientSum;
+import static euler.algo.Sublinear.totientSum;
 
 public final class Problem351 {
     private Problem351() {}

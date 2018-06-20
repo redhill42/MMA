@@ -5,7 +5,7 @@ import euler.algo.Pair;
 import euler.util.RangedTask;
 
 import static euler.algo.Library.isqrt;
-import static euler.algo.Library.moebius;
+import static euler.algo.Sublinear.moebius;
 import static java.lang.Long.min;
 import static java.lang.Math.sqrt;
 
