@@ -10,7 +10,7 @@ public final class Problem500 {
     private Problem500() {}
 
     public static long solve(int limit, long moduli) {
-        PrimeSieve sieve = new PrimeSieve(PrimeCounter.approximate(limit));
+        PrimeSieve sieve = new PrimeSieve((int)PrimeCounter.approxPrime(limit));
         PriorityQueue<Long> q = new PriorityQueue<>(limit);
         for (int p = 2, i = 0; i < limit; p = sieve.nextPrime(p), i++)
             q.offer((long)p);

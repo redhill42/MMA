@@ -4,13 +4,61 @@ import static euler.algo.Library.isqrt;
 import static java.lang.Math.abs;
 import static java.lang.Math.ceil;
 import static java.lang.Math.log;
+import static java.lang.Math.sqrt;
 
 public class PrimeCounter {
     private static final int[] smallPrimes = {0, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29};
 
-    public static int approximate(int n) {
+    private static final double EPS = 1e-20;
+
+    /**
+     * Calculate the logarithmic integral using Ramanujan's formula:
+     * https://en.wikipedia.org/wiki/Logarithmic_integral_function#Series_representation
+     */
+    private static double li(double x) {
+        double gamma = 0.57721566490153286061;
+        double sum = 0;
+        double inner_sum = 0;
+        double factorial = 1;
+        double p = -1, q;
+        double power2 = 1;
+        double term;
+        int k = 0;
+
+        for (int n = 1; n < 200; n++) {
+            p *= -log(x);
+            factorial *= n;
+            q = factorial * power2;
+            power2 *= 2;
+            for (; k <= (n - 1) / 2; k++)
+                inner_sum += 1.0 / (2 * k + 1);
+            term = (p / q) * inner_sum;
+            sum += term;
+            if (abs(term) < EPS)
+                break;
+        }
+
+        return gamma + log(log(x)) + sqrt(x) * sum;
+    }
+
+    /**
+     * Calculate the offset logarithmic integral which is a very accurate
+     * approximation of the number of primes <= x.
+     *
+     * Li(x) > π(x) for 24 ≤ x ≤ ~ 10^316
+     */
+    public static long Li(long x) {
+        if (x < 2)
+            return 0;
+        return (long)(li(x) - 1.04516378011749278484);
+    }
+
+    /**
+     * Returns the approximation of the nth prime.
+     */
+    public static long approxPrime(long n) {
         if (n < smallPrimes.length)
-            return smallPrimes[n];
+            return smallPrimes[(int)n];
 
         double logn = log(n), log2n = log(logn);
         double upper;
@@ -23,7 +71,7 @@ public class PrimeCounter {
             upper = n * (logn + log2n - 0.9484);
         else
             upper = n * (logn + 0.6 * log2n);
-        return (int)ceil(upper);
+        return (long)ceil(upper);
     }
 
     private final int[] primes;
