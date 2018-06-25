@@ -421,14 +421,13 @@ public final class Library {
         return factorize(n, Integer.MAX_VALUE);
     }
 
-    public static Factorization factorize(long number, int limit) {
-        long n = number;
-        List<PrimeFactor> factors = new ArrayList<>();
-
+    public static Factorization factorize(long n, int limit) {
         if (isPrime(n)) {
-            factors.add(new PrimeFactor(n, 1));
-            return new Factorization(n, factors);
+            PrimeFactor[] factors = {new PrimeFactor(n, 1)};
+            return new Factorization(factors);
         }
+
+        List<PrimeFactor> factors = new ArrayList<>();
 
         if (n % 2 == 0) {
             int a = exponent(n, 2);
@@ -455,7 +454,7 @@ public final class Library {
             factors.add(new PrimeFactor(n, 1));
         }
 
-        return new Factorization(number, factors);
+        return new Factorization(factors);
     }
 
     private static long addPrimeFactor(long n, int p, List<PrimeFactor> factors) {

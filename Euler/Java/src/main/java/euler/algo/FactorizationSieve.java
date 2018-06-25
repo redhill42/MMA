@@ -113,7 +113,7 @@ public class FactorizationSieve implements Sieve {
     }
 
     public Factorization factorize(int n) {
-        return new Factorization(n, factors(n));
+        return new Factorization(factors(n));
     }
 
     public List<PrimeFactor> factors(int n) {

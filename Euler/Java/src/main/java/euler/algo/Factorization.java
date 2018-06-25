@@ -1,9 +1,10 @@
 package euler.algo;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.function.Consumer;
 
 import static euler.algo.Library.factorize;
@@ -17,18 +18,177 @@ import static euler.algo.Library.pow;
  */
 @SuppressWarnings("unused")
 public class Factorization implements Iterable<PrimeFactor> {
-    private final long n;
-    private final List<PrimeFactor> factors;
+    private final PrimeFactor[] factors;
 
     /**
      * Construct a new number factorization.
      *
-     * @param n the number to be factorized
      * @param factors the factors of the number
      */
-    public Factorization(long n, List<PrimeFactor> factors) {
-        this.n = n;
+    public Factorization(PrimeFactor[] factors) {
         this.factors = factors;
+    }
+
+    /**
+     * Construct a new number factorization.
+     *
+     * @param factors the factors of the number
+     */
+    public Factorization(Collection<PrimeFactor> factors) {
+        PrimeFactor[] a = new PrimeFactor[factors.size()];
+        factors.toArray(a);
+        this.factors = a;
+    }
+
+    /**
+     * Returns the integer value that been factorized.
+     *
+     * @return the integer value that been factorized
+     */
+    public long value() {
+        long n = 1;
+        for (PrimeFactor f : factors)
+            n *= f.value();
+        return n;
+    }
+
+    /**
+     * Multiply new factor to construct a new factorization.
+     *
+     * @param factor new factor to add
+     * @return the new factorization
+     */
+    public Factorization multiply(PrimeFactor factor) {
+        long p = factor.prime();
+        int len = factors.length;
+        PrimeFactor f = null;
+
+        int i;
+        for (i = 0; i < len; i++) {
+            if (factors[i].prime() >= p) {
+                f = factors[i];
+                break;
+            }
+        }
+
+        if (f == null || f.prime() != p)
+            len++;
+
+        PrimeFactor[] res = new PrimeFactor[len];
+        if (f == null) {
+            System.arraycopy(factors, 0, res, 0, len - 1);
+            res[len - 1] = factor;
+        } else if (f.prime() == p) {
+            System.arraycopy(factors, 0, res, 0, len);
+            res[i] = new PrimeFactor(p, f.power() + factor.power());
+        } else {
+            System.arraycopy(factors, 0, res, 0, i);
+            System.arraycopy(factors, i, res, i+1, len - i - 1);
+            res[i] = factor;
+        }
+        return new Factorization(res);
+    }
+
+    /**
+     * Multiply new factor to construct a new factorization.
+     *
+     * @param p the prime
+     * @param a the power
+     * @return the new factorization
+     */
+    public Factorization multiply(long p, int a) {
+        return multiply(new PrimeFactor(p, a));
+    }
+
+    /**
+     * Multiply factors of another factorization to construct a new
+     * factorizations. That is, create a factorization of multiples
+     * of two numbers.
+     *
+     * @param other another factorization
+     * @return the new factorization
+     */
+    public Factorization multiply(Factorization other) {
+        PrimeFactor[] f1 = this.factors;
+        PrimeFactor[] f2 = other.factors;
+        int len1 = f1.length;
+        int len2 = f2.length;
+        int len = 0;
+
+        if (len1 == 0)
+            return other;
+        if (len2 == 0)
+            return this;
+
+        for (int i = 0, j = 0; ;) {
+            if (i == len1) {
+                len += len2 - j;
+                break;
+            }
+            if (j == len2) {
+                len += len1 - i;
+                break;
+            }
+
+            long p1 = f1[i].prime(), p2 = f2[j].prime();
+            if (p1 < p2) {
+                i++;
+                len++;
+            } else if (p2 < p1) {
+                j++;
+                len++;
+            } else {
+                i++;
+                j++;
+                len++;
+            }
+        }
+
+        PrimeFactor[] res = new PrimeFactor[len];
+        int k = 0;
+
+        for (int i = 0, j = 0; ;) {
+            if (i == len1) {
+                while (j < len2)
+                    res[k++] = f2[j++];
+                break;
+            }
+            if (j == len2) {
+                while (i < len1)
+                    res[k++] = f1[i++];
+                break;
+            }
+
+            long p1 = f1[i].prime(), p2 = f2[j].prime();
+            if (p1 < p2) {
+                res[k++] = f1[i];
+                i++;
+            } else if (p2 < p1) {
+                res[k++] = f2[j];
+                j++;
+            } else {
+                res[k++] = new PrimeFactor(p1, f1[i].power() + f2[j].power());
+                i++;
+                j++;
+            }
+        }
+
+        return new Factorization(res);
+    }
+
+    /**
+     * Returns the power of factorization.
+     *
+     * @param a the exponent
+     * @return the power of factorization.
+     */
+    public Factorization power(int a) {
+        PrimeFactor[] res = new PrimeFactor[factors.length];
+        for (int i = 0; i < res.length; i++) {
+            PrimeFactor f = factors[i];
+            res[i] = new PrimeFactor(f.prime(), a * f.power());
+        }
+        return new Factorization(res);
     }
 
     /**
@@ -40,10 +200,10 @@ public class Factorization implements Iterable<PrimeFactor> {
      * @return the totient function phi(n)
      */
     public long phi() {
-        long r = this.n;
+        long r = 1;
         for (PrimeFactor f : factors) {
             long p = f.prime();
-            r = r / p * (p - 1);
+            r = r * (p - 1) * pow(p, f.power() - 1);
         }
         return r;
     }
@@ -135,7 +295,7 @@ public class Factorization implements Iterable<PrimeFactor> {
         for (PrimeFactor f : factors)
             if (f.power() > 1)
                 return 0;
-        return factors.size() % 2 == 0 ? 1 : -1;
+        return factors.length % 2 == 0 ? 1 : -1;
     }
 
     /**
@@ -157,7 +317,7 @@ public class Factorization implements Iterable<PrimeFactor> {
      * @return the number of distinct prime factors of <em>n</em>
      */
     public int nu() {
-        return factors.size();
+        return factors.length;
     }
 
     /**
@@ -224,6 +384,8 @@ public class Factorization implements Iterable<PrimeFactor> {
      * @return the multiplicative order of <em>a</em> modulo <em>n</em>
      */
     public long ord(int a) {
+        long n = value();
+
         if (gcd(a, n) != 1)
             throw new IllegalArgumentException(
                 String.format("Multiplicative order: %d and %d must coprime", a, n));
@@ -261,7 +423,7 @@ public class Factorization implements Iterable<PrimeFactor> {
      */
     @Override
     public Iterator<PrimeFactor> iterator() {
-        return factors.iterator();
+        return Arrays.asList(factors).iterator();
     }
 
     /**
@@ -269,21 +431,23 @@ public class Factorization implements Iterable<PrimeFactor> {
      */
     @Override
     public void forEach(Consumer<? super PrimeFactor> action) {
-        factors.forEach(action);
+        for (PrimeFactor f : factors) {
+            action.accept(f);
+        }
     }
 
     /**
-     * Creates a Spliterator over the elementsof prime factors of <em>n</em>.
+     * Creates a Spliterator over the elements of prime factors.
      */
     @Override
     public Spliterator<PrimeFactor> spliterator() {
-        return factors.spliterator();
+        return Spliterators.spliterator(factors, Spliterator.ORDERED);
     }
 
     /**
      * Returns the String representation of an integer factorization.
      */
     public String toString() {
-        return factors.toString();
+        return Arrays.toString(factors);
     }
 }
