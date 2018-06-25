@@ -1,7 +1,6 @@
 package euler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import euler.util.LongArray;
 
 import static euler.algo.Library.isPrime;
 
@@ -13,8 +12,8 @@ public final class Problem516 {
         private final long[] primes;
 
         Solver(long limit) {
-            ArrayList<Long> hamming = new ArrayList<>();
-            ArrayList<Long> primes = new ArrayList<>();
+            LongArray hamming = new LongArray();
+            LongArray primes = new LongArray();
 
             for (long a = 1; a <= limit; a *= 2)
             for (long b = 1; a*b <= limit; b *= 3)
@@ -26,16 +25,8 @@ public final class Problem516 {
                 }
             }
 
-            this.hamming = toArray(hamming);
-            this.primes = toArray(primes);
-        }
-
-        private static long[] toArray(ArrayList<Long> list) {
-            long[] result = new long[list.size()];
-            for (int i = 0; i < result.length; i++)
-                result[i] = list.get(i);
-            Arrays.sort(result);
-            return result;
+            this.hamming = hamming.sort().toArray();
+            this.primes = primes.sort().toArray();
         }
 
         public long solve(long limit) {

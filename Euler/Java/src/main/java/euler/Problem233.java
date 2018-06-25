@@ -1,8 +1,7 @@
 package euler;
 
-import java.util.ArrayList;
-import java.util.List;
 import euler.algo.PrimeSieve;
+import euler.util.IntArray;
 
 import static euler.algo.Library.mul128;
 
@@ -18,8 +17,8 @@ public final class Problem233 {
             this.limit = limit;
 
             PrimeSieve sieve = new PrimeSieve((int)(limit / 21125)); // 5^3*13^2
-            List<Integer> primes = new ArrayList<>();
-            List<Integer> salts = new ArrayList<>();
+            IntArray primes = new IntArray();
+            IntArray salts = new IntArray();
 
             for (int p = 2; p > 0; p = sieve.nextPrime(p)) {
                 if (p % 4 == 1)
@@ -28,8 +27,8 @@ public final class Problem233 {
                     salts.add(p);
             }
 
-            this.primes = primes.stream().mapToInt(x->x).toArray();
-            this.salts = salts.stream().mapToInt(x->x).toArray();
+            this.primes = primes.toArray();
+            this.salts = salts.toArray();
         }
 
         public long solve() {

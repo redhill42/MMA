@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.function.LongBinaryOperator;
 import java.util.function.Predicate;
 
+import euler.util.IntArray;
+
 import static euler.algo.Library.isqrt;
 import static java.lang.Math.abs;
 import static java.lang.Math.floor;
@@ -217,18 +219,16 @@ public abstract class ContinuedFraction {
      * Create a continued fraction from a rational number.
      */
     public static ContinuedFraction rational(int a, int b) {
-        int[] terms = new int[8];
-        int k = 0;
+        IntArray terms = new IntArray();
         int t;
 
         while (b != 0) {
-            terms = expand(terms, k);
-            terms[k++] = a / b;
+            terms.add(a / b);
             t = a % b;
             a = b;
             b = t;
         }
-        return make(Arrays.copyOf(terms, k), 0);
+        return make(terms.toArray(), 0);
     }
 
     private static final double EPS = 1e-9;
@@ -237,21 +237,15 @@ public abstract class ContinuedFraction {
      * Create a continued fraction from a real number.
      */
     public static ContinuedFraction real(double x, int n) {
-        int[] terms = new int[n];
-        int k = 0;
-
-        while (k < n) {
+        IntArray terms = new IntArray(n);
+        for (int k = 0; k < n; k++) {
             int a = (int)floor(x);
-            terms = expand(terms, k);
-            terms[k++] = a;
+            terms.add(a);
             if (abs(x - a) < EPS)
                 break;
             x = 1.0 / (x - a);
         }
-
-        if (k != n)
-            terms = Arrays.copyOf(terms, k);
-        return make(terms, 0);
+        return make(terms.toArray(), 0);
     }
 
     /**
@@ -262,19 +256,17 @@ public abstract class ContinuedFraction {
         if (a0 * a0 == n)
             return make(new int[]{a0}, 0);
 
-        int[] terms = new int[16];
+        IntArray terms = new IntArray();
         int P = 0, Q = 1;
         int a;
-        int k = 0;
 
         do {
             a = (a0 + P) / Q;
             P = a * Q - P;
             Q = (n - P * P) / Q;
-            terms = expand(terms, k);
-            terms[k++] = a;
+            terms.add(a);
         } while (a != a0 * 2);
-        return make(Arrays.copyOf(terms, k), k - 1);
+        return make(terms.toArray(), terms.size() - 1);
     }
 
     /**

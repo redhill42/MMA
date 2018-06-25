@@ -1,7 +1,6 @@
 package euler;
 
-import java.util.ArrayList;
-import java.util.List;
+import euler.util.IntArray;
 
 import static euler.algo.Library.gcd;
 
@@ -11,16 +10,16 @@ public final class Problem175 {
     public static String solve(int a, int b) {
         // must swap numerator and denominator according to the algorithm
         int d = gcd(a, b);
-        List<Integer> sequence = f(b / d, a / d);
+        IntArray sequence = f(b / d, a / d);
         StringBuilder buf = new StringBuilder();
-        for (int i = 0; i < sequence.size() - 1; i++)
-            buf.append(sequence.get(i)).append(",");
-        buf.append(sequence.get(sequence.size() - 1));
+        for (int i = 0; i < sequence.length - 1; i++)
+            buf.append(sequence.a[i]).append(",");
+        buf.append(sequence.a[sequence.length - 1]);
         return buf.toString();
     }
 
-    private static List<Integer> f(int a, int b) {
-        List<Integer> sequence = new ArrayList<>();
+    private static IntArray f(int a, int b) {
+        IntArray sequence = new IntArray();
         int d = -1;
         int accum = 0;
 

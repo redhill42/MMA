@@ -1,12 +1,11 @@
 package euler;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import euler.algo.PrimeSieve;
+import euler.util.IntArray;
 
 public final class Problem118 {
     private Problem118() {}
@@ -17,9 +16,9 @@ public final class Problem118 {
         private final Map<Integer,Integer> candidates = new HashMap<>();
 
         @SuppressWarnings("unchecked")
-        private final List<Integer>[] candidateGroups = new List[9];
+        private final IntArray[] candidateGroups = new IntArray[9];
         {
-            Arrays.setAll(candidateGroups, i -> new ArrayList<Integer>());
+            Arrays.setAll(candidateGroups, i -> new IntArray());
         }
 
         private final int[][] partitions = {

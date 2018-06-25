@@ -1,8 +1,6 @@
 package euler.algo;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import euler.util.IntArray;
 import static euler.algo.Library.fibonacci;
 
 @SuppressWarnings("unused")
@@ -88,8 +86,8 @@ public class Phigital implements Comparable<Phigital> {
         }
     }
 
-    public List<Integer> encode() {
-        List<Integer> r = new ArrayList<>();
+    public IntArray encode() {
+        IntArray r = new IntArray();
         Phigital x = this;
         while (x.a != 0 || x.b != 0) {
             int a = phiExponent(x);

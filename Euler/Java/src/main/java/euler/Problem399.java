@@ -1,10 +1,9 @@
 package euler;
 
-import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.List;
 
 import euler.algo.FactorizationSieve;
+import euler.util.IntArray;
 import euler.util.RangedTask;
 
 import static euler.algo.Library.fibonacciMod;
@@ -16,7 +15,7 @@ public final class Problem399 {
     private Problem399() {}
 
     @SuppressWarnings("serial")
-    private static class SolveTask extends RangedTask<List<Integer>> {
+    private static class SolveTask extends RangedTask<IntArray> {
         private final FactorizationSieve sieve;
         private final int limit;
 
@@ -27,8 +26,8 @@ public final class Problem399 {
         }
 
         @Override
-        protected List<Integer> compute(int from, int to) {
-            List<Integer> res = new ArrayList<>();
+        protected IntArray compute(int from, int to) {
+            IntArray res = new IntArray();
             for (int p = sieve.nextPrime(from-1); p > 0 && p <= to; p = sieve.nextPrime(p)) {
                 int k = fibonacciEntry(p);
                 if ((long)k * p < limit)
@@ -48,9 +47,11 @@ public final class Problem399 {
         }
 
         @Override
-        protected List<Integer> combine(List<Integer> v1, List<Integer> v2) {
-            v1.addAll(v2);
-            return v1;
+        protected IntArray combine(IntArray v1, IntArray v2) {
+            int[] a = new int[v1.length + v2.length];
+            System.arraycopy(v1.a, 0, a, 0, v1.length);
+            System.arraycopy(v2.a, 0, a, v1.length, v2.length);
+            return new IntArray(a);
         }
 
         @Override
@@ -64,11 +65,10 @@ public final class Problem399 {
         int nprimes = n < 10000 ? n : n / 50;
 
         FactorizationSieve sieve = new FactorizationSieve(nprimes);
-        List<Integer> entries = new SolveTask(sieve, limit, 2, nprimes).invoke();
+        IntArray entries = new SolveTask(sieve, limit, 2, nprimes).invoke();
 
         BitSet squarefree = new BitSet(limit);
-        entries.forEach(x -> {
-            int k = x;
+        entries.forEach((int k) -> {
             for (int i = k; i < limit; i += k)
                 squarefree.set(i);
         });
