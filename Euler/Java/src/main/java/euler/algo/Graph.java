@@ -123,22 +123,14 @@ public class Graph {
         if (V() >= E() + 1)
             return false;
 
-        Set<Integer> visited = new HashSet<>();
-        return findCycleRec(0, -1, visited, cycle);
-    }
-
-    private boolean findCycleRec(int current, int pre, Set<Integer> visited, int[] cycle) {
-        visited.add(current);
-        for (int node = adj[current].nextSetBit(0); node >= 0; node = adj[current].nextSetBit(node+1)) {
-            if (node == pre)
-                continue;
-            if (visited.contains(node)) {
-                cycle[0] = current;
-                cycle[1] = node;
-                return true;
-            }
-            if (findCycleRec(node, current, visited, cycle)) {
-                return true;
+        DisjointSet set = new DisjointSet(V());
+        for (int u = 0; u < adj.length; u++) {
+            for (int v = u + 1; v < adj.length; v++) {
+                if (adj[u].get(v) && !set.merge(u, v)) {
+                    cycle[0] = u;
+                    cycle[1] = v;
+                    return true;
+                }
             }
         }
         return false;
