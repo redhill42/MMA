@@ -27,23 +27,57 @@ public final class Library {
     public static int gcd(int a, int b) {
         if (a < 0) a = -a;
         if (b < 0) b = -b;
-        while (b > 0) {
-            int m = a % b;
-            a = b;
-            b = m;
-        }
-        return a;
+        if (a == 0) return b;
+        if (b == 0) return a;
+
+        int shift = Integer.numberOfTrailingZeros(a | b);
+        a >>= Integer.numberOfTrailingZeros(a);
+
+        do {
+            b >>= Integer.numberOfTrailingZeros(b);
+            if (a > b) {
+                int t = b;
+                b = a - b;
+                a = t;
+            } else {
+                b -= a;
+            }
+        } while (b != 0);
+        return a << shift;
     }
 
     public static long gcd(long a, long b) {
         if (a < 0) a = -a;
         if (b < 0) b = -b;
-        while (b > 0) {
-            long m = a % b;
-            a = b;
-            b = m;
-        }
-        return a;
+        if (a == 0) return b;
+        if (b == 0) return a;
+
+        int shift = Long.numberOfTrailingZeros(a | b);
+        a >>= Long.numberOfTrailingZeros(a);
+
+        do {
+            b >>= Long.numberOfTrailingZeros(b);
+            if (a > b) {
+                long t = b;
+                b = a - b;
+                a = t;
+            } else {
+                b -= a;
+            }
+        } while (b != 0);
+        return a << shift;
+    }
+
+    public static boolean isCoprime(int a, int b) {
+        if (((a|b) & 1) == 0)
+            return false;
+        return gcd(a, b) == 1;
+    }
+
+    public static boolean isCoprime(long a, long b) {
+        if (((a|b) & 1) == 0)
+            return false;
+        return gcd(a, b) == 1;
     }
 
     public static long gcd(long x, long... xs) {

@@ -2,8 +2,8 @@ package euler;
 
 import euler.util.LongRangedTask;
 
-import static euler.algo.Library.gcd;
 import static euler.algo.Library.icbrt;
+import static euler.algo.Library.isCoprime;
 import static euler.algo.Library.isSquare;
 
 public final class Problem141 {
@@ -14,7 +14,7 @@ public final class Problem141 {
             long sum = 0;
             for (long a = from; a <= to; a++) {
                 for (long b = 1; b < a; b++) {
-                    if (gcd(a, b) != 1)
+                    if (!isCoprime(a, b))
                         continue;
                     for (long c = 1; c < limit; c++) {
                         long n = a*a*a*b*c*c + b*b*c;

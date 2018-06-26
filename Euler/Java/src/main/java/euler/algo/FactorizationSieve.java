@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static euler.algo.Library.exponent;
-import static euler.algo.Library.gcd;
+import static euler.algo.Library.isCoprime;
 import static euler.algo.Library.isqrt;
 import static euler.algo.Library.modpow;
 import static euler.algo.Library.pow;
@@ -304,7 +304,7 @@ public class FactorizationSieve implements Sieve {
     }
 
     public int ord(int a, int n) {
-        if (gcd(a, n) != 1)
+        if (!isCoprime(a, n))
             throw new IllegalArgumentException(
                 String.format("Multiplicative order: %d and %d must coprime", a, n));
 

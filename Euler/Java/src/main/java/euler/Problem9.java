@@ -1,6 +1,6 @@
 package euler;
 
-import static euler.algo.Library.gcd;
+import static euler.algo.Library.isCoprime;
 import static java.lang.Math.ceil;
 import static java.lang.Math.sqrt;
 import static java.lang.Math.min;
@@ -26,7 +26,7 @@ public final class Problem9 {
 
                 int klimit = min(2 * m - 1, sm);
                 for (int k = m + (m & 1) + 1; k <= klimit; k += 2) {
-                    if (sm % k == 0 && gcd(k, m) == 1) {
+                    if (sm % k == 0 && isCoprime(k, m)) {
                         int n = k - m;
                         int d = s2 / (k * m);
                         int a = d * (m * m - n * n);

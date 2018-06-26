@@ -2,7 +2,7 @@ package euler;
 
 import euler.util.LongRangedTask;
 
-import static euler.algo.Library.gcd;
+import static euler.algo.Library.isCoprime;
 import static euler.algo.Library.isqrt;
 import static java.lang.Math.min;
 
@@ -15,7 +15,7 @@ public final class Problem153 {
             for (long a = from; a <= to; a++) {
                 long m = min(a, isqrt(limit - a * a));
                 for (long b = 1; b <= m; b++) {
-                    if (gcd(a, b) == 1) {
+                    if (isCoprime(a, b)) {
                         sum += 2 * (a == b ? a : a + b) * sigma(limit / (a * a + b * b));
                     }
                 }

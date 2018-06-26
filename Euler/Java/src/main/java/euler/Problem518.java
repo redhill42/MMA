@@ -1,7 +1,7 @@
 package euler;
 
 import euler.algo.PrimeSieve;
-import static euler.algo.Library.gcd;
+import static euler.algo.Library.isCoprime;
 
 public final class Problem518 {
     private Problem518() {}
@@ -19,7 +19,7 @@ public final class Problem518 {
                 for (int y = 1; y < x; y += r) {
                     int b = k * x * y - 1;
                     int c = k * y * y - 1;
-                    if (sieve.isPrime(b) && sieve.isPrime(c) && gcd(x, y) == 1)
+                    if (sieve.isPrime(b) && sieve.isPrime(c) && isCoprime(x, y))
                         total += a + b + c;
                 }
             }

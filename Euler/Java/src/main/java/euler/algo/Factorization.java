@@ -8,7 +8,7 @@ import java.util.Spliterators;
 import java.util.function.Consumer;
 
 import static euler.algo.Library.factorize;
-import static euler.algo.Library.gcd;
+import static euler.algo.Library.isCoprime;
 import static euler.algo.Library.modpow;
 import static euler.algo.Library.pow;
 
@@ -386,7 +386,7 @@ public class Factorization implements Iterable<PrimeFactor> {
     public long ord(int a) {
         long n = value();
 
-        if (gcd(a, n) != 1)
+        if (!isCoprime(a, n))
             throw new IllegalArgumentException(
                 String.format("Multiplicative order: %d and %d must coprime", a, n));
 

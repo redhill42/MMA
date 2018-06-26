@@ -9,7 +9,7 @@ import java.util.Queue;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
-import static euler.algo.Library.gcd;
+import static euler.algo.Library.isCoprime;
 import static euler.algo.Library.isqrt;
 import static java.lang.Long.min;
 
@@ -23,7 +23,7 @@ public final class Pythagorean {
         for (long m = 1; m <= max_m; m += 2) {
             long max_n = min(m - 1, limit / m);
             for (long n = 1; n <= max_n; n += 2) {
-                if (gcd(m, n) == 1) {
+                if (isCoprime(m, n)) {
                     long a = m * n;
                     long b = (m * m - n * n) / 2;
                     long c = (m * m + n * n) / 2;
@@ -40,7 +40,7 @@ public final class Pythagorean {
         for (long m = 1; m <= max_m; m += 2) {
             long max_n = min(m - 1, isqrt(2 * limit - m * m));
             for (long n = 1; n <= max_n; n += 2) {
-                if (gcd(m, n) == 1) {
+                if (isCoprime(m, n)) {
                     long a = m * n;
                     long b = (m * m - n * n) / 2;
                     long c = (m * m + n * n) / 2;
@@ -57,7 +57,7 @@ public final class Pythagorean {
         for (long m = 1; m <= max_m; m += 2) {
             long max_n = min(m - 1, limit / m - m);
             for (long n = 1; n <= max_n; n += 2) {
-                if (gcd(m, n) == 1) {
+                if (isCoprime(m, n)) {
                     long a = m * n;
                     long b = (m * m - n * n) / 2;
                     long c = (m * m + n * n) / 2;

@@ -7,6 +7,8 @@ Timed::usage = "Display solve result and used time";
 Rounded::usage = "Display result rounded to given decimal point places";
 JavaSolve::usage = "Solve a problem with Java program";
 
+Unreap::usage = "Extract result from Reap expression";
+
 TotientSum::usage = "Returns the totient summation";
 
 Hungarian::usage = "The Hungarian algorithm for solving the assignment problem";
@@ -53,6 +55,9 @@ JavaSolve[num_Integer, args___] := JavaBlock[
   LoadJavaClass["euler.Problem" <> ToString[num]];
   Symbol["euler`Problem" <> ToString[num] <> "`solve"][args]
 ];
+
+SetAttributes[Unreap, HoldFirst];
+Unreap[expr_] := First@Last@Reap[expr];
 
 TotientSum[x_?Positive] := Module[{Phi, Res},
   Phi[1] = 1;
