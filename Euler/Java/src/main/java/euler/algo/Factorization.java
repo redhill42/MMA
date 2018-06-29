@@ -21,6 +21,17 @@ public class Factorization implements Iterable<PrimeFactor> {
     private final PrimeFactor[] factors;
 
     /**
+     * Construct a new factorization with a single prime factor.
+     *
+     * @param p the prime number
+     * @param a the power
+     */
+    public Factorization(long p, int a) {
+        factors = new PrimeFactor[1];
+        factors[0] = new PrimeFactor(p, a);
+    }
+
+    /**
      * Construct a new number factorization.
      *
      * @param factors the factors of the number
@@ -41,9 +52,23 @@ public class Factorization implements Iterable<PrimeFactor> {
     }
 
     /**
-     * Returns the integer value that been factorized.
+     * Returns the smallest prime number in the factorization.
+     */
+    public long minPrime() {
+        return factors[0].prime();
+    }
+
+    /**
+     * Returns the largest prime number in the factorizaiton.
+     */
+    public long maxPrime() {
+        return factors[factors.length - 1].prime();
+    }
+
+    /**
+     * Returns the value that been factorized.
      *
-     * @return the integer value that been factorized
+     * @return the value that been factorized
      */
     public long value() {
         long n = 1;
@@ -168,6 +193,106 @@ public class Factorization implements Iterable<PrimeFactor> {
                 j++;
             } else {
                 res[k++] = new PrimeFactor(p1, f1[i].power() + f2[j].power());
+                i++;
+                j++;
+            }
+        }
+
+        return new Factorization(res);
+    }
+
+    /**
+     * Remove a prime factor from this factorization.
+     *
+     * @param p the prime number of the factor
+     * @param a the power of the factor
+     */
+    public Factorization remove(long p, int a) {
+        int len = factors.length;
+        for (PrimeFactor f : factors) {
+            if (f.prime() == p) {
+                if (f.power() <= a)
+                    len--;
+                break;
+            }
+        }
+
+        PrimeFactor[] res = new PrimeFactor[len];
+        for (int i = 0, j = 0; i < factors.length; i++) {
+            PrimeFactor f = factors[i];
+            if (f.prime() == p) {
+                if (f.power() > a)
+                    res[j++] = new PrimeFactor(p, f.power() - a);
+            } else {
+                res[j++] = f;
+            }
+        }
+        return new Factorization(res);
+    }
+
+    /**
+     * Remove a prime factor from this factorization.
+     *
+     * @param factor the prime factor to be removed
+     */
+    public Factorization remove(PrimeFactor factor) {
+        return remove(factor.prime(), factor.power());
+    }
+
+    /**
+     * Remove prime factors from this factorization.
+     *
+     * @param other the prime factors to be removed
+     */
+    public Factorization remove(Factorization other) {
+        PrimeFactor[] f1 = this.factors;
+        PrimeFactor[] f2 = other.factors;
+        int len1 = f1.length;
+        int len2 = f2.length;
+        int len = 0;
+
+        if (len1 == 0 || len2 == 0)
+            return this;
+
+        for (int i = 0, j = 0; i < len1; ) {
+            if (j == len2) {
+                len += len1 - i;
+                break;
+            }
+
+            long p1 = f1[i].prime(), p2 = f2[j].prime();
+            if (p1 < p2) {
+                i++;
+                len++;
+            } else if (p2 < p1) {
+                j++;
+            } else {
+                if (f1[i].power() > f2[j].power())
+                    len++;
+                i++;
+                j++;
+            }
+        }
+
+        PrimeFactor[] res = new PrimeFactor[len];
+        int k = 0;
+
+        for (int i = 0, j = 0; i < len1; ) {
+            if (j == len2) {
+                while (i < len1)
+                    res[k++] = f1[i++];
+                break;
+            }
+
+            long p1 = f1[i].prime(), p2 = f2[j].prime();
+            if (p1 < p2) {
+                res[k++] = f1[i];
+                i++;
+            } else if (p2 < p1) {
+                j++;
+            } else {
+                if (f1[i].power() > f2[j].power())
+                    res[k++] = new PrimeFactor(p1, f1[i].power() - f2[j].power());
                 i++;
                 j++;
             }

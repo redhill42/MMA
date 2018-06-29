@@ -1,75 +1,57 @@
 package euler;
 
-import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
 
+import euler.algo.Factorization;
+import euler.algo.PrimeFactor;
 import euler.algo.PrimeSieve;
+
+import static euler.algo.Library.modmul;
+import static euler.algo.Library.modpow;
 
 public final class Problem615 {
     private Problem615() {}
 
     static class Datum {
-        Map<Integer,Integer> factors;
+        Factorization factors;
         double value;
 
-        Datum(Map<Integer,Integer> factors, double value) {
+        Datum(Factorization factors, double value) {
             this.factors = factors;
             this.value = value;
         }
 
         Datum(int prime, int power) {
-            this.factors = new TreeMap<>();
-            this.factors.put(prime, power);
+            this.factors = new Factorization(prime, power);
             this.value = power * Math.log(prime);
         }
 
         Datum replace(int p, int q) {
-            Map<Integer,Integer> nmap = new TreeMap<>(factors);
-            int k = nmap.get(p);
-            if (k == 1) {
-                nmap.remove(p);
-            } else {
-                nmap.replace(p, k - 1);
-            }
-            nmap.put(q, nmap.getOrDefault(q, 0) + 1);
-
+            Factorization nf = factors.remove(p, 1).multiply(q, 1);
             double nval = value - Math.log(p) + Math.log(q);
-            return new Datum(nmap, nval);
+            return new Datum(nf, nval);
         }
 
         Datum add2() {
-            Map<Integer,Integer> nmap = new TreeMap<>(factors);
-            nmap.put(2, nmap.getOrDefault(2, 0) + 1);
-            return new Datum(nmap, value + Math.log(2));
+            Factorization nf = factors.multiply(2, 1);
+            double nval = value + Math.log(2);
+            return new Datum(nf, nval);
         }
 
         long getValue(int modulo) {
-            long ret = 1;
-            for (Map.Entry<Integer,Integer> e : factors.entrySet()) {
-                ret = ret * modpow(e.getKey(), e.getValue(), modulo) % modulo;
-            }
-            return ret;
-        }
-
-        private static long modpow(long a, long n, long m) {
-            long ret = 1;
-            while (n > 0) {
-                if ((n & 1) == 1)
-                    ret = ret * a % m;
-                n >>= 1;
-                a = a * a % m;
-            }
-            return ret;
+            long n = 1;
+            for (PrimeFactor f : factors)
+                n = modmul(n, modpow(f.prime(), f.power(), modulo), modulo);
+            return n;
         }
 
         public long code() {
             long ret = 0;
-            for (Map.Entry<Integer,Integer> e : factors.entrySet()) {
-                ret = ret * 1000000009 + e.getKey();
-                ret = ret * 1000000009 + e.getValue();
+            for (PrimeFactor f : factors) {
+                ret = ret * 1000000009 + f.prime();
+                ret = ret * 1000000009 + f.power();
             }
             return ret;
         }
@@ -91,7 +73,8 @@ public final class Problem615 {
         for (int progress = 0; progress < limit - 1; progress++) {
             Datum current = frontier.poll();
 
-            for (int p : current.factors.keySet()) {
+            for (PrimeFactor f : current.factors) {
+                int p = (int)f.prime();
                 Datum next = current.replace(p, sieve.nextPrime(p));
                 if (seen.add(next.code())) {
                     frontier.offer(next);

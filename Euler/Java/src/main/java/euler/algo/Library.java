@@ -363,6 +363,14 @@ public final class Library {
         return (int)Math.cbrt(n);
     }
 
+    public static int isurd(int x, int n) {
+        return (int)Math.pow(x, 1.0 / n);
+    }
+
+    public static long isurd(long x, int n) {
+        return (long)Math.pow(x, 1.0 / n);
+    }
+
     public static boolean isSquare(long n) {
         if (n < 0) return false;
         long r = isqrt(n);

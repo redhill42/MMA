@@ -10,10 +10,10 @@ public class Polynomial {
     private int deg; // degree of polynomial
 
     /**
-     * Creates the constant polynomial P(x)=1.
+     * Creates the constant polynomial P(x)=0.
      */
     public Polynomial() {
-        this(0, 0);
+        this(0);
     }
 
     /**
@@ -239,7 +239,7 @@ public class Polynomial {
     public String toString() {
         StringBuilder b = new StringBuilder();
         for (int i = deg; i >= 0; i--) {
-            if (coef[i] == 0)
+            if (i != 0 && coef[i] == 0)
                 continue;
             if (i != deg)
                 b.append(coef[i] > 0 ? " + " : " - ");
