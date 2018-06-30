@@ -11,7 +11,7 @@ import java.util.function.LongBinaryOperator;
  * implementation of an integer only array which can outperform Java's
  * ArrayList by about a factor of 10-15x.
  */
-public class IntArray implements Iterable<Integer> {
+public class IntArray implements Iterable<Integer>, Cloneable {
     // Default initial capacity.
     private static final int DEFAULT_CAP = 1 << 3;
 
@@ -221,6 +221,17 @@ public class IntArray implements Iterable<Integer> {
      */
     public int[] toArray() {
         return Arrays.copyOf(a, length);
+    }
+
+    @Override
+    public IntArray clone() {
+        try {
+            IntArray copy = (IntArray)super.clone();
+            copy.a = a.clone();
+            return copy;
+        } catch (CloneNotSupportedException ex) {
+            throw new Error(ex);
+        }
     }
 
     public String toString() {
