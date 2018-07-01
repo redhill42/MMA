@@ -69,6 +69,11 @@ public final class Problem107 {
             n = 40;
             in = Problem107.class.getResourceAsStream("p107_network.txt");
         }
-        System.out.println(solve(n, readGraph(n, in)));
+
+        try {
+            System.out.println(solve(n, readGraph(n, in)));
+        } finally {
+            in.close();
+        }
     }
 }

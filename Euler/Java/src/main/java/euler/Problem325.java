@@ -5,6 +5,7 @@ import java.util.BitSet;
 import java.util.HashMap;
 import java.util.Map;
 
+import static euler.algo.Library.big;
 import static euler.algo.Library.even;
 import static euler.algo.Library.modmul;
 import static euler.algo.Library.pow;
@@ -61,7 +62,7 @@ public final class Problem325 {
         private final Map<Long, BigInteger> memoF = new HashMap<>();
         private final Map<Long, BigInteger> memoG = new HashMap<>();
 
-        private static final BigInteger SIX = BigInteger.valueOf(6);
+        private static final BigInteger SIX = big(6);
 
         Solver() {
             memoF.put(0L, ZERO);
@@ -69,7 +70,7 @@ public final class Problem325 {
         }
 
         public BigInteger solve(long n) {
-            BigInteger N = BigInteger.valueOf(n);
+            BigInteger N = big(n);
             return N.multiply(N.add(ONE))
                     .multiply(N.shiftLeft(2).subtract(ONE))
                     .divide(SIX)
@@ -81,8 +82,8 @@ public final class Problem325 {
             if (res != null)
                 return res;
 
-            BigInteger x = BigInteger.valueOf(n);
-            BigInteger t = BigInteger.valueOf((long)(n / PHI));
+            BigInteger x = big(n);
+            BigInteger t = big((long)(n / PHI));
 
             res = x.multiply(t).multiply(t.add(ONE)).shiftRight(1);
             res = res.subtract(x.pow(3).subtract(x).divide(SIX));
@@ -96,8 +97,8 @@ public final class Problem325 {
             if (res != null)
                 return res;
 
-            BigInteger x = BigInteger.valueOf(n);
-            BigInteger t = BigInteger.valueOf((long)(n / PHI));
+            BigInteger x = big(n);
+            BigInteger t = big((long)(n / PHI));
 
             res = x.multiply(x.add(ONE)).multiply(t).shiftRight(1);
             res = res.add(x.multiply(x.add(ONE)).multiply(x.shiftLeft(1).add(ONE)).divide(SIX));
@@ -113,7 +114,7 @@ public final class Problem325 {
 
     public static long solve(long n, long m) {
         Solver solver = new Solver();
-        return solver.solve(n).mod(BigInteger.valueOf(m)).longValue();
+        return solver.solve(n).mod(big(m)).longValue();
     }
 
     public static void main(String[] args) {

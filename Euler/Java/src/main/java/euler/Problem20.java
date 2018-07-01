@@ -2,6 +2,7 @@ package euler;
 
 import java.math.BigInteger;
 
+import static euler.algo.Library.big;
 import static euler.algo.Library.digitSum;
 
 public final class Problem20 {
@@ -10,7 +11,7 @@ public final class Problem20 {
     public static int solve(int n) {
         BigInteger factorial = BigInteger.ONE;
         for (int i = 2; i <= n; i++)
-            factorial = factorial.multiply(BigInteger.valueOf(i));
+            factorial = factorial.multiply(big(i));
         return digitSum(factorial);
     }
 

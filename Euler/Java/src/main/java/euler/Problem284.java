@@ -2,6 +2,8 @@ package euler;
 
 import java.math.BigInteger;
 import euler.algo.PrimeFactor;
+
+import static euler.algo.Library.big;
 import static euler.algo.Library.factorize;
 
 public final class Problem284 {
@@ -11,8 +13,8 @@ public final class Problem284 {
         long sum = 1;
         for (PrimeFactor f : factorize(radix)) {
             long p = f.value();
-            BigInteger a = BigInteger.valueOf(p).pow(n);
-            BigInteger b = BigInteger.valueOf(radix / p).pow(n);
+            BigInteger a = big(p).pow(n);
+            BigInteger b = big(radix / p).pow(n);
             sum += accumulate(chineseRemainder(a, b), radix);
         }
         return sum;

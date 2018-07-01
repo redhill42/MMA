@@ -538,14 +538,13 @@ public final class Library {
         if (n < 0 || k < 0 || k > n)
             return BigInteger.ZERO;
         if (n < binomial.length)
-            return BigInteger.valueOf(binomial[n][k]);
+            return big(binomial[n][k]);
 
         BigInteger r = BigInteger.ONE;
         if (k > n / 2)
             k = n - k;
         for (int i = 1; i <= k; i++)
-            r = r.multiply(BigInteger.valueOf(n - i + 1))
-                 .divide(BigInteger.valueOf(i));
+            r = r.multiply(big(n - i + 1)).divide(big(i));
         return r;
     }
 
@@ -557,14 +556,16 @@ public final class Library {
 
         long a = 0, b = 1;
         while (n-- > 0) {
-            long t = b; b = a + b; a = t;
+            long t = b;
+            b = a + b;
+            a = t;
         }
         return a;
     }
 
     public static long fibonacciMod(long n, long m, long[] r) {
         if (n < 0)
-            throw new IllegalStateException("not implemented");
+            throw new UnsupportedOperationException("not implemented");
 
         if (n == 0) {
             if (r != null) {
@@ -648,5 +649,58 @@ public final class Library {
         for (int i = digits.length(); --i >= 0; )
             s += digits.charAt(i) - '0';
         return s;
+    }
+
+    public static BigInteger big(long n) {
+        return BigInteger.valueOf(n);
+    }
+
+    private static final String[] roman_rules = {
+         "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"
+    };
+    private static final int[] roman_values = {
+        1000, 900, 500,  400, 100,   90,  50,   40,  10,    9,   5,    4,   1
+    };
+
+    public static String toRomanNumeral(int n) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < roman_rules.length; i++) {
+            while (n >= roman_values[i]) {
+                result.append(roman_rules[i]);
+                n -= roman_values[i];
+            }
+        }
+        return result.toString();
+    }
+
+    public static int fromRomanNumeral(String roman) {
+        int last = 0; // the previous value of Roman letter
+        boolean subtract = false; // true if current letter is subtracted
+        int res = 0;
+
+        for (int i = roman.length() - 1; i >= 0; i--) {
+            int c;
+            switch (roman.charAt(i)) {
+            case 'M': c = 1000; break;
+            case 'D': c =  500; break;
+            case 'C': c =  100; break;
+            case 'L': c =   50; break;
+            case 'X': c =   10; break;
+            case 'V': c =    5; break;
+            case 'I': c =    1; break;
+            default:
+                throw new IllegalArgumentException("Invalid Roman numeral: " + roman);
+            }
+
+            if (c < last) {
+                subtract = true;
+                last = c;
+            } else if (c > last) {
+                subtract = false;
+                last = c;
+            }
+            res = subtract ? res - c : res + c;
+        }
+        return res;
     }
 }

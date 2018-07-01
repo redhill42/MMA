@@ -2,6 +2,7 @@ package euler;
 
 import java.math.BigInteger;
 
+import static euler.algo.Library.big;
 import static euler.algo.Library.even;
 import static euler.algo.Library.factorize;
 
@@ -13,10 +14,6 @@ public final class Problem359 {
         for (long f : factorize(n).divisors())
             s = s.add(P(f, n / f));
         return s.mod(big(m)).longValue();
-    }
-
-    private static BigInteger big(long n) {
-        return BigInteger.valueOf(n);
     }
 
     private static BigInteger P(long f, long r) {

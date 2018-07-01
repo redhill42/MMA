@@ -5,6 +5,7 @@ import static java.math.BigInteger.ONE;
 
 import euler.algo.Graph;
 import static euler.algo.Library.choose;
+import static euler.algo.Library.big;
 
 public final class Problem194 {
     private Problem194() {}
@@ -17,14 +18,14 @@ public final class Problem194 {
 
         Graph a = new Graph(b).addEdge(5, 6);
 
-        BigInteger K = BigInteger.valueOf(k);
+        BigInteger K = big(k);
         BigInteger ka = a.getChromaticPolynomial().evaluate(K);
         BigInteger kb = b.getChromaticPolynomial().evaluate(K);
 
         BigInteger res = ka.pow(n).multiply(kb.pow(m));
         res = res.divide(K.multiply(K.subtract(ONE)).pow(n+m-1));
         res = res.multiply(choose(n+m, n));
-        res = res.mod(BigInteger.valueOf(mod));
+        res = res.mod(big(mod));
         return res.longValue();
     }
 
