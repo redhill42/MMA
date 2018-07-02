@@ -1,7 +1,7 @@
 package euler;
 
 import euler.algo.FareySequence;
-import euler.algo.Pair;
+import euler.algo.Ratio;
 import euler.util.RangedTask;
 
 import static euler.algo.Library.isqrt;
@@ -19,8 +19,8 @@ public final class Problem370 {
         FareySequence farey = new FareySequence((long)sqrt(limit / 3));
         long sum = 0;
 
-        for (Pair p : farey.ascending(1, 1)) {
-            long a = p.x, b = p.y;
+        for (Ratio p : farey.ascending(Ratio.ONE)) {
+            long a = p.numer(), b = p.denom();
             if (a > b * PHI)
                 break;
             sum += limit / ((a + b) * (a + b) - a * b);

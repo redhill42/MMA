@@ -56,7 +56,7 @@ public final class Problem610 {
                 E = E.add(x);
             }
 
-            return E;
+            return E.normalize();
         }
 
         private Rational prob(char c) {

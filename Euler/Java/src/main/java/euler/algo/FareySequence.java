@@ -35,67 +35,52 @@ public class FareySequence {
      * subject to (i) <em>b = +r (mod q)</em> and (ii) <em>b ≤ n</em>. Then put
      * <em>a = (bp - 1)/q</em>.</p>
      */
-    public Pair next(long p, long q) {
+    public Ratio next(Ratio r) {
+        long p = r.numer(), q = r.denom();
         long c, d;
         d = q - modinv(p, q);
         d += (n - d) / q * q;
         c = (d * p + 1) / q;
-        return new Pair(c, d);
-    }
-
-    /**
-     * Get the next neighbour in the Farey sequence.
-     */
-    public Pair next(Pair p) {
-        return next(p.x, p.y);
+        return new Ratio(c, d);
     }
 
     /**
      * Get the previous neighbour of p/q in the Farey sequence.
      */
-    public Pair previous(long p, long q) {
+    public Ratio previous(Ratio r) {
+        long p = r.numer(), q = r.denom();
         long a, b;
         b = modinv(p, q);
         b += (n - b) / q * q;
         a = (b * p - 1) / q;
-        return new Pair(a, b);
-    }
-
-    /**
-     * Get the previous neighbour in the Farey sequence.
-     */
-    public Pair previous(Pair p) {
-        return previous(p.x, p.y);
-    }
-
-    /**
-     * Iterate Farey sequence by given consecutive terms of <em>a/b</em>
-     * and <em>c/d</em>.
-     */
-    public Iterable<Pair> sequence(long a, long b, long c, long d) {
-        return new Iterable<Pair>() {
-            @Override
-            public Iterator<Pair> iterator() {
-                return new Sequence(a, b, c, d, n);
-            }
-        };
+        return new Ratio(a, b);
     }
 
     /**
      * Iterate Farey sequence by given a pair of consecutive terms.
      */
-    public Iterable<Pair> sequence(Pair a, Pair b) {
-        return sequence(a.x, a.y, b.x, b.y);
+    public Iterable<Ratio> sequence(Ratio a, Ratio b) {
+        return new Iterable<Ratio>() {
+            @Override
+            public Iterator<Ratio> iterator() {
+                return new Sequence(a.numer(), a.denom(), b.numer(), b.denom(), n);
+            }
+        };
     }
 
     /**
      * Iterate all elements in Farey sequence in ascending order.
      */
-    public Iterable<Pair> ascending() {
-        return new Iterable<Pair>() {
+    public Iterable<Ratio> ascending() {
+        return new Iterable<Ratio>() {
             @Override
-            public Iterator<Pair> iterator() {
-                return new Ascending(n);
+            public Iterator<Ratio> iterator() {
+                return new Sequence(0, 1, 1, n, n) {
+                    @Override
+                    public boolean hasNext() {
+                        return a <= b;
+                    }
+                };
             }
         };
     }
@@ -103,51 +88,80 @@ public class FareySequence {
     /**
      * Iterate all elements in Farey sequence in descending order.
      */
-    public Iterable<Pair> descending() {
-        return new Iterable<Pair>() {
+    public Iterable<Ratio> descending() {
+        return new Iterable<Ratio>() {
             @Override
-            public Iterator<Pair> iterator() {
-                return new Descending(n);
+            public Iterator<Ratio> iterator() {
+                return new Sequence(1, 1, n - 1, n, n) {
+                    @Override
+                    public boolean hasNext() {
+                        return a >= 0;
+                    }
+                };
             }
         };
     }
 
     /**
-     * Iterate Farey sequence in ascending order by given the start term
-     * of <em>a/b</em>.
+     * Iterate Farey sequence in ascending order by given the start term.
      */
-    public Iterable<Pair> ascending(long a, long b) {
-        return ascending(new Pair(a, b));
-    }
-
-    /**
-     * Iterate Farey sequence in ascending order by given the start term
-     * in a pair.
-     */
-    public Iterable<Pair> ascending(Pair begin) {
+    public Iterable<Ratio> ascending(Ratio begin) {
         return sequence(begin, next(begin));
     }
 
     /**
-     * Iterate Farey sequence in descending order by given the start term
-     * of <em>a/b</em>.
+     * Iterate Farey sequence in ascending order by given the start term
+     * and ending term.
      */
-    public Iterable<Pair> descending(long a, long b) {
-        return descending(new Pair(a, b));
+    public Iterable<Ratio> ascending(Ratio begin, Ratio end) {
+        return new Iterable<Ratio>() {
+            @Override
+            public Iterator<Ratio> iterator() {
+                final Ratio next = next(begin);
+                final long x = end.numer(), y = end.denom();
+                return new Sequence(begin.numer(), begin.denom(),
+                                    next.numer(), next.denom(),
+                                    n) {
+                    @Override
+                    public boolean hasNext() {
+                        return a * y < b * x;
+                    }
+                };
+            }
+        };
+    }
+
+    /**
+     * Iterate Farey sequence in descending order by given the start term.
+     */
+    public Iterable<Ratio> descending(Ratio begin) {
+        return sequence(begin, previous(begin));
     }
 
     /**
      * Iterate Farey sequence in descending order by given the start term
-     * in a pair.
+     * and ending term.
      */
-    public Iterable<Pair> descending(Pair begin) {
-        return sequence(begin, previous(begin));
+    public Iterable<Ratio> descending(Ratio begin, Ratio end) {
+        return new Iterable<Ratio>() {
+            @Override
+            public Iterator<Ratio> iterator() {
+                final Ratio prev = previous(begin);
+                final long x = end.numer(), y = end.denom();
+                return new Sequence(begin.numer(), begin.denom(),
+                                    prev.numer(), prev.denom(),
+                                    n) {
+                    @Override
+                    public boolean hasNext() {
+                        return a * y > b * x;
+                    }
+                };
+            }
+        };
     }
 
-    private static class Sequence implements Iterator<Pair> {
+    private static class Sequence implements Iterator<Ratio> {
         final long n;
-        final Pair pair = new Pair();
-
         long a, b, c, d;
 
         Sequence(long a, long b, long c, long d, long n) {
@@ -164,13 +178,12 @@ public class FareySequence {
         }
 
         @Override
-        public Pair next() {
+        public Ratio next() {
             if (!hasNext()) {
                 throw new NoSuchElementException();
             }
 
-            pair.x = a;
-            pair.y = b;
+            Ratio r = new Ratio(a, b);
 
             long k = (n + b) / d;
             long c1 = k * c - a;
@@ -181,29 +194,7 @@ public class FareySequence {
             c = c1;
             d = d1;
 
-            return pair;
-        }
-    }
-
-    private static class Ascending extends Sequence {
-        Ascending(long n) {
-            super(0, 1, 1, n, n);
-        }
-
-        @Override
-        public boolean hasNext() {
-            return a <= b;
-        }
-    }
-
-    private static class Descending extends Sequence {
-        Descending(long n) {
-            super(1, 1, n - 1, n, n);
-        }
-
-        @Override
-        public boolean hasNext() {
-            return a >= 0;
+            return r;
         }
     }
 }

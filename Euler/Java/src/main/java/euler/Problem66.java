@@ -14,7 +14,7 @@ public final class Problem66 {
         for (int d = 1; d <= limit; d++) {
             Rational r = PellEquation.solve(d, 1);
             if (r != null) {
-                BigInteger n = r.getNumerator();
+                BigInteger n = r.numer();
                 if (n.compareTo(max_x) > 0) {
                     max_x = n;
                     max_d = d;

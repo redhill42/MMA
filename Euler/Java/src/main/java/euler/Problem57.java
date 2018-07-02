@@ -8,8 +8,7 @@ public final class Problem57 {
     public static int solve(int n, int limit) {
         int[] count = {0};
         ContinuedFraction.sqrt(n).convergents(limit, r -> {
-            if (r.getNumerator().toString().length() >
-                r.getDenominator().toString().length())
+            if (r.numer().toString().length() > r.denom().toString().length())
                 count[0]++;
             return true;
         });

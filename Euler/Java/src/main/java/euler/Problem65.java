@@ -9,7 +9,7 @@ public final class Problem65 {
     private Problem65() {}
 
     public static BigInteger solve(int iterations) {
-        return ContinuedFraction.E.convergent(iterations).getNumerator();
+        return ContinuedFraction.E.convergent(iterations).numer();
     }
 
     public static void main(String[] args) {

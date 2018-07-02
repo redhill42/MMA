@@ -237,7 +237,7 @@ public final class Rational extends Number implements Comparable<Rational>
      *
      * @return the numerator of this rational number.
      */
-    public BigInteger getNumerator() {
+    public BigInteger numer() {
         return normalize().numer;
     }
 
@@ -246,7 +246,7 @@ public final class Rational extends Number implements Comparable<Rational>
      *
      * @return the denominator of this rational number.
      */
-    public BigInteger getDenominator() {
+    public BigInteger denom() {
         return normalize().denom;
     }
 
