@@ -182,6 +182,7 @@ final class Solutions {
         "618", "634212216",
         "624", "984524441",
         "625", "551614306",
+        "630", "9669182880384"
     };
 
     static Map<Integer, String> getSolutions() {

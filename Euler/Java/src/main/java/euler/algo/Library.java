@@ -80,6 +80,13 @@ public final class Library {
         return gcd(a, b) == 1;
     }
 
+    public static int gcd(int x, int... xs) {
+        int res = x;
+        for (int a : xs)
+            res = gcd(res, a);
+        return res;
+    }
+
     public static long gcd(long x, long... xs) {
         long res = x;
         for (long a : xs)
