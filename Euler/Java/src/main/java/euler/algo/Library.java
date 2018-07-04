@@ -246,13 +246,13 @@ public final class Library {
     }
 
     public static int mod(long n, int m) {
-        if ((n %= m) < 0)
+        if ((n < 0 || n >= m) && (n %= m) < 0)
             n += m;
         return (int)n;
     }
 
     public static long mod(long n, long m) {
-        if ((n %= m) < 0)
+        if ((n < 0 || n >= m) && (n %= m) < 0)
             n += m;
         return n;
     }
@@ -260,12 +260,8 @@ public final class Library {
     public static long modmul(long a, long b, long m) {
         if (a == 0 || b == 0)
             return 0;
-
-        a = mod(a, m);
-        b = mod(b, m);
-
-        if ((a | b) >>> 31 == 0)
-            return a * b % m;
+        if (((a = mod(a, m)) | (b = mod(b, m))) >>> 31 == 0)
+            return mod(a * b, m);
 
         long r = 0;
         while (b > 0) {

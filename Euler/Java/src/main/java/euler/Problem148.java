@@ -1,11 +1,13 @@
 package euler;
 
 import java.util.Arrays;
+import euler.algo.Ratio;
 
 public final class Problem148 {
     private Problem148() {}
 
-    public static long solve(long levels, int modulo) {
+    @SuppressWarnings("unused")
+    public static long bruteForce(long levels, int modulo) {
         int[] basep = new int[(int)(Math.log(levels) / Math.log(modulo)) + 1];
         Arrays.fill(basep, 1);
 
@@ -23,6 +25,20 @@ public final class Problem148 {
             result += accum;
         }
         return result;
+    }
+
+    public static long solve(long n, int p) {
+        Ratio d = Ratio.valueOf(p * (p + 1) / 2);
+        Ratio m = Ratio.ONE_HALF;
+        Ratio r = Ratio.ZERO;
+
+        while (n > 0) {
+            Ratio x = Ratio.valueOf(n % p);
+            r = r.add(m.multiply(x)).multiply(x.add(Ratio.ONE));
+            m = m.multiply(d);
+            n /= p;
+        }
+        return r.numer();
     }
 
     public static void main(String[] args) {
