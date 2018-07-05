@@ -1,18 +1,17 @@
 package euler;
 
 import euler.algo.ContinuedFraction;
+import euler.algo.Rational;
 
 public final class Problem57 {
     private Problem57() {}
 
     public static int solve(int n, int limit) {
-        int[] count = {0};
-        ContinuedFraction.sqrt(n).convergents(limit, r -> {
+        int count = 0;
+        for (Rational r : ContinuedFraction.sqrt(n).convergents(limit, Rational.class))
             if (r.numer().toString().length() > r.denom().toString().length())
-                count[0]++;
-            return true;
-        });
-        return count[0];
+                count++;
+        return count;
     }
 
     public static void main(String[] args) {

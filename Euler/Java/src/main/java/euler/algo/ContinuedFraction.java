@@ -2,16 +2,28 @@ package euler.algo;
 
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.function.LongBinaryOperator;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import euler.util.IntArray;
 
+import static euler.algo.Library.even;
 import static euler.algo.Library.isqrt;
+import static euler.algo.Library.mul128;
 import static java.lang.Math.abs;
 import static java.lang.Math.floor;
 
+@SuppressWarnings({"unused", "RedundantFieldInitialization"})
 public abstract class ContinuedFraction {
+    /**
+     * Returns true if this is a infinite continued fraction, false otherwise.
+     */
+    public boolean isInfinite() {
+        return isPeriodic() || length() < 0;
+    }
+
     /**
      * Returns true if this is a periodic continued fraction, false otherwise.
      */
@@ -40,91 +52,390 @@ public abstract class ContinuedFraction {
     public abstract int term(int i);
 
     /**
-     * Convergent on the continued fraction. Passing every partial
-     * rational number to the given operator. The operator should
-     * return -1 to continue operate on convergence. Return -1 to
-     * terminate the opreation.
+     * The interface for iterating on convergents of continued fraction.
+     *
+     * @param <R> the rational type
      */
-    public long convergents(LongBinaryOperator op) {
-        return convergents(Integer.MAX_VALUE, op);
+    public interface Convergents<R> extends Iterable<R> {
+        @Override
+        default void forEach(Consumer<? super R> action) {
+            forEach(r -> { action.accept(r); return true; });
+        }
+
+        /**
+         * Convergent on the continued fraction. Passing every partial
+         * rational number to the given operator. The operator should
+         * return true to continue operate on convergence. Return false to
+         * terminate the opreation.
+         */
+        void forEach(Predicate<? super R> action);
+
+        /**
+         * Returns the n'th convergent value.
+         */
+        default R get(int n) {
+            Iterator<R> it = iterator();
+            R r = null;
+            for (int i = 0; i < n && it.hasNext(); i++)
+                r = it.next();
+            return r;
+        }
+    }
+
+    /**
+     * Convergent on the continued fraction.
+     */
+    public Convergents<Ratio> convergents() {
+        return convergents(Integer.MAX_VALUE);
     }
 
     /**
      * Convergent on the continued fraction with the maximum length.
      */
-    public long convergents(int n, LongBinaryOperator op) {
-        if (!isPeriodic() && length() > 0 && n > length())
+    public Convergents<Ratio> convergents(int n) {
+        if (!isInfinite() && n > length())
+            n = length();
+        return new SmallConvergents(n);
+    }
+
+    /**
+     * Convergent on the continued fraction with BigInteger format.
+     */
+    public <R> Convergents<R> convergents(Class<R> type) {
+        return convergents(Integer.MAX_VALUE, type);
+    }
+
+    /**
+     * Convergent on the continued fraction with BigInteger format and
+     * with the maximum length.
+     */
+    @SuppressWarnings("unchecked")
+    public <R> Convergents<R> convergents(int n, Class<R> type) {
+        if (!isInfinite() && n > length())
             n = length();
 
-        long p0 = 0, q0 = 1;
-        long p1 = 1, q1 = 0;
-        long r = -1;
+        if (type == Rational.class)
+            return (Convergents<R>)new BigConvergents(n);
+        if (type == Ratio.class)
+            return (Convergents<R>)new SmallConvergents(n);
+        throw new UnsupportedOperationException(type.toString());
+    }
 
-        for (int i = 0; i < n && r == -1; i++) {
+    /**
+     * Returns the best approximation for this continued fraction
+     * with the given bound.
+     */
+    public Ratio bestApproximation(long bound) {
+        long p0 = 1;
+        long q0 = 0;
+        long p1 = term(0);
+        long q1 = 1;
+        long p, q;
+
+        int n = !isInfinite() ? length() : Integer.MAX_VALUE;
+        for (int i = 1; i < n; i++) {
             int a = term(i);
-            long p = a * p1 + p0;
-            long q = a * q1 + q0;
-            r = op.applyAsLong(p, q);
+            p = a * p1 + p0;
+            q = a * q1 + q0;
+
+            if (q > bound) {
+                long k = (q - bound) / q1 + 1;
+                int b = (a + 1) / 2;
+                if (even(a) && !allowHalf(i))
+                    b++;
+                return (k > a - b)
+                    ?  Ratio.valueOf(p1, q1)
+                    :  Ratio.valueOf(p - k * p1, q - k * q1);
+            }
+
             p0 = p1; q0 = q1;
             p1 = p;  q1 = q;
         }
-        return r;
+        return Ratio.valueOf(p1, q1);
+    }
+
+    private boolean allowHalf(int k) {
+        int s = 1;
+        for (int i = k; i > 0; i--) {
+            int diff = s * (term(i) - term(2 * k - i));
+            if (diff > 0)
+                return true;
+            if (diff < 0)
+                return false;
+            s = -s;
+        }
+        return even(k);
     }
 
     /**
-     * Convergent on the continued fraction. Passing every partial rational
-     * rational number to the given operator. The operator should
-     * return -1 to continue operate on convergence. Return -1 to
-     * terminate the opreation.
+     * Returns a sequence of approximations for this continued fraction
+     * with the given bound.
      */
-    public void convergents(Predicate<Rational> op) {
-        convergents(Integer.MAX_VALUE, op);
+    public Convergents<Ratio> approximations(long bound) {
+        return new Approximations(bound);
     }
 
-    /**
-     * Convergent on the continued fraction with the maximum length.
-     */
-    public void convergents(int n, Predicate<Rational> op) {
-        if (!isPeriodic() && length() > 0 && n > length())
-            n = length();
+    /*--------------------------------------------------------------------*/
 
-        BigInteger p0 = BigInteger.ZERO;
-        BigInteger q0 = BigInteger.ONE;
-        BigInteger p1 = BigInteger.ONE;
-        BigInteger q1 = BigInteger.ZERO;
+    class SmallConvergents implements Convergents<Ratio> {
+        final int n;
 
-        for (int i = 0; i < n; i++) {
-            BigInteger a = BigInteger.valueOf(term(i));
-            BigInteger p = a.multiply(p1).add(p0);
-            BigInteger q = a.multiply(q1).add(q0);
-            if (!op.test(Rational.valueOf(p, q)))
-                break;
-            p0 = p1; q0 = q1;
-            p1 = p;  q1 = q;
+        SmallConvergents(int n) {
+            this.n = n;
+        }
+
+        @Override
+        public Iterator<Ratio> iterator() {
+            return new Iterator<Ratio>() {
+                long p0 = 1;
+                long q0 = 0;
+                long p1 = term(0);
+                long q1 = 1;
+                int  i;
+
+                @Override
+                public boolean hasNext() {
+                    return i < n && p1 < Long.MAX_VALUE && q1 < Long.MAX_VALUE;
+                }
+
+                @Override
+                public Ratio next() {
+                    if (!hasNext()) throw new NoSuchElementException();
+
+                    Ratio next = new Ratio(p1, q1);
+
+                    if (++i < n) {
+                        int a = term(i);
+
+                        long p = mul128(a, p1);
+                        if (p <= Long.MAX_VALUE - p0)
+                            p += p0;
+                        else
+                            p = Long.MAX_VALUE;
+
+                        long q = mul128(a, q1);
+                        if (q <= Long.MAX_VALUE - q0)
+                            q += q0;
+                        else
+                            q = Long.MAX_VALUE;
+
+                        p0 = p1; q0 = q1;
+                        p1 = p;  q1 = q;
+                    }
+
+                    return next;
+                }
+            };
+        }
+
+        @Override
+        public void forEach(Predicate<? super Ratio> action) {
+            long p0 = 0, q0 = 1;
+            long p1 = 1, q1 = 0;
+
+            for (int i = 0; i < n; i++) {
+                int a = term(i);
+
+                long p = mul128(a, p1);
+                if (p > Long.MAX_VALUE - p0)
+                    break;
+                p += p0;
+
+                long q = mul128(a, q1);
+                if (q > Long.MAX_VALUE - q0)
+                    break;
+                q += q0;
+
+                p0 = p1; q0 = q1;
+                p1 = p;  q1 = q;
+
+                if (!action.test(new Ratio(p1, q1)))
+                    break;
+            }
+        }
+
+        @Override
+        public Ratio get(int n) {
+            if (!isInfinite() && n > length())
+                n = length();
+
+            long p0 = 0, q0 = 1;
+            long p1 = 1, q1 = 0;
+
+            for (int i = 0; i < n; i++) {
+                long a = term(i);
+                long p = a * p1 + p0;
+                long q = a * q1 + q0;
+                p0 = p1; q0 = q1;
+                p1 = p;  q1 = q;
+            }
+            return new Ratio(p1, q1);
         }
     }
 
-    /**
-     * Returns the n'th convergent value.
-     */
-    public Rational convergent(int n) {
-        if (!isPeriodic() && length() > 0 && n > length())
-            n = length();
+    /*--------------------------------------------------------------------*/
 
-        BigInteger p0 = BigInteger.ZERO;
-        BigInteger q0 = BigInteger.ONE;
-        BigInteger p1 = BigInteger.ONE;
-        BigInteger q1 = BigInteger.ZERO;
+    class BigConvergents implements Convergents<Rational> {
+        final int n;
 
-        for (int i = 0; i < n; i++) {
-            BigInteger a = BigInteger.valueOf(term(i));
-            BigInteger p = a.multiply(p1).add(p0);
-            BigInteger q = a.multiply(q1).add(q0);
-            p0 = p1; q0 = q1;
-            p1 = p;  q1 = q;
+        BigConvergents(int n) {
+            this.n = n;
         }
-        return Rational.valueOf(p1, q1);
+
+        @Override
+        public Iterator<Rational> iterator() {
+            return new Iterator<Rational>() {
+                int i;
+                BigInteger p0 = BigInteger.ZERO;
+                BigInteger q0 = BigInteger.ONE;
+                BigInteger p1 = BigInteger.ONE;
+                BigInteger q1 = BigInteger.ZERO;
+
+                @Override
+                public boolean hasNext() {
+                    return i < n;
+                }
+
+                @Override
+                public Rational next() {
+                    if (i >= n)
+                        throw new NoSuchElementException();
+
+                    BigInteger a = BigInteger.valueOf(term(i++));
+                    BigInteger p = a.multiply(p1).add(p0);
+                    BigInteger q = a.multiply(q1).add(q0);
+                    p0 = p1; q0 = q1;
+                    p1 = p;  q1 = q;
+                    return Rational.valueOf(p, q);
+                }
+            };
+        }
+
+        @Override
+        public void forEach(Predicate<? super Rational> action) {
+            BigInteger p0 = BigInteger.ZERO;
+            BigInteger q0 = BigInteger.ONE;
+            BigInteger p1 = BigInteger.ONE;
+            BigInteger q1 = BigInteger.ZERO;
+
+            for (int i = 0; i < n; i++) {
+                BigInteger a = BigInteger.valueOf(term(i));
+                BigInteger p = a.multiply(p1).add(p0);
+                BigInteger q = a.multiply(q1).add(q0);
+                if (!action.test(Rational.valueOf(p, q)))
+                    break;
+                p0 = p1; q0 = q1;
+                p1 = p;  q1 = q;
+            }
+        }
+
+        @Override
+        public Rational get(int n) {
+            if (!isInfinite() && n > length())
+                n = length();
+
+            BigInteger p0 = BigInteger.ZERO;
+            BigInteger q0 = BigInteger.ONE;
+            BigInteger p1 = BigInteger.ONE;
+            BigInteger q1 = BigInteger.ZERO;
+
+            for (int i = 0; i < n; i++) {
+                BigInteger a = BigInteger.valueOf(term(i));
+                BigInteger p = a.multiply(p1).add(p0);
+                BigInteger q = a.multiply(q1).add(q0);
+                p0 = p1; q0 = q1;
+                p1 = p;  q1 = q;
+            }
+            return Rational.valueOf(p1, q1);
+        }
     }
+
+    /*--------------------------------------------------------------------*/
+
+    class Approximations implements Convergents<Ratio> {
+        final long bound;
+
+        Approximations(long bound) {
+            this.bound = bound;
+        }
+
+        @Override
+        public Iterator<Ratio> iterator() {
+            return new Iterator<Ratio>() {
+                long p0 = 0, q0 = 1;
+                long p1 = 1, q1 = 0;
+                long p, q;
+                int i, k;
+
+                {
+                    int a = term(0);
+                    k = (a + 1) / 2;
+                    if (even(a) && !allowHalf(0))
+                        k++;
+                    p = k; q = 1;
+                }
+
+                @Override
+                public boolean hasNext() {
+                    return q <= bound;
+                }
+
+                @Override
+                public Ratio next() {
+                    if (!hasNext()) throw new NoSuchElementException();
+
+                    Ratio next = new Ratio(p, q);
+
+                    if (++k > term(i)) {
+                        p0 = p1; q0 = q1;
+                        p1 = p;  q1 = q;
+
+                        if (!isInfinite() && i+1 >= length()) {
+                            q = Long.MAX_VALUE; // no more elements
+                            return next;
+                        }
+
+                        int a = term(++i);
+                        k = (a + 1) / 2;
+                        if (even(a) && !allowHalf(i))
+                            k++;
+                    }
+
+                    p = k * p1 + p0;
+                    q = k * q1 + q0;
+                    return next;
+                }
+            };
+        }
+
+        @Override
+        public void forEach(Predicate<? super Ratio> action) {
+            long p0 = 0, q0 = 1;
+            long p1 = 1, q1 = 0;
+            long p  = 0, q  = 0;
+
+            int n = !isInfinite() ? length() : Integer.MAX_VALUE;
+            for (int i = 0; i < n; i++) {
+                int a = term(i);
+                int k = (a + 1) / 2;
+                if (even(a) && !allowHalf(i))
+                    k++;
+
+                while (k <= a) {
+                    p = k * p1 + p0;
+                    q = k * q1 + q0;
+                    if (q > bound || !action.test(new Ratio(p, q)))
+                        return;
+                    k++;
+                }
+
+                p0 = p1; q0 = q1;
+                p1 = p;  q1 = q;
+            }
+        }
+    }
+
+    /*--------------------------------------------------------------------*/
 
     /**
      * The default implementation of ContinuedFraction.
