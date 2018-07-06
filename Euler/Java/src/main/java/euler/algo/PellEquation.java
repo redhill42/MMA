@@ -117,7 +117,7 @@ public final class PellEquation {
     public static Rational solve(long d, long b, int c) {
         Rational r = solve(b * d, c);
         if (r != null)
-            r = r.divide(Rational.valueOf(b));
+            r = r.divide(b);
         return r;
     }
 

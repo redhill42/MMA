@@ -14,14 +14,14 @@ public final class Problem591 {
         // create high precision number for square root of d
         Rational alpha = ContinuedFraction.sqrt(d).convergents(Rational.class).get(50);
 
-        long[] a = new long[20];
-        long[] b = new long[20];
+        long[] a = new long[40];
+        long[] b = new long[40];
         long p, q;
 
         a[0] = beta.longValue();
         b[0] = 0;
 
-        Rational eps = beta.subtract(Rational.valueOf(beta.longValue())).abs();
+        Rational eps = beta.subtract(beta.longValue()).abs();
         Rational e;
 
         int k = 0;
@@ -32,10 +32,7 @@ public final class Problem591 {
             for (int i = 0; i <= k; i++) {
                 p = a[i] + r.numer();
                 q = b[i] - r.denom();
-                e = Rational.valueOf(p)
-                            .add(Rational.valueOf(q).multiply(alpha))
-                            .subtract(beta)
-                            .abs();
+                e = alpha.multiply(q).add(p).subtract(beta).abs();
                 if (e.compareTo(eps) < 0 && abs(p) <= limit) {
                     k++;
                     a[k] = p;
@@ -45,10 +42,7 @@ public final class Problem591 {
 
                 p = a[i] - r.numer();
                 q = b[i] + r.denom();
-                e = Rational.valueOf(p)
-                            .add(Rational.valueOf(q).multiply(alpha))
-                            .subtract(beta)
-                            .abs();
+                e = alpha.multiply(q).add(p).subtract(beta).abs();
                 if (e.compareTo(eps) < 0 && abs(p) <= limit) {
                     k++;
                     a[k] = p;

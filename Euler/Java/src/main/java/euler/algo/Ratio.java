@@ -1,5 +1,8 @@
 package euler.algo;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+
 /**
  * Same as {@link Rational} except the numerator and denominator are limited to
  * 64-bit integers. Overflow may be happended for rational operations.
@@ -8,7 +11,9 @@ package euler.algo;
  * numbers. For high precision rational operations please use {@link Rational} instead.
  */
 @SuppressWarnings("unused")
-public class Ratio implements Comparable<Ratio> {
+public class Ratio extends Number implements Comparable<Ratio> {
+    private static final long serialVersionUID = -8025391221952680477L;
+
     /**
      * The rational number represents ZERO (0/1).
      */
@@ -144,6 +149,16 @@ public class Ratio implements Comparable<Ratio> {
     }
 
     /**
+     * Returns the sum of this rational number with the one specified.
+     *
+     * @param that the integer to be added.
+     * @return {@code this + that}
+     */
+    public Ratio add(long that) {
+        return add(valueOf(that));
+    }
+
+    /**
      * Returns the difference between this rational number and the one specified.
      *
      * @param that the rational number to be subtracted.
@@ -152,6 +167,16 @@ public class Ratio implements Comparable<Ratio> {
     public Ratio subtract(Ratio that) {
         return make(this.numer * that.denom - this.denom * that.numer,
                     this.denom * that.denom);
+    }
+
+    /**
+     * Returns the difference between this rational number and the one specified.
+     *
+     * @param that the integer to be subtracted.
+     * @return {@code this - that}
+     */
+    public Ratio subtract(long that) {
+        return subtract(valueOf(that));
     }
 
     /**
@@ -165,6 +190,16 @@ public class Ratio implements Comparable<Ratio> {
     }
 
     /**
+     * Returns the product of this rational number with the one specified.
+     *
+     * @param that the rational multiplier.
+     * @return {@code this * that}
+     */
+    public Ratio multiply(long that) {
+        return multiply(valueOf(that));
+    }
+
+    /**
      * Returns this rational number divided by the one specified.
      *
      * @param that the rational number
@@ -172,6 +207,16 @@ public class Ratio implements Comparable<Ratio> {
      */
     public Ratio divide(Ratio that) {
         return make(this.numer * that.denom, this.denom * that.numer);
+    }
+
+    /**
+     * Returns this rational number divided by the one specified.
+     *
+     * @param that the rational number
+     * @return {@code this / that}
+     */
+    public Ratio divide(long that) {
+        return divide(valueOf(that));
     }
 
     /**
@@ -209,6 +254,93 @@ public class Ratio implements Comparable<Ratio> {
      */
     public Ratio abs() {
         return numer >= 0 ? this : negate();
+    }
+
+    /**
+     * Convert this rational number to a {@code long}. The fraction in the
+     * rational number is trucated.
+     *
+     * @return this rational number converted to a {@code long}.
+     */
+    @Override
+    public long longValue() {
+        return numer / denom;
+    }
+
+    /**
+     * Converts this rational number to an {@code int}. The fraction in the
+     * rational number is trucated.
+     *
+     * @return this rational number converted to an {@code int}.
+     */
+    @Override
+    public int intValue() {
+        return (int)longValue();
+    }
+
+    /**
+     * Converts this rational number to a {@code short}. The fraction in the
+     * rational number is trucated.
+     *
+     * @return this rational number converted to a {@code short}.
+     */
+    @Override
+    public short shortValue() {
+        return (short)longValue();
+    }
+
+    /**
+     * Converts this rational number to a {@code byte}. The fraction in the
+     * rational number is trucated.
+     *
+     * @return this rational number converted to a {@code byte}.
+     */
+    @Override
+    public byte byteValue() {
+        return (byte)longValue();
+    }
+
+    /**
+     * Converts this rational number to a {@code double}. This conversion
+     * can lose information about the precision of the rational value.
+     *
+     * @return this rational number converted to a {@code double}.
+     */
+    @Override
+    public double doubleValue() {
+        return (double)numer / denom;
+    }
+
+    /**
+     * Converts this rational number to a {@code float}. This conversion
+     * can lose information about the precision of the rational value.
+     *
+     * @return this rational number converted to a {@code float}.
+     */
+    @Override
+    public float floatValue() {
+        return (float)doubleValue();
+    }
+
+    /**
+     * Convert this to a {@link Rational} object.
+     *
+     * @return this rational number converted to a {@code Rational}
+     */
+    public Rational toRational() {
+        return Rational.valueOf(numer, denom);
+    }
+
+    /**
+     * Convert this rational number to a {@code BigDecimal}. This conversion
+     * can lose information about the precision of the rational value.
+     *
+     * @return this rational number converted to a {@code BigDecimal}.
+     */
+    public BigDecimal toBigDecimal() {
+        BigDecimal n = new BigDecimal(numer);
+        BigDecimal d = new BigDecimal(denom);
+        return n.divide(d, MathContext.DECIMAL128);
     }
 
     /**
@@ -259,24 +391,5 @@ public class Ratio implements Comparable<Ratio> {
     @Override
     public int compareTo(Ratio that) {
         return Long.compare(this.numer * that.denom, that.numer * this.denom);
-    }
-
-    /**
-     * Convert this to a {@link Rational} object.
-     *
-     * @return this rational number converted to a {@code Rational}
-     */
-    public Rational toRational() {
-        return Rational.valueOf(numer, denom);
-    }
-
-    /**
-     * Convert this rational number to a {@code double}. This conversion
-     * can lose information about the precision of the rational value.
-     *
-     * @return this rational number converted to a {@code long}
-     */
-    public double doubleValue() {
-        return (double)numer / denom;
     }
 }

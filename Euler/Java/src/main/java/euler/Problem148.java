@@ -33,8 +33,8 @@ public final class Problem148 {
         Ratio r = Ratio.ZERO;
 
         while (n > 0) {
-            Ratio x = Ratio.valueOf(n % p);
-            r = r.add(m.multiply(x)).multiply(x.add(Ratio.ONE));
+            long x = n % p;
+            r = r.add(m.multiply(x)).multiply(x + 1);
             m = m.multiply(d);
             n /= p;
         }

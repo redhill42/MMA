@@ -17,8 +17,8 @@ public final class Problem610 {
         private static final char[] letters = {'#', 'I', 'V', 'X', 'L', 'C', 'D', 'M'};
 
         Solver(int letterProb, int termProb) {
-            this.letterProb = Rational.valueOf(letterProb, 100).normalize();
-            this.termProb = Rational.valueOf(termProb, 100).normalize();
+            this.letterProb = Rational.valueOf(letterProb, 100);
+            this.termProb = Rational.valueOf(termProb, 100);
 
             for (int n = 0; n < 1000; n++) {
                 roman.add(toRomanNumeral(n));
@@ -27,14 +27,11 @@ public final class Problem610 {
 
         Rational solve() {
             Rational res = compute("");
-            res = res.add(Rational.valueOf(1000)
-                                  .multiply(letterProb)
-                                  .divide(Rational.ONE.subtract(letterProb)));
-            return res;
+            return res.add(letterProb.multiply(1000).divide(Rational.ONE.subtract(letterProb)));
         }
 
         private Rational compute(String s) {
-            Rational p = Rational.valueOf(0);
+            Rational p = Rational.ZERO;
             StringBuilder v = new StringBuilder();
 
             for (char c : letters) {
@@ -44,19 +41,19 @@ public final class Problem610 {
                 }
             }
 
-            Rational E = Rational.valueOf(0);
+            Rational E = Rational.ZERO;
             for (int i = v.length() - 1; i >= 0; i--) {
                 char c = v.charAt(i);
                 Rational x = prob(c).divide(p);
                 if (c == '#') {
-                    x = x.multiply(Rational.valueOf(fromRomanNumeral(s)));
+                    x = x.multiply(fromRomanNumeral(s));
                 } else {
                     x = x.multiply(compute(s + c));
                 }
                 E = E.add(x);
             }
 
-            return E.normalize();
+            return E;
         }
 
         private Rational prob(char c) {

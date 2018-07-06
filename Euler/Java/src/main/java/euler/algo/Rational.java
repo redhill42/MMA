@@ -43,6 +43,11 @@ public final class Rational extends Number implements Comparable<Rational>
      */
     public static final Rational NEGATIVE_INFINITY = new Rational(BigInteger.ONE.negate(), BigInteger.ZERO);
 
+    /**
+     * Threshold for lazy normilization.
+     */
+    private static final int NORMALIZE_THRESHOLD = 1024;
+
     // the numerator and denominator component of this rational number.
     private final BigInteger numer, denom;
     private volatile Rational normalized;
@@ -60,6 +65,19 @@ public final class Rational extends Number implements Comparable<Rational>
      * Construct a unnormalized rational number.
      */
     private static Rational make(BigInteger numer, BigInteger denom) {
+        if (numer.bitLength() > NORMALIZE_THRESHOLD || denom.bitLength() > NORMALIZE_THRESHOLD)
+            return normalize(numer, denom);
+
+        if (denom.signum() == 0)
+            return numer.signum() >= 0 ? POSITIVE_INFINITY : NEGATIVE_INFINITY;
+        if (numer.signum() == 0)
+            return ZERO;
+
+        if (denom.signum() < 0) {
+            numer = numer.negate();
+            denom = denom.negate();
+        }
+
         Rational r = new Rational(numer, denom);
         r.normalized = null;
         return r;
@@ -76,12 +94,12 @@ public final class Rational extends Number implements Comparable<Rational>
     public static Rational valueOf(Number numer, Number denom) {
         if (numer instanceof BigInteger) {
             if (denom instanceof BigInteger) {
-                return normalize((BigInteger)numer, (BigInteger)denom);
+                return make((BigInteger)numer, (BigInteger)denom);
             } else {
-                return normalize((BigInteger)numer, BigInteger.valueOf(denom.longValue()));
+                return make((BigInteger)numer, BigInteger.valueOf(denom.longValue()));
             }
         } else if (denom instanceof BigInteger) {
-            return normalize(BigInteger.valueOf(numer.longValue()), (BigInteger)denom);
+            return make(BigInteger.valueOf(numer.longValue()), (BigInteger)denom);
         } else {
             return normalize(numer.longValue(), denom.longValue());
         }
@@ -95,17 +113,17 @@ public final class Rational extends Number implements Comparable<Rational>
      * @return the rational number
      */
     public static Rational valueOf(Number val) {
-        if (val instanceof BigDecimal) {
+        if (val instanceof BigDecimal)
             return valueOf((BigDecimal)val);
-        } else if (val instanceof BigInteger) {
+        if (val instanceof BigInteger)
             return new Rational((BigInteger)val, BigInteger.ONE);
-        } else if (val instanceof Rational) {
+        if (val instanceof Rational)
             return (Rational)val;
-        } else if (val instanceof Double || val instanceof Float) {
+        if (val instanceof Ratio)
+            return ((Ratio)val).toRational();
+        if (val instanceof Double || val instanceof Float)
             return valueOf(val.doubleValue());
-        } else {
-            return normalize(val.longValue(), 1);
-        }
+        return normalize(val.longValue(), 1);
     }
 
     /**
@@ -119,7 +137,7 @@ public final class Rational extends Number implements Comparable<Rational>
         if (sep >= 0) {
             BigInteger numer = new BigInteger(str.substring(0, sep));
             BigInteger denom = new BigInteger(str.substring(sep+1));
-            return normalize(numer, denom);
+            return make(numer, denom);
         } else {
             return new Rational(new BigInteger(str), BigInteger.ONE);
         }
@@ -133,7 +151,7 @@ public final class Rational extends Number implements Comparable<Rational>
      */
     private static Rational valueOf(double x) {
         if (x == 0.0)
-            return new Rational(BigInteger.ZERO, BigInteger.ONE);
+            return ZERO;
         if (x == Double.POSITIVE_INFINITY)
             return POSITIVE_INFINITY;
         if (x == Double.NEGATIVE_INFINITY)
@@ -171,7 +189,7 @@ public final class Rational extends Number implements Comparable<Rational>
         if (neg) {
             top = top.negate();
         }
-        return normalize(top, bot);
+        return make(top, bot);
     }
 
     private static final long D_MASK  = 0x7ffL;
@@ -229,7 +247,7 @@ public final class Rational extends Number implements Comparable<Rational>
             n = val.unscaledValue().multiply(BigInteger.TEN.pow(-scale));
             d = BigInteger.ONE;
         }
-        return normalize(n, d);
+        return make(n, d);
     }
 
     /**
@@ -257,9 +275,18 @@ public final class Rational extends Number implements Comparable<Rational>
      * @return {@code this + that}
      */
     public Rational add(Rational that) {
-        return make(
-            this.numer.multiply(that.denom).add(this.denom.multiply(that.numer)),
-            this.denom.multiply(that.denom));
+        return make(this.numer.multiply(that.denom).add(this.denom.multiply(that.numer)),
+                    this.denom.multiply(that.denom));
+    }
+
+    /**
+     * Returns the sum of this rational number with the one specified.
+     *
+     * @param that the number to be added.
+     * @return {@code this + that}
+     */
+    public Rational add(Number that) {
+        return add(valueOf(that));
     }
 
     /**
@@ -269,9 +296,18 @@ public final class Rational extends Number implements Comparable<Rational>
      * @return {@code this - that}.
      */
     public Rational subtract(Rational that) {
-        return make(
-            this.numer.multiply(that.denom).subtract(this.denom.multiply(that.numer)),
-            this.denom.multiply(that.denom));
+        return make(this.numer.multiply(that.denom).subtract(this.denom.multiply(that.numer)),
+                    this.denom.multiply(that.denom));
+    }
+
+    /**
+     * Returns the difference between this rational number and the one specified.
+     *
+     * @param that the number to be subtracted.
+     * @return {@code this - that}.
+     */
+    public Rational subtract(Number that) {
+        return subtract(valueOf(that));
     }
 
     /**
@@ -281,9 +317,18 @@ public final class Rational extends Number implements Comparable<Rational>
      * @return {@code this * that}.
      */
     public Rational multiply(Rational that) {
-        return make(
-            this.numer.multiply(that.numer),
-            this.denom.multiply(that.denom));
+        return make(this.numer.multiply(that.numer),
+                    this.denom.multiply(that.denom));
+    }
+
+    /**
+     * Returns the product of this rational number with the one specified.
+     *
+     * @param that the rational multiplier.
+     * @return {@code this * that}.
+     */
+    public Rational multiply(Number that) {
+        return multiply(valueOf(that));
     }
 
     /**
@@ -293,9 +338,18 @@ public final class Rational extends Number implements Comparable<Rational>
      * @return {@code this / that}.
      */
     public Rational divide(Rational that) {
-        return make(
-            this.numer.multiply(that.denom),
-            this.denom.multiply(that.numer));
+        return make(this.numer.multiply(that.denom),
+                    this.denom.multiply(that.numer));
+    }
+
+    /**
+     * Returns this ratinal number divided by the one specified.
+     *
+     * @param that the rational divisor.
+     * @return {@code this / that}.
+     */
+    public Rational divide(Number that) {
+        return divide(valueOf(that));
     }
 
     /**
@@ -307,6 +361,16 @@ public final class Rational extends Number implements Comparable<Rational>
     public Rational remainder(Rational that) {
         Rational[] divrem = divideAndRemainder(that);
         return divrem[1];
+    }
+
+    /**
+     * Returns remainder of this rational number divided by the one specified.
+     *
+     * @param that the rational divisor.
+     * @return {@code this % that}.
+     */
+    public Rational remainder(Number that) {
+        return remainder(valueOf(that));
     }
 
     /**
@@ -325,6 +389,17 @@ public final class Rational extends Number implements Comparable<Rational>
         result[0] = new Rational(i, BigInteger.ONE);
         result[1] = this.subtract(make(that.numer.multiply(i), that.denom)); // r=x-i*y
         return result;
+    }
+
+    /**
+     * Returns tuple of quotient and remainder of this rational number divided
+     * by the one specified.
+     *
+     * @param that the rational divisor.
+     * @return {@code (this / that, this % that)}.
+     */
+    public Rational[] divideAndRemainder(Number that) {
+        return divideAndRemainder(valueOf(that));
     }
 
     /**
@@ -351,6 +426,16 @@ public final class Rational extends Number implements Comparable<Rational>
     }
 
     /**
+     * Returns Greatest Common Divisor of this rational number and the one specified.
+     *
+     * @param that another number to compute gcd
+     * @return {@code gcd(this, that)}.
+     */
+    public Rational gcd(Number that) {
+        return gcd(valueOf(that));
+    }
+
+    /**
      * Returns this rational number raised to the specified power.
      *
      * @param n the exponent.
@@ -370,9 +455,6 @@ public final class Rational extends Number implements Comparable<Rational>
      * @return the negation of this rational number.
      */
     public Rational negate() {
-        Rational r = normalized;
-        if (r != null)
-            return new Rational(r.numer.negate(), r.denom);
         return make(numer.negate(), denom);
     }
 
@@ -559,13 +641,11 @@ public final class Rational extends Number implements Comparable<Rational>
      */
     public String toString() {
         Rational r = normalize();
-        if (r.denom.signum() == 0) {
+        if (r.denom.signum() == 0)
             return r.numer.signum() >= 0 ? "Infinity" : "-Infinity";
-        } else if (r.denom.equals(BigInteger.ONE)) {
+        if (r.denom.equals(BigInteger.ONE))
             return r.numer.toString();
-        } else {
-            return r.numer.toString().concat("/").concat(r.denom.toString());
-        }
+        return r.numer.toString().concat("/").concat(r.denom.toString());
     }
 
     /**
@@ -586,10 +666,7 @@ public final class Rational extends Number implements Comparable<Rational>
      */
     public Rational normalize() {
         if (normalized == null)
-            synchronized (this) {
-                if (normalized == null)
-                    normalized = normalize(numer, denom);
-            }
+            normalized = normalize(numer, denom);
         return normalized;
     }
 
@@ -598,9 +675,12 @@ public final class Rational extends Number implements Comparable<Rational>
      * in BigInteger type. Performs necessary normalization.
      */
     private static Rational normalize(BigInteger numer, BigInteger denom) {
-        if (denom.signum() == 0) {
+        if (denom.signum() == 0)
             return numer.signum() >= 0 ? POSITIVE_INFINITY : NEGATIVE_INFINITY;
-        }
+        if (numer.signum() == 0)
+            return ZERO;
+        if (numer.equals(denom))
+            return ONE;
 
         if (denom.signum() < 0) {
             numer = numer.negate();
@@ -634,20 +714,5 @@ public final class Rational extends Number implements Comparable<Rational>
 
         long g = Library.gcd(numer, denom);
         return new Rational(BigInteger.valueOf(numer/g), BigInteger.valueOf(denom/g));
-    }
-
-    public Number reduce() {
-        Rational r = normalize();
-
-        if (r.numer.signum() == 0) {
-            return 0;
-        }
-
-        if (r.denom.equals(BigInteger.ONE)) {
-            return r.numer.bitLength() < 32 ? r.numer.intValue() :
-                   r.numer.bitLength() < 64 ? r.numer.longValue()
-                                            : r.numer;
-        }
-        return r;
     }
 }
