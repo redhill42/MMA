@@ -1,7 +1,6 @@
 package euler.algo;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
@@ -9,19 +8,24 @@ import java.util.function.Predicate;
 
 import euler.util.IntArray;
 
+import static euler.algo.Library.big;
 import static euler.algo.Library.even;
+import static euler.algo.Library.factorize;
+import static euler.algo.Library.gcd;
 import static euler.algo.Library.isqrt;
-import static euler.algo.Library.mul128;
 import static java.lang.Math.abs;
+import static java.lang.Math.addExact;
 import static java.lang.Math.floor;
+import static java.lang.Math.multiplyExact;
+import static java.lang.Math.toIntExact;
 
 @SuppressWarnings({"unused", "RedundantFieldInitialization"})
 public abstract class ContinuedFraction {
     /**
-     * Returns true if this is a infinite continued fraction, false otherwise.
+     * Returns true if this is a finite continued fraction, false otherwise.
      */
-    public boolean isInfinite() {
-        return isPeriodic() || length() < 0;
+    public boolean isFinite() {
+        return !isPeriodic() && length() > 0;
     }
 
     /**
@@ -50,6 +54,63 @@ public abstract class ContinuedFraction {
      * Returns the i'th term in the continued fraction.
      */
     public abstract int term(int i);
+
+    /**
+     * Returns the string representation of continued fraction.
+     */
+    public String toString() {
+        if (isFinite())
+            return finiteToString();
+        if (isPeriodic())
+            return periodicToString();
+        return infiniteToString();
+    }
+
+    private String finiteToString() {
+        int iMax = length() - 1;
+        if (iMax == -1)
+            return "[]";
+
+        StringBuilder buf = new StringBuilder();
+        buf.append('[');
+        for (int i = 0; ; i++) {
+            buf.append(term(i));
+            if (i == iMax)
+                return buf.append(']').toString();
+            buf.append(',');
+        }
+    }
+
+    private String periodicToString() {
+        int iMax = length() - 1;
+        int iFix = iMax - getPeriod() + 1;
+        if (iMax == -1)
+            return "[]";
+
+        StringBuilder buf = new StringBuilder();
+        buf.append('[');
+        for (int i = 0; ; i++) {
+            if (i == iFix)
+                buf.append('{');
+            buf.append(term(i));
+            if (i == iMax)
+                return buf.append("}]").toString();
+            buf.append(',');
+        }
+    }
+
+    private String infiniteToString() {
+        StringBuilder buf = new StringBuilder();
+        try {
+            buf.append('[');
+            for (int i = 0; i < 10; i++) {
+                buf.append(term(i)).append(',');
+            }
+        } catch (NoSuchElementException ex) {
+            // terminate if term exhausted
+        }
+        return buf.append("...]").toString();
+    }
 
     /**
      * The interface for iterating on convergents of continued fraction.
@@ -93,7 +154,7 @@ public abstract class ContinuedFraction {
      * Convergent on the continued fraction with the maximum length.
      */
     public Convergents<Ratio> convergents(int n) {
-        if (!isInfinite() && n > length())
+        if (isFinite() && n > length())
             n = length();
         return new SmallConvergents(n);
     }
@@ -111,7 +172,7 @@ public abstract class ContinuedFraction {
      */
     @SuppressWarnings("unchecked")
     public <R> Convergents<R> convergents(int n, Class<R> type) {
-        if (!isInfinite() && n > length())
+        if (isFinite() && n > length())
             n = length();
 
         if (type == Rational.class)
@@ -132,7 +193,7 @@ public abstract class ContinuedFraction {
         long q1 = 1;
         long p, q;
 
-        int n = !isInfinite() ? length() : Integer.MAX_VALUE;
+        int n = isFinite() ? length() : Integer.MAX_VALUE;
         for (int i = 1; i < n; i++) {
             int a = term(i);
             p = a * p1 + p0;
@@ -195,34 +256,26 @@ public abstract class ContinuedFraction {
 
                 @Override
                 public boolean hasNext() {
-                    return i < n && p1 < Long.MAX_VALUE && q1 < Long.MAX_VALUE;
+                    return i < n;
                 }
 
                 @Override
                 public Ratio next() {
-                    if (!hasNext()) throw new NoSuchElementException();
+                    if (!hasNext())
+                        throw new NoSuchElementException();
 
-                    Ratio next = new Ratio(p1, q1);
-
+                    Ratio next = Ratio.valueOf(p1, q1);
                     if (++i < n) {
-                        int a = term(i);
-
-                        long p = mul128(a, p1);
-                        if (p <= Long.MAX_VALUE - p0)
-                            p += p0;
-                        else
-                            p = Long.MAX_VALUE;
-
-                        long q = mul128(a, q1);
-                        if (q <= Long.MAX_VALUE - q0)
-                            q += q0;
-                        else
-                            q = Long.MAX_VALUE;
-
-                        p0 = p1; q0 = q1;
-                        p1 = p;  q1 = q;
+                        try {
+                            int a = term(i);
+                            long p = addExact(multiplyExact(a, p1), p0);
+                            long q = addExact(multiplyExact(a, q1), q0);
+                            p0 = p1; q0 = q1;
+                            p1 = p;  q1 = q;
+                        } catch (ArithmeticException ex) {
+                            i = n; // no more terms when overflow
+                        }
                     }
-
                     return next;
                 }
             };
@@ -233,30 +286,24 @@ public abstract class ContinuedFraction {
             long p0 = 0, q0 = 1;
             long p1 = 1, q1 = 0;
 
-            for (int i = 0; i < n; i++) {
-                int a = term(i);
-
-                long p = mul128(a, p1);
-                if (p > Long.MAX_VALUE - p0)
-                    break;
-                p += p0;
-
-                long q = mul128(a, q1);
-                if (q > Long.MAX_VALUE - q0)
-                    break;
-                q += q0;
-
-                p0 = p1; q0 = q1;
-                p1 = p;  q1 = q;
-
-                if (!action.test(new Ratio(p1, q1)))
-                    break;
+            try {
+                for (int i = 0; i < n; i++) {
+                    int a = term(i);
+                    long p = addExact(multiplyExact(a, p1), p0);
+                    long q = addExact(multiplyExact(a, q1), q0);
+                    if (!action.test(Ratio.valueOf(p1, q1)))
+                        break;
+                    p0 = p1; q0 = q1;
+                    p1 = p;  q1 = q;
+                }
+            } catch (ArithmeticException ex) {
+                // no more terms when overflow
             }
         }
 
         @Override
         public Ratio get(int n) {
-            if (!isInfinite() && n > length())
+            if (isFinite() && n > length())
                 n = length();
 
             long p0 = 0, q0 = 1;
@@ -264,12 +311,12 @@ public abstract class ContinuedFraction {
 
             for (int i = 0; i < n; i++) {
                 long a = term(i);
-                long p = a * p1 + p0;
-                long q = a * q1 + q0;
+                long p = addExact(multiplyExact(a, p1), p0);
+                long q = addExact(multiplyExact(a, q1), q0);
                 p0 = p1; q0 = q1;
                 p1 = p;  q1 = q;
             }
-            return new Ratio(p1, q1);
+            return Ratio.valueOf(p1, q1);
         }
     }
 
@@ -331,7 +378,7 @@ public abstract class ContinuedFraction {
 
         @Override
         public Rational get(int n) {
-            if (!isInfinite() && n > length())
+            if (isFinite() && n > length())
                 n = length();
 
             BigInteger p0 = BigInteger.ZERO;
@@ -382,15 +429,16 @@ public abstract class ContinuedFraction {
 
                 @Override
                 public Ratio next() {
-                    if (!hasNext()) throw new NoSuchElementException();
+                    if (!hasNext())
+                        throw new NoSuchElementException();
 
-                    Ratio next = new Ratio(p, q);
+                    Ratio next = Ratio.valueOf(p, q);
 
                     if (++k > term(i)) {
                         p0 = p1; q0 = q1;
                         p1 = p;  q1 = q;
 
-                        if (!isInfinite() && i+1 >= length()) {
+                        if (isFinite() && i+1 >= length()) {
                             q = Long.MAX_VALUE; // no more elements
                             return next;
                         }
@@ -414,7 +462,7 @@ public abstract class ContinuedFraction {
             long p1 = 1, q1 = 0;
             long p  = 0, q  = 0;
 
-            int n = !isInfinite() ? length() : Integer.MAX_VALUE;
+            int n = isFinite() ? length() : Integer.MAX_VALUE;
             for (int i = 0; i < n; i++) {
                 int a = term(i);
                 int k = (a + 1) / 2;
@@ -424,7 +472,7 @@ public abstract class ContinuedFraction {
                 while (k <= a) {
                     p = k * p1 + p0;
                     q = k * q1 + q0;
-                    if (q > bound || !action.test(new Ratio(p, q)))
+                    if (q > bound || !action.test(Ratio.valueOf(p, q)))
                         return;
                     k++;
                 }
@@ -432,6 +480,526 @@ public abstract class ContinuedFraction {
                 p0 = p1; q0 = q1;
                 p1 = p;  q1 = q;
             }
+        }
+    }
+
+    /*--------------------------------------------------------------------*/
+
+    private static final int CF_INF = Integer.MAX_VALUE;
+
+    /**
+     * Returns the sum of this continued fraction with the one specified.
+     *
+     * @param that the continued fraction to be added
+     * @return {@code this + that}
+     */
+    public ContinuedFraction add(ContinuedFraction that) {
+        Quadratic x = toQuadratic();
+        if (x != null && (x = x.add(that.toQuadratic())) != null)
+            return x.toContinuedFraction();
+        return new Arithmetic(this, that, 0, 1, 1, 0, 1, 0, 0, 0);
+    }
+
+    /**
+     * Returns the difference between this continued fraction and the
+     * one specified.
+     *
+     * @param that the continued fraction to be subtracted
+     * @return {@code this - that}
+     */
+    public ContinuedFraction subtract(ContinuedFraction that) {
+        Quadratic x = toQuadratic();
+        if (x != null && (x = x.subtract(that.toQuadratic())) != null)
+            return x.toContinuedFraction();
+        return new Arithmetic(this, that, 0, 1, -1, 0, 1, 0, 0, 0);
+    }
+
+    /**
+     * Returns the product of this continued fraction with the one specified.
+     *
+     * @param that the multiplier
+     * @return {@code this * that}
+     */
+    public ContinuedFraction multiply(ContinuedFraction that) {
+        Quadratic x = toQuadratic();
+        if (x != null && (x = x.multiply(that.toQuadratic())) != null)
+            return x.toContinuedFraction();
+        return new Arithmetic(this, that, 0, 0, 0, 1, 1, 0, 0, 0);
+    }
+
+    /**
+     * Returns this continued fraction divided by the one specified.
+     *
+     * @param that the divisor
+     * @return {@code this / that}
+     */
+    public ContinuedFraction divide(ContinuedFraction that) {
+        Quadratic x = toQuadratic();
+        if (x != null && (x = x.divide(that.toQuadratic())) != null)
+            return x.toContinuedFraction();
+        return new Arithmetic(this, that, 0, 1, 0, 0, 0, 0, 1, 0);
+    }
+
+    /**
+     * Returns the sum of this continued fraction with the specified rational
+     * number.
+     *
+     * @param r the rational number to be added
+     * @return {@code this + that}
+     */
+    public ContinuedFraction add(Ratio r) {
+        Quadratic x;
+        if ((x = toQuadratic()) != null)
+            return x.add(r).toContinuedFraction();
+        return new HomoArithmetic(this, r.numer(), r.denom(), r.denom(), 0);
+    }
+
+    /**
+     * Returns the difference of this continued fraction with the specified
+     * rational number.
+     *
+     * @param r the rational number to be added
+     * @return {@code this - that}
+     */
+    public ContinuedFraction subtract(Ratio r) {
+        Quadratic x;
+        if ((x = toQuadratic()) != null)
+            return x.subtract(r).toContinuedFraction();
+        return new HomoArithmetic(this, -r.numer(), r.denom(), r.denom(), 0);
+    }
+
+    /**
+     * Returns the product of this continued fraction with the specified
+     * rational number.
+     *
+     * @param r the rational multiplier
+     * @return {@code this * that}
+     */
+    public ContinuedFraction multiply(Ratio r) {
+        Quadratic x;
+        if ((x = toQuadratic()) != null)
+            return x.multiply(r).toContinuedFraction();
+        return new HomoArithmetic(this, 0, r.numer(), r.denom(), 0);
+    }
+
+    /**
+     * Returns this continued fraction divided by the specified rational number.
+     *
+     * @param r the rational divisor
+     * @return {@code this / that}
+     */
+    public ContinuedFraction divide(Ratio r) {
+        Quadratic x;
+        if ((x = toQuadratic()) != null)
+            return x.divide(r).toContinuedFraction();
+        return new HomoArithmetic(this, 0, r.denom(), r.numer(), 0);
+    }
+
+    /**
+     * Perform homographic transformation on this continued fraction.
+     *
+     * @return {@code (a + b * this) / (c + d * this)}
+     */
+    public ContinuedFraction arithmetic(long a, long b, long c, long d) {
+        return new HomoArithmetic(this, a, b, c, d);
+    }
+
+    /**
+     * Returns this continued fraction raised to the specified power.
+     *
+     * @param n the exponent.
+     * @return {@code this^n}
+     */
+    public ContinuedFraction pow(int n) {
+        if (n == 0)
+            return rational(1);
+        if (n < 0) // noinspection TailRecursion
+            return inverse().pow(-n);
+        if (n == 1)
+            return this;
+        n--;
+
+        ContinuedFraction x = this, y = this;
+        while (n != 0) {
+            if ((n & 1) == 1)
+                y = y.multiply(x);
+            n >>= 1;
+            x = x.multiply(x);
+        }
+        return y;
+    }
+
+    /**
+     * Returns the reciprocal of this continued fraction.
+     *
+     * @return {@code 1 / this}
+     */
+    public ContinuedFraction inverse() {
+        Quadratic x;
+        if ((x = toQuadratic()) != null)
+            return x.inverse().toContinuedFraction();
+        return new HomoArithmetic(this, 1, 0, 0, 1);
+    }
+
+    /**
+     * Returns the negation of this continued fraction.
+     *
+     * @return {@code -this}
+     */
+    public ContinuedFraction negate() {
+        return new Negation(this);
+    }
+
+    /**
+     * Returns the quadratic irrational representation if this is a periodic
+     * infinite continued fraction.
+     *
+     * @return the quadratic irrational that represent the periodic infinite
+     * continued fraction
+     */
+    public Quadratic toQuadratic() {
+        if (isFinite()) {
+            try {
+                Ratio r = convergents().get(length());
+                return new Quadratic(r.numer(), 0, r.denom());
+            } catch (ArithmeticException ex) {
+                return null;
+            }
+        }
+
+        if (isPeriodic()) {
+            int p0 = 1, q0 = 0, p1 = 0, q1 = 1, s = 1;
+            for (int i = length() - getPeriod(); i < length(); i++) {
+                int a = term(i);
+                if (a < 0) s = -s;
+                int p = a * p1 + p0;
+                int q = a * q1 + q0;
+                p0 = p1; q0 = q1; p1 = p; q1 = q;
+            }
+            return toQuadratic(q1-p0, s, (q1-p0)*(q1-p0) + 4*q0*p1, 2*p1);
+        }
+
+        return null;
+    }
+
+    private Quadratic toQuadratic(long p, long a, long d, long q) {
+        // extract the square factor
+        if (d != 0) {
+            for (PrimeFactor f : factorize(d)) {
+                if (f.power() > 1) {
+                    long x = Library.pow(f.prime(), f.power() / 2);
+                    a *= x;
+                    d /= x * x;
+                }
+            }
+        }
+
+        for (int i = length() - getPeriod() - 1; i >= 0; i--) {
+            // inverse the irrational and add term
+            long t = a * a * d - p * p;
+            p = -p * q + term(i) * t;
+            a *= q;
+            q = t;
+
+            // normalize the irrational
+            long g = gcd(p, q, a);
+            p = p / g; q = q / g; a = a / g;
+        }
+
+        return Quadratic.make(p, a, d, q);
+    }
+
+    /**
+     * Instances of this class represents transformation of the form
+     * <pre>
+     *     a + bx + cy + dxy
+     *   ---------------------
+     *     e + fx + gy + hxy
+     * </pre>
+     * for <em>a, b, c, d, e, f, g, h ∈ ℤ</em>.
+     *
+     * @see <a href="https://www.plover.com/~mjd/cftalk/">https://www.plover.com/~mjd/cftalk/</a>
+     */
+    private static class Arithmetic extends ContinuedFraction {
+        private final ContinuedFraction x, y;
+        private BigInteger a, b, c, d, e, f, g, h;
+
+        private final IntArray terms = new IntArray();
+        private int i_x, i_y;
+
+        Arithmetic(ContinuedFraction x, ContinuedFraction y,
+                   long a, long b, long c, long d,
+                   long e, long f, long g, long h)
+        {
+            if (e == 0 && f == 0 && g == 0 && h == 0)
+                throw new ArithmeticException("divide by 0");
+
+            this.x = x;
+            this.y = y;
+            this.a = big(a);
+            this.b = big(b);
+            this.c = big(c);
+            this.d = big(d);
+            this.e = big(e);
+            this.f = big(f);
+            this.g = big(g);
+            this.h = big(h);
+
+            // consume the initial input
+            ingestion();
+
+            // fill terms for finite continued fraction
+            if (isFinite()) {
+                int t;
+                while ((t = next()) != CF_INF) {
+                    terms.add(t);
+                }
+            }
+        }
+
+        @Override
+        public boolean isFinite() {
+            return x.isFinite() && y.isFinite();
+        }
+
+        @Override
+        public int length() {
+            return terms.length;
+        }
+
+        @Override
+        public int term(int i) {
+            for (int j = terms.length; j <= i; j++) {
+                int t = next();
+                if (t == CF_INF)
+                    throw new NoSuchElementException();
+                terms.add(t);
+            }
+            return terms.a[i];
+        }
+
+        private int next() {
+            do {
+                int r;
+
+                if (e.signum() == 0 && f.signum() == 0 && g.signum() == 0 && h.signum() == 0)
+                    return CF_INF;
+
+                if ((r = agreeOutput()) != CF_INF) {
+                    egestion(BigInteger.valueOf(r));
+                    return r;
+                }
+
+                ingestion();
+            } while (true);
+        }
+
+        private int agreeOutput() {
+            if (e.signum() != 0 && f.signum() != 0 && g.signum() != 0 && h.signum() != 0) {
+                int ae = Rational.valueOf(a, e).intValue();
+                int bf = Rational.valueOf(b, f).intValue();
+                int cg = Rational.valueOf(c, g).intValue();
+                int dh = Rational.valueOf(d, h).intValue();
+                if (ae == bf && bf == cg && cg == dh)
+                    return ae;
+            }
+            return CF_INF;
+        }
+
+        private void egestion(BigInteger r) {
+            BigInteger a1 = e, b1 = f, c1 = g, d1 = h;
+            e = a.subtract(e.multiply(r));
+            f = b.subtract(f.multiply(r));
+            g = c.subtract(g.multiply(r));
+            h = d.subtract(h.multiply(r));
+            a = a1; b = b1; c = c1; d = d1;
+        }
+
+        private void ingestion() {
+            Rational ae = Rational.valueOf(a, e);
+            Rational bf = Rational.valueOf(b, f);
+            Rational cg = Rational.valueOf(c, g);
+
+            if (diff(bf, ae).compareTo(diff(cg, ae)) > 0) {
+                if (x.isFinite() && i_x >= x.length()) {
+                    a = b; c = d; e = f; g = h;
+                } else {
+                    BigInteger p = BigInteger.valueOf(x.term(i_x++));
+                    BigInteger a1 = b;
+                    BigInteger b1 = a.add(b.multiply(p));
+                    BigInteger c1 = d;
+                    BigInteger d1 = c.add(d.multiply(p));
+                    BigInteger e1 = f;
+                    BigInteger f1 = e.add(f.multiply(p));
+                    BigInteger g1 = h;
+                    BigInteger h1 = g.add(h.multiply(p));
+                    a = a1; b = b1; c = c1; d = d1;
+                    e = e1; f = f1; g = g1; h = h1;
+                }
+            } else {
+                if (y.isFinite() && i_y >= y.length()) {
+                    a = c; b = d; e = g; f = h;
+                } else {
+                    BigInteger q = BigInteger.valueOf(y.term(i_y++));
+                    BigInteger a1 = c;
+                    BigInteger b1 = d;
+                    BigInteger c1 = a.add(c.multiply(q));
+                    BigInteger d1 = b.add(d.multiply(q));
+                    BigInteger e1 = g;
+                    BigInteger f1 = h;
+                    BigInteger g1 = e.add(g.multiply(q));
+                    BigInteger h1 = f.add(h.multiply(q));
+                    a = a1; b = b1; c = c1; d = d1;
+                    e = e1; f = f1; g = g1; h = h1;
+                }
+            }
+        }
+
+        private static Rational diff(Rational p, Rational q) {
+            if (p.isInfinite())
+                return q.isInfinite() ? Rational.ZERO : p;
+            if (q.isInfinite())
+                return q;
+            return p.subtract(q).abs();
+        }
+    }
+
+    /**
+     * Instances of this class represents a homographic transformation of a
+     * continued fration, that is a map of the form
+     * <pre>
+     *     a + bx
+     *   ----------
+     *     c + dx
+     * </pre>
+     * for integers <em>a, b, c, d ∈ ℤ</em> with <em>ad - bc ≠ 0</em>.
+     */
+    private static class HomoArithmetic extends ContinuedFraction {
+        private final ContinuedFraction x;
+        private BigInteger a, b, c, d;
+
+        private final IntArray terms = new IntArray();
+        private int i_x;
+
+        HomoArithmetic(ContinuedFraction x, long a, long b, long c, long d) {
+            if (c == 0 && d == 0)
+                throw new ArithmeticException("divide by 0");
+
+            this.x = x;
+            this.a = big(a);
+            this.b = big(b);
+            this.c = big(c);
+            this.d = big(d);
+
+            // consume the initial input
+            ingestion();
+
+            // fill terms for finite continued fraction
+            if (x.isFinite()) {
+                int t;
+                while ((t = next()) != CF_INF) {
+                    terms.add(t);
+                }
+            }
+        }
+
+        @Override
+        public boolean isFinite() {
+            return x.isFinite();
+        }
+
+        @Override
+        public int length() {
+            return terms.length;
+        }
+
+        @Override
+        public int term(int i) {
+            for (int j = terms.length; j <= i; j++) {
+                int t = next();
+                if (t == CF_INF)
+                    throw new NoSuchElementException();
+                terms.add(t);
+            }
+            return terms.a[i];
+        }
+
+        private int next() {
+            do {
+                int r;
+
+                if (c.signum() == 0 && d.signum() == 0)
+                    return CF_INF;
+
+                if ((r = agreeOutput()) != CF_INF) {
+                    egestion(BigInteger.valueOf(r));
+                    return r;
+                }
+
+                ingestion();
+            } while (true);
+        }
+
+        private int agreeOutput() {
+            if (c.signum() != 0 && d.signum() != 0) {
+                int ac = Rational.valueOf(a, c).intValue();
+                int bd = Rational.valueOf(b, d).intValue();
+                if (ac == bd) return ac;
+            }
+            return CF_INF;
+        }
+
+        private void egestion(BigInteger r) {
+            BigInteger a1 = c, b1 = d;
+            c = a.subtract(c.multiply(r));
+            d = b.subtract(d.multiply(r));
+            a = a1; b = b1;
+        }
+
+        private void ingestion() {
+            if (x.isFinite() && i_x >= x.length()) {
+                a = b; c = d;
+            } else {
+                BigInteger p = BigInteger.valueOf(x.term(i_x++));
+                BigInteger a1 = b;
+                BigInteger b1 = a.add(b.multiply(p));
+                BigInteger c1 = d;
+                BigInteger d1 = c.add(d.multiply(p));
+                a = a1; b = b1; c = c1; d = d1;
+            }
+        }
+    }
+
+    private static class Negation extends ContinuedFraction {
+        private final ContinuedFraction x;
+
+        Negation(ContinuedFraction x) {
+            this.x = x;
+        }
+
+        @Override
+        public boolean isFinite() {
+            return x.isFinite();
+        }
+
+        @Override
+        public boolean isPeriodic() {
+            return x.isPeriodic();
+        }
+
+        @Override
+        public int getPeriod() {
+            return x.getPeriod();
+        }
+
+        @Override
+        public int length() {
+            return x.length();
+        }
+
+        @Override
+        public int term(int i) {
+            return -x.term(i);
         }
     }
 
@@ -474,49 +1042,6 @@ public abstract class ContinuedFraction {
             int k = terms.length - period;
             return terms[k + (i - k) % period];
         }
-
-
-        public String toString() {
-            StringBuilder buf = new StringBuilder();
-            int i;
-
-            buf.append("[");
-            buf.append(terms[0]);
-            if (terms.length > 1)
-                buf.append(";");
-
-            for (i = 1; i < terms.length - period; i++) {
-                buf.append(terms[i]);
-                if (i < terms.length - 1)
-                    buf.append(",");
-            }
-
-            if (i < terms.length) {
-                buf.append("{");
-                for (; i < terms.length; i++) {
-                    buf.append(terms[i]);
-                    if (i < terms.length - 1)
-                        buf.append(",");
-                }
-                buf.append("}");
-            }
-
-            buf.append("]");
-            return buf.toString();
-        }
-
-        public boolean equals(Object obj) {
-            if (obj == this)
-                return true;
-            if (!(obj instanceof DefaultContinuedFraction))
-                return false;
-            DefaultContinuedFraction other = (DefaultContinuedFraction)obj;
-            return period == other.period && Arrays.equals(terms, other.terms);
-        }
-
-        public int hashCode() {
-            return period ^ Arrays.hashCode(terms);
-        }
     }
 
     /**
@@ -529,17 +1054,24 @@ public abstract class ContinuedFraction {
     /**
      * Create a continued fraction from a rational number.
      */
-    public static ContinuedFraction rational(int a, int b) {
+    public static ContinuedFraction rational(long a, long b) {
         IntArray terms = new IntArray();
-        int t;
+        long t;
 
         while (b != 0) {
-            terms.add(a / b);
+            terms.add(toIntExact(a / b));
             t = a % b;
             a = b;
             b = t;
         }
         return make(terms.toArray(), 0);
+    }
+
+    /**
+     * Create a continued fraction from an integer.
+     */
+    public static ContinuedFraction rational(int n) {
+        return make(new int[]{n}, 0);
     }
 
     private static final double EPS = 1e-9;
@@ -565,7 +1097,7 @@ public abstract class ContinuedFraction {
     public static ContinuedFraction sqrt(int n) {
         int a0 = isqrt(n);
         if (a0 * a0 == n)
-            return make(new int[]{a0}, 0);
+            return rational(a0);
 
         IntArray terms = new IntArray();
         int P = 0, Q = 1;
@@ -598,7 +1130,7 @@ public abstract class ContinuedFraction {
      *      then the period is (a<sub>k</sub>, ..., a<sub>l-1</sub>)
      * </pre>
      */
-    public static ContinuedFraction quadratic(int a, int b, int c) {
+    public static ContinuedFraction quadratic(long a, long b, long c) {
         if (b < 0) {
             // convenient input parameter for (a-sqrt(b))/c instead of
             // (a+sqrt(-b))/c which is illegal
@@ -608,20 +1140,20 @@ public abstract class ContinuedFraction {
         }
 
         if ((b - a * a) % c != 0) {
-            int t = abs(c);
+            long t = abs(c);
             a *= t;
             b *= t * t;
             c *= t;
         }
 
-        int d = isqrt(b);
+        long d = isqrt(b);
         if (d * d == b) {
             return rational(a + d, c);
         }
 
-        int[] A = new int[16];
-        int[] P = new int[16];
-        int[] Q = new int[16];
+        IntArray terms = new IntArray();
+        long[] P = new long[16];
+        long[] Q = new long[16];
 
         P[0] = a;
         Q[0] = c;
@@ -629,17 +1161,17 @@ public abstract class ContinuedFraction {
         for (int k = 0; ; k++) {
             for (int i = 1; i < k; i++) {
                 if (P[k] == P[i] && Q[k] == Q[i]) {
-                    return make(Arrays.copyOf(A, k), k - i);
+                    return make(terms.toArray(), k - i);
                 }
             }
 
-            A = expand(A, k);
             P = expand(P, k + 1);
             Q = expand(Q, k + 1);
 
-            A[k] = (d + P[k]) / Q[k];
-            P[k+1] = A[k] * Q[k] - P[k];
+            int t = toIntExact((d + P[k]) / Q[k]);
+            P[k+1] = t * Q[k] - P[k];
             Q[k+1] = (b - P[k+1] * P[k+1]) / Q[k];
+            terms.add(t);
         }
     }
 
@@ -647,7 +1179,7 @@ public abstract class ContinuedFraction {
      * Create a continued fraction from the quadratic irrational in the form
      * (a+b*sqrt(c))/d.
      */
-    public static ContinuedFraction quadratic(int a, int b, int c, int d) {
+    public static ContinuedFraction quadratic(long a, long b, long c, long d) {
         if (c < 0)
             throw new IllegalArgumentException("Not a real number");
         c *= b * b;
@@ -656,9 +1188,9 @@ public abstract class ContinuedFraction {
         return quadratic(a, c, d);
     }
 
-    private static int[] expand(int[] terms, int len) {
+    private static long[] expand(long[] terms, int len) {
         if (terms.length == len) {
-            int[] tmp = new int[len * 2];
+            long[] tmp = new long[len * 2];
             System.arraycopy(terms, 0, tmp, 0, len);
             terms = tmp;
         }
@@ -676,18 +1208,6 @@ public abstract class ContinuedFraction {
             if (i % 3 == 2)
                 return 2 * (i / 3) + 2;
             return 1;
-        }
-
-        public String toString() {
-            return "[2;1,2,1,1,4,1,1,6,1,...]";
-        }
-
-        public boolean equals(Object o) {
-            return this == o;
-        }
-
-        public int hashCode() {
-            return System.identityHashCode(this);
         }
     };
 

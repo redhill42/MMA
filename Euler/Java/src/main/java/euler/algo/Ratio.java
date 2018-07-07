@@ -155,7 +155,7 @@ public class Ratio extends Number implements Comparable<Ratio> {
      * @return {@code this + that}
      */
     public Ratio add(long that) {
-        return add(valueOf(that));
+        return make(numer + that * denom, denom);
     }
 
     /**
@@ -176,7 +176,7 @@ public class Ratio extends Number implements Comparable<Ratio> {
      * @return {@code this - that}
      */
     public Ratio subtract(long that) {
-        return subtract(valueOf(that));
+        return make(numer - that * denom, denom);
     }
 
     /**
@@ -196,7 +196,7 @@ public class Ratio extends Number implements Comparable<Ratio> {
      * @return {@code this * that}
      */
     public Ratio multiply(long that) {
-        return multiply(valueOf(that));
+        return make(numer * that, denom);
     }
 
     /**
@@ -216,7 +216,7 @@ public class Ratio extends Number implements Comparable<Ratio> {
      * @return {@code this / that}
      */
     public Ratio divide(long that) {
-        return divide(valueOf(that));
+        return make(numer, denom * that);
     }
 
     /**
@@ -224,7 +224,7 @@ public class Ratio extends Number implements Comparable<Ratio> {
      *
      * @return {@code 1 / this}
      */
-    public Ratio reciprocal() {
+    public Ratio inverse() {
         return make(denom, numer);
     }
 
@@ -254,6 +254,17 @@ public class Ratio extends Number implements Comparable<Ratio> {
      */
     public Ratio abs() {
         return numer >= 0 ? this : negate();
+    }
+
+    /**
+     * Returns {@code true} if this rational number is infinite, {@code false}
+     * otherwise.
+     *
+     * @return {@code true} if this rational number is positive infinity or
+     * negative infinity; {@code false} otherwise.
+     */
+    public boolean isInfinite() {
+        return denom == 0;
     }
 
     /**
@@ -344,6 +355,15 @@ public class Ratio extends Number implements Comparable<Ratio> {
     }
 
     /**
+     * Returns the continued fraction representation of this rational number.
+     *
+     * @return the continued fraction representation of this rational number.
+     */
+    public ContinuedFraction toContinuedFraction() {
+        return ContinuedFraction.rational(numer, denom);
+    }
+
+    /**
      * Compares this rational number with the specified Object for equality.
      *
      * @param obj Objects to which this rational number is to be compared.
@@ -391,5 +411,25 @@ public class Ratio extends Number implements Comparable<Ratio> {
     @Override
     public int compareTo(Ratio that) {
         return Long.compare(this.numer * that.denom, that.numer * this.denom);
+    }
+
+    /**
+     * Returns the maximum value of this rational number and the specified one.
+     *
+     * @param that rational number to which this rational number is to be compared.
+     * @return {@code max(this, that)}
+     */
+    public Ratio max(Ratio that) {
+        return compareTo(that) > 0 ? this : that;
+    }
+
+    /**
+     * Returns the minimum value of this rational number and the specified one.
+     *
+     * @param that rational number to which this rational number is to be compared.
+     * @return {@code min(this, that)}
+     */
+    public Ratio min(Ratio that) {
+        return compareTo(that) < 0 ? this : that;
     }
 }

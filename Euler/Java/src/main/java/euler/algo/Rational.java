@@ -463,7 +463,7 @@ public final class Rational extends Number implements Comparable<Rational>
      *
      * @return {@code 1 / this}
      */
-    public Rational reciprocal() {
+    public Rational inverse() {
         return make(denom, numer);
     }
 
@@ -484,6 +484,17 @@ public final class Rational extends Number implements Comparable<Rational>
      */
     public Rational abs() {
         return signum() >= 0 ? this : negate();
+    }
+
+    /**
+     * Returns {@code true} if this rational number is infinite, {@code false}
+     * otherwise.
+     *
+     * @return {@code true} if this rational number is positive infinity or
+     * negative infinity; {@code false} otherwise.
+     */
+    public boolean isInfinite() {
+        return denom.signum() == 0;
     }
 
     /**
@@ -659,6 +670,26 @@ public final class Rational extends Number implements Comparable<Rational>
     public int compareTo(Rational that) {
         return this.numer.multiply(that.denom).compareTo(
                that.numer.multiply(this.denom));
+    }
+
+    /**
+     * Returns the maximum value of this rational number and the specified one.
+     *
+     * @param that rational number to which this rational number is to be compared.
+     * @return {@code max(this, that)}
+     */
+    public Rational max(Rational that) {
+        return compareTo(that) > 0 ? this : that;
+    }
+
+    /**
+     * Returns the minimum value of this rational number and the specified one.
+     *
+     * @param that rational number to which this rational number is to be compared.
+     * @return {@code min(this, that)}
+     */
+    public Rational min(Rational that) {
+        return compareTo(that) < 0 ? this : that;
     }
 
     /**
