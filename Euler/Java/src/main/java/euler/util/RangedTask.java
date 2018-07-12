@@ -4,7 +4,7 @@ import java.util.concurrent.RecursiveTask;
 
 public abstract class RangedTask<V> extends RecursiveTask<V> {
     private static final long serialVersionUID = 2169885264130215721L;
-    private final int from, to, segments;
+    final int from, to, segments;
 
     protected RangedTask(int from, int to) {
         this(from, to, 100);

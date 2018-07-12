@@ -66,6 +66,27 @@ public class IntArray implements Iterable<Integer>, Cloneable {
     }
 
     /**
+     * Resize the array to the given length.
+     */
+    public void resize(int newsize) {
+        resize(newsize, 0);
+    }
+
+    /**
+     * Resize the array to the given length. Fill new element
+     * with given value.
+     */
+    public void resize(int newsize, int fill) {
+        if (newsize < 0)
+            throw new IllegalArgumentException("Negaive size");
+        if (newsize > length) {
+            ensureCapacity(newsize);
+            Arrays.fill(a, length, newsize, fill);
+        }
+        length = newsize;
+    }
+
+    /**
      * Return the size of the array.
      */
     public int size() {
@@ -83,6 +104,8 @@ public class IntArray implements Iterable<Integer>, Cloneable {
      * Get the element value in the given index.
      */
     public int get(int index) {
+        if (index >= length)
+            throw new IndexOutOfBoundsException("Index: "+index+", Size: "+length);
         return a[index];
     }
 
@@ -90,6 +113,7 @@ public class IntArray implements Iterable<Integer>, Cloneable {
      * Set the element value in the given index.
      */
     public void set(int index, int value) {
+        ensureCapacity(index + 1);
         a[index] = value;
     }
 
@@ -115,6 +139,8 @@ public class IntArray implements Iterable<Integer>, Cloneable {
      * Removes the element at the specified index in this array.
      */
     public void removeAt(int index) {
+        if (index >= length)
+            throw new IndexOutOfBoundsException("Index: "+index+", Size: "+length);
         System.arraycopy(a, index + 1, a, index, length - index - 1);
         length--;
     }

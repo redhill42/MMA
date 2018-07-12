@@ -30,7 +30,7 @@ public class LongRangedTask extends RangedTask<Long> {
 
     @Override
     protected RangedTask<Long> fork(int from, int to) {
-        return new LongRangedTask(from, to, task);
+        return new LongRangedTask(from, to, segments, task);
     }
 
     /**

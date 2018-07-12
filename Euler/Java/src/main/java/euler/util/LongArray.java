@@ -66,6 +66,27 @@ public class LongArray implements Iterable<Long> {
     }
 
     /**
+     * Resize the array to the given length.
+     */
+    public void resize(int newsize) {
+        resize(newsize, 0);
+    }
+
+    /**
+     * Resize the array to the given length. Fill new element
+     * with given value.
+     */
+    public void resize(int newsize, long fill) {
+        if (newsize < 0)
+            throw new IllegalArgumentException("Negative size");
+        if (newsize > length) {
+            ensureCapacity(newsize);
+            Arrays.fill(a, length, newsize, fill);
+        }
+        length = newsize;
+    }
+
+    /**
      * Return the size of the array.
      */
     public int size() {
@@ -83,6 +104,8 @@ public class LongArray implements Iterable<Long> {
      * Get the element value in the given index.
      */
     public long get(int index) {
+        if (index >= length)
+            throw new IndexOutOfBoundsException("Index: "+index+", Size: "+length);
         return a[index];
     }
 
@@ -90,6 +113,7 @@ public class LongArray implements Iterable<Long> {
      * Set the element value in the given index.
      */
     public void set(int index, long value) {
+        ensureCapacity(index + 1);
         a[index] = value;
     }
 
@@ -115,6 +139,8 @@ public class LongArray implements Iterable<Long> {
      * Removes the element at the specified index in this array.
      */
     public void removeAt(int index) {
+        if (index >= length)
+            throw new IndexOutOfBoundsException("Index: "+index+", Size: "+length);
         System.arraycopy(a, index + 1, a, index, length - index - 1);
         length--;
     }
