@@ -2,10 +2,9 @@ package euler.algo;
 
 import java.util.Arrays;
 
-import static euler.algo.Library.even;
 import static euler.algo.Library.isqrt;
 import static euler.algo.Library.mod;
-import static euler.algo.Library.modmul;
+import static euler.algo.Library.tri;
 import static java.lang.Math.log;
 
 public final class Sublinear {
@@ -212,7 +211,7 @@ public final class Sublinear {
 
         for (int x = large.length - 1; x >= 1; x--) {
             long k = n / x, maxk = isqrt(k);
-            long res = even(k) ? modmul(k>>1, k+1, m) : modmul(k, (k+1)>>1, m);
+            long res = tri(k, m);
             res -= (k + 1) / 2;
             for (int z = 2; z <= maxk; z++) {
                 long i = k / z;

@@ -603,6 +603,14 @@ public final class Library {
         return y;
     }
 
+    /**
+     * Returns the nth triangular number modulo m
+     */
+    public static long tri(long n, long m) {
+        return even(n) ? modmul(n >> 1, n + 1, m)
+                       : modmul(n, (n + 1) >> 1, m);
+    }
+
     public static long reverse(long n) {
         return reverse(n, 10);
     }

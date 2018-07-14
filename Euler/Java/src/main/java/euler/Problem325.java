@@ -9,6 +9,7 @@ import static euler.algo.Library.big;
 import static euler.algo.Library.even;
 import static euler.algo.Library.modmul;
 import static euler.algo.Library.pow;
+import static euler.algo.Library.tri;
 import static java.math.BigInteger.ONE;
 import static java.math.BigInteger.ZERO;
 
@@ -45,7 +46,7 @@ public final class Problem325 {
         for (long n = 1; n <= N0; n++) {
             long k = (long)((PHI - 1) * n);
             S1 += modmul(n + n, k, M);
-            S1 += even(k) ? modmul(k/2, k+1, M) : modmul(k, (k+1)/2, M);
+            S1 += tri(k, M);
             S1 %= M;
         }
 
