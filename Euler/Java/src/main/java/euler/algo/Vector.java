@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongUnaryOperator;
 
-import static euler.algo.Library.modmul;
-
 /**
  * This class represents a immutable vector.
  */
@@ -27,6 +25,7 @@ public class Vector {
     public static Vector valueOf(long... values) {
         return new Vector(values);
     }
+
     /**
      * Create a vector by evaluating f with i ranging from 1 to n.
      *
@@ -36,8 +35,8 @@ public class Vector {
      */
     public static Vector build(int n, LongUnaryOperator f) {
         long[] v = new long[n];
-        for (int i = 1; i <= n; i++)
-            v[i-1] = f.applyAsLong(i);
+        for (int i = 0; i < n; i++)
+            v[i] = f.applyAsLong(i+1);
         return new Vector(v);
     }
 
@@ -120,13 +119,6 @@ public class Vector {
     }
 
     /**
-     * Returns the product of two vectors.
-     */
-    public Vector mul(Vector other) {
-        return map2(other, (x, y) -> x * y);
-    }
-
-    /**
      * Return the product of a vector and a factor.
      */
     public Vector mul(long a) {
@@ -136,7 +128,7 @@ public class Vector {
     /**
      * Returns the dot product of two vectors.
      */
-    public long dot(Vector other) {
+    public long mul(Vector other) {
         if (length() != other.length())
             throw new UnsupportedOperationException("Vectors have different dimension");
 
@@ -152,7 +144,7 @@ public class Vector {
     /**
      * Returns the dot product of a vector and a matrix.
      */
-    public Vector dot(Matrix other) {
+    public Vector mul(Matrix other) {
         int n = other.rows(), m = other.columns();
         if (length() != n)
             throw new UnsupportedOperationException("Vector and matrix have differnet dimension");
@@ -180,7 +172,7 @@ public class Vector {
     /**
      * Returns the modulo dot product of two vectors.
      */
-    public long moddot(Vector other, long M) {
+    public long modmul(Vector other, long M) {
         if (length() != other.length())
             throw new UnsupportedOperationException("Vectors have different dimension");
 
@@ -189,14 +181,14 @@ public class Vector {
 
         long res = 0;
         for (int i = 0; i < A.length; i++)
-            res = (res + modmul(A[i], B[i], M)) % M;
+            res = (res + Library.modmul(A[i], B[i], M)) % M;
         return res;
     }
 
     /**
      * Returns the modulo dot product of a vector and a matrix.
      */
-    public Vector moddot(Matrix other, long M) {
+    public Vector modmul(Matrix other, long M) {
         int n = other.rows(), m = other.columns();
         if (length() != n)
             throw new UnsupportedOperationException("Vector and matrix have different dimension");
@@ -208,7 +200,7 @@ public class Vector {
         for (int i = 0; i < m; i++) {
             long sum = 0;
             for (int j = 0; j < n; j++)
-                sum = (sum + modmul(A[j], B[j][i], M)) % M;
+                sum = (sum + Library.modmul(A[j], B[j][i], M)) % M;
             C[i] = sum;
         }
         return new Vector(C);

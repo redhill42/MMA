@@ -159,6 +159,13 @@ public class LongArray implements Iterable<Long> {
     }
 
     /**
+     * Removes all of the elements from this array.
+     */
+    public void clear() {
+        length = 0;
+    }
+
+    /**
      * Reverse the contents of this array.
      */
     public void reverse() {

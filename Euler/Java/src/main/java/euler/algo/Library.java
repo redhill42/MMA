@@ -362,6 +362,24 @@ public final class Library {
         return (long)Math.sqrt(n);
     }
 
+    public static BigInteger isqrt(BigInteger n) {
+        // "bit" starts at the highest power of four <= n
+        int b = n.bitLength() - 1;
+        BigInteger bit = BigInteger.ONE.shiftLeft(b - (b & 1));
+        BigInteger res = BigInteger.ZERO;
+
+        while (bit.signum() != 0) {
+            BigInteger t = res.add(bit);
+            if (n.compareTo(t) >= 0) {
+                n = n.subtract(t);
+                res = res.shiftRight(1).add(bit);
+            } else
+                res = res.shiftRight(1);
+            bit = bit.shiftRight(2);
+        }
+        return res;
+    }
+
     public static int icbrt(long n) {
         return (int)Math.cbrt(n);
     }
@@ -384,10 +402,11 @@ public final class Library {
         return (x & (x - 1)) == 0;
     }
 
-    private static final int smallPrimes =
-        (1 <<  2) | (1 <<  3) | (1 <<  5) | (1 <<  7) | (1 << 11) |
-        (1 << 13) | (1 << 17) | (1 << 19) | (1 << 23) | (1 << 29) |
-        (1 << 31);
+    private static final long smallPrimes =
+        (1L <<  2) | (1L <<  3) | (1L <<  5) | (1L <<  7) | (1L << 11) |
+        (1L << 13) | (1L << 17) | (1L << 19) | (1L << 23) | (1L << 29) |
+        (1L << 31) | (1L << 37) | (1L << 41) | (1L << 43) | (1L << 47) |
+        (1L << 53) | (1L << 59) | (1L << 61);
 
     // Deterministic variants of the Miller-Rabin primality test
     // https://en.wikipedia.org/wiki/Miller–Rabin_primality_test#Deterministic_variants
@@ -401,8 +420,8 @@ public final class Library {
     public static boolean isPrime(long n) {
         if (n < 0)
             return false;
-        if (n < 32)
-            return (smallPrimes & (1 << n)) != 0;
+        if (n < 64)
+            return (smallPrimes & (1L << n)) != 0;
         if (even(n))
             return false;
 

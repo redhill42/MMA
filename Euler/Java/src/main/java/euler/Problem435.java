@@ -16,7 +16,7 @@ public final class Problem435 {
     private static long F(long n, int x, long m) {
         Matrix A = Matrix.valueOf(new long[][]{{x, x*x, 0}, {1, 0, 0}, {1, 0, 1}});
         Vector V = Vector.valueOf(x, 0, 0);
-        return A.modpow(n, m).moddot(V, m).a(2);
+        return A.modpow(n, m).modmul(V, m).a(2);
     }
 
     public static void main(String[] args) {

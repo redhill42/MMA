@@ -20,8 +20,8 @@ public final class Problem624 {
         });
         Vector b0 = Vector.valueOf(145, 31, 5, 1);
 
-        long a = an.modpow(n - 3, m).moddot(a0, m).a(0);
-        long b = bn.modpow(n - 4, m).moddot(b0, m).a(0);
+        long a = an.modpow(n - 3, m).modmul(a0, m).a(0);
+        long b = bn.modpow(n - 4, m).modmul(b0, m).a(0);
         return modmul(a, modinv(b, m), m);
     }
 

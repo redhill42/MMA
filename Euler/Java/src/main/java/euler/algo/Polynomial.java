@@ -49,6 +49,13 @@ public class Polynomial {
     }
 
     /**
+     * Creates the polynomial with coefficients.
+     */
+    public static Polynomial make(long... coef) {
+        return new Polynomial(coef);
+    }
+
+    /**
      * Returns the degree of this polynomial.
      */
     public int degree() {
@@ -141,6 +148,16 @@ public class Polynomial {
         long[] t = Arrays.copyOf(coef, deg + 1);
         for (int i = 0; i < t.length; i++)
             t[i] *= c;
+        return new Polynomial(t, deg);
+    }
+
+    /**
+     * Returns the polynomial divided by a constant.
+     */
+    public Polynomial div(long c) {
+        long[] t = Arrays.copyOf(coef, deg + 1);
+        for (int i = 0; i < t.length; i++)
+            t[i] /= c;
         return new Polynomial(t, deg);
     }
 

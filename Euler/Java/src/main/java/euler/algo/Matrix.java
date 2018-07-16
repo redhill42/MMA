@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.function.LongBinaryOperator;
 import java.util.function.LongUnaryOperator;
 
-import static euler.algo.Library.modmul;
-
 /**
  * This class represents an immutable matrix.
  */
@@ -36,7 +34,7 @@ public class Matrix {
     public static Matrix build(int n, int m, LongBinaryOperator f) {
         long[][] v = new long[n][m];
         for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
+            for (int j = 0; j < m; j++)
                 v[i][j] = f.applyAsLong(i+1, j+1);
         return new Matrix(v);
     }
@@ -159,8 +157,7 @@ public class Matrix {
      * over all elements of the matrix.
      */
     public Matrix map(LongUnaryOperator f) {
-        int n = rows();
-        int m = columns();
+        int n = rows(), m = columns();
         long[][] r = new long[n][m];
         for (int i = 0; i < n; i++)
             for (int j = 0; j < m; j++)
@@ -173,8 +170,7 @@ public class Matrix {
      * over all elements of this and other matrix.
      */
     public Matrix map2(Matrix other, LongBinaryOperator f) {
-        int n = rows();
-        int m = columns();
+        int n = rows(), m = columns();
         if (n != other.rows() || m != other.columns())
             throw new UnsupportedOperationException("Matrices have different dimensions");
 
@@ -214,21 +210,14 @@ public class Matrix {
     }
 
     /**
-     * Subtract vector element from a constant.
+     * Subtract matrix element from a constant.
      */
     public Matrix sub(long a) {
         return map(x -> x - a);
     }
 
     /**
-     * Returns the product of matrices.
-     */
-    public Matrix mul(Matrix other) {
-        return map2(other, (x, y) -> x * y);
-    }
-
-    /**
-     * Returns the product of a matrix and factor
+     * Returns the product of a matrix and a factor.
      */
     public Matrix mul(long a) {
         return map(x -> x * a);
@@ -237,7 +226,7 @@ public class Matrix {
     /**
      * Returns the dot product of two matrices.
      */
-    public Matrix dot(Matrix other) {
+    public Matrix mul(Matrix other) {
         int n = rows(), m = columns(), p = other.columns();
         if (m != other.rows())
             throw new UnsupportedOperationException("Matrices have different dimensions");
@@ -260,7 +249,7 @@ public class Matrix {
     /**
      * Returns the dot product of a matrix and a vector.
      */
-    public Vector dot(Vector other) {
+    public Vector mul(Vector other) {
         int n = rows(), m = columns();
         if (m != other.length())
             throw new UnsupportedOperationException("Matrix and vector have different dimensions");
@@ -293,8 +282,8 @@ public class Matrix {
         Matrix A = this, B = this;
         while (n > 0) {
             if ((n & 1) != 0)
-                B = A.dot(B);
-            A = A.dot(A);
+                B = A.mul(B);
+            A = A.mul(A);
             n >>= 1;
         }
         return B;
@@ -310,7 +299,7 @@ public class Matrix {
     /**
      * Returns the modulo dot product of two matrices.
      */
-    public Matrix moddot(Matrix other, long mod) {
+    public Matrix modmul(Matrix other, long mod) {
         int n = rows(), m = columns(), p = other.columns();
         if (m != other.rows())
             throw new UnsupportedOperationException("Matrices have different dimensions");
@@ -323,7 +312,7 @@ public class Matrix {
             for (int j = 0; j < p; j++) {
                 long sum = 0;
                 for (int k = 0; k < m; k++)
-                    sum = (sum + modmul(A[i][k], B[k][j], mod)) % mod;
+                    sum = (sum + Library.modmul(A[i][k], B[k][j], mod)) % mod;
                 C[i][j] = sum;
             }
         }
@@ -333,7 +322,7 @@ public class Matrix {
     /**
      * Returns the modulo dot product of a Matrix and a Vector.
      */
-    public Vector moddot(Vector other, long mod) {
+    public Vector modmul(Vector other, long mod) {
         int n = rows(), m = columns();
         if (m != other.length())
             throw new UnsupportedOperationException("Matrix and vector have different dimensions");
@@ -345,7 +334,7 @@ public class Matrix {
         for (int i = 0; i < n; i++) {
             long sum = 0;
             for (int j = 0; j < m; j++)
-                sum = (sum + modmul(A[i][j], B[j], mod)) % mod;
+                sum = (sum + Library.modmul(A[i][j], B[j], mod)) % mod;
             C[i] = sum;
         }
         return new Vector(C);
@@ -366,8 +355,8 @@ public class Matrix {
         Matrix A = this, B = this;
         while (n > 0) {
             if ((n & 1) != 0)
-                B = A.moddot(B, m);
-            A = A.moddot(A, m);
+                B = A.modmul(B, m);
+            A = A.modmul(A, m);
             n >>= 1;
         }
         return B;
@@ -401,7 +390,10 @@ public class Matrix {
      * Returns the array representation of a matrix.
      */
     public long[][] toArray() {
-        return _v.clone();
+        long[][] r = new long[_v.length][];
+        for (int i = 0; i < r.length; i++)
+            r[i] = _v[i].clone();
+        return r;
     }
 
     /**

@@ -33,10 +33,10 @@ public final class Problem577 {
         Matrix m = Matrix.valueOf(new long[][]{{0, -1}, {1, 1}});
         Vector p1 = Vector.valueOf(x1, y1);
         Vector p2 = Vector.valueOf(x2, y2);
-        Vector p3 = p2.add(m.dot(p2.sub(p1)));
-        Vector p4 = p3.add(m.dot(p3.sub(p2)));
-        Vector p5 = p4.add(m.dot(p4.sub(p3)));
-        Vector p6 = p5.add(m.dot(p5.sub(p4)));
+        Vector p3 = p2.add(m.mul(p2.sub(p1)));
+        Vector p4 = p3.add(m.mul(p3.sub(p2)));
+        Vector p5 = p4.add(m.mul(p4.sub(p3)));
+        Vector p6 = p5.add(m.mul(p5.sub(p4)));
         return inside(n, p3) && inside(n, p4) && inside(n, p5) && inside(n, p6);
     }
 
