@@ -3,6 +3,9 @@ package euler.algo;
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+
+import euler.util.LongArray;
+
 import static euler.algo.Library.isqrt;
 
 @SuppressWarnings("unused")
@@ -164,6 +167,18 @@ public class SegmentedSieve {
                 fill();
             }
             return result;
+        }
+
+        /**
+         * Returns the primes in the segment.
+         *
+         * @return an array that contains all prime in the segment
+         */
+        public long[] getPrimes() {
+            LongArray res = new LongArray();
+            for (long p; (p = next()) > 0; )
+                res.add(p);
+            return res.toArray();
         }
 
         @Override
