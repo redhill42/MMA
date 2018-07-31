@@ -131,8 +131,14 @@ public final class Library {
     }
 
     public static long exgcd(long a, long b, long[] r) {
-        if (a < 0) a = -a;
-        if (b < 0) b = -b;
+        if (a < 0 || b < 0) {
+            long g = exgcd(Math.abs(a), Math.abs(b), r);
+            if (a < 0)
+                r[0] = -r[0];
+            if (b < 0)
+                r[1] = -r[1];
+            return g;
+        }
 
         long x0 = 1, x1 = 0;
         long y0 = 0, y1 = 1;

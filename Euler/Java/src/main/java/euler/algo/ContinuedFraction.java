@@ -218,6 +218,8 @@ public abstract class ContinuedFraction {
     private boolean allowHalf(int k) {
         int s = 1;
         for (int i = k; i > 0; i--) {
+            if (isFinite() && 2 * k - i >= length())
+                return s < 0;
             int diff = s * (term(i) - term(2 * k - i));
             if (diff > 0)
                 return true;
