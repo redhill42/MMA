@@ -1,9 +1,8 @@
 package euler;
 
 import java.util.BitSet;
-
-import euler.algo.TonelliShanks;
 import euler.algo.PrimeSieve;
+import static euler.algo.Library.modsqrt;
 
 public final class Problem216 {
     private Problem216() {}
@@ -14,17 +13,15 @@ public final class Problem216 {
         t.set(1);
 
         for (int p = 2; p > 0; p = primes.nextPrime(p)) {
-            if (p % 8 == 1 || p % 8 == 7) {
-                int r = TonelliShanks.solve((p + 1) / 2, p);
-                if (r == -1)
-                    continue;
-                if (r > p / 2)
-                    r = p - r;
-                for (int m = p; m - r <= limit; m += p) {
-                    t.set(m - r);
-                    if (m + r <= limit)
-                        t.set(m + r);
-                }
+            int r = modsqrt((p + 1) / 2, p);
+            if (r == -1)
+                continue;
+            if (r > p / 2)
+                r = p - r;
+            for (int m = p; m - r <= limit; m += p) {
+                t.set(m - r);
+                if (m + r <= limit)
+                    t.set(m + r);
             }
         }
         return limit - t.cardinality();

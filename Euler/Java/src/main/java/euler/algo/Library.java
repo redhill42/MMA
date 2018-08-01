@@ -3,6 +3,7 @@ package euler.algo;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @SuppressWarnings("unused")
 public final class Library {
@@ -320,6 +321,74 @@ public final class Library {
             throw new IllegalArgumentException(
                 String.format("Inverse modulo does not exist: %d^-1 (mod %d)", x, m));
         }
+    }
+
+    private static final Random random = new Random();
+
+    /**
+     * Find modular square root using Tonelli Shanks algorithm, i.e.,
+     * solve the congruence <em>x<sup>2</sup> ≡ n (mod p)</em>.
+     *
+     * @param n the number has a square root modulo p
+     * @param p an odd prime
+     * @return R satisfying <em>R<sup>2</sup> ≡ n (mod p)</em>.
+     */
+    public static int modsqrt(int n, int p) {
+        if (n % p == 0)
+            return 0;
+        if (!hasSquareRoot(n, p))
+            return -1; // no solution
+
+        // Compute Q,S from p - 1 = Q2^s with Q odd.
+        int s = exponent(p - 1, 2);
+        int q = (p - 1) >> s;
+
+        // If p == 3 (mod 4), then no need to use Tonelli-Shanks to find
+        // the answer. We can compute the solution more simply as
+        // R == n^((p+1)/4) (mod p). Note that p == 3 (mod 4) if and only
+        // if S = 1 int the previous step.
+        if (s == 1)
+            return modpow(n, (p + 1) / 4, p);
+
+        // Find a number z that has no square root modulo p, i.e. is a quadratic
+        // nonresidue modulo p. Wikipedia says that there is no deterministic
+        // algorithm that runs in polynomial time for finding such a number.
+        // Luckily, with the Legendre symbol, we know that half of the number
+        // 1, 2, ..., p-1 are quadratic residues and the other half are quadratic
+        // nonresidues, so on average we only have to check two random numbers
+        // 1 <= z < p to find a valid z.
+        int z;
+        do {
+            z = random.nextInt(p - 1) + 1;
+        } while (modpow(z, (p - 1) / 2, p) != p - 1);
+
+        int c = modpow(z, q, p);
+        int t = modpow(n, q, p);
+        int r = modpow(n, (q + 1) / 2, p);
+        int m = s;
+
+        while (t != 1) {
+            // Find the lowest 0 < i < M such that t^2^i == 1 (mod p),
+            // e.g., via repeated squaring.
+            int i = 0, t1 = t;
+            while (t1 != 1) {
+                t1 = (int)((long)t1 * t1 % p);
+                i++;
+            }
+
+            int b = modpow(c, 1 << (m - i - 1), p);
+            c = (int)((long)b * b % p);
+            t = (int)((long)t * c % p);
+            r = (int)((long)r * b % p);
+            m = i;
+        }
+        return r;
+    }
+
+    private static boolean hasSquareRoot(int n, int p) {
+        if (n == (p + 1) / 2)
+            return (p & 7) == 1 || (p & 7) == 7;
+        return modpow(n, (p - 1) / 2, p) == 1;
     }
 
     /**
