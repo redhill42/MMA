@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import static euler.algo.Library.modinv;
 import euler.algo.PrimeSieve;
+import euler.util.LongRangedTask;
 
 public final class Problem365 {
     private Problem365() {}
@@ -16,18 +17,19 @@ public final class Problem365 {
             reminders[i] = lucas(n, k, primes[i]);
         }
 
-        long sum = 0;
-        for (int a = 0; a < primes.length; a++) {
-            for (int b = a + 1; b < primes.length; b++) {
-                for (int c = b + 1; c < primes.length; c++) {
-                    sum += chineseRemainder(
-                        reminders[a], reminders[b], reminders[c],
-                        primes[a], primes[b], primes[c]);
+        return LongRangedTask.parallel(0, primes.length-1, 10, (lo, hi) -> {
+            long sum = 0;
+            for (int a = lo; a <= hi; a++) {
+                for (int b = a + 1; b < primes.length; b++) {
+                    for (int c = b + 1; c < primes.length; c++) {
+                        sum += chineseRemainder(
+                            reminders[a], reminders[b], reminders[c],
+                            primes[a], primes[b], primes[c]);
+                    }
                 }
             }
-        }
-
-        return sum;
+            return sum;
+        });
     }
 
     private static int[] getPrimes(int from, int to) {
