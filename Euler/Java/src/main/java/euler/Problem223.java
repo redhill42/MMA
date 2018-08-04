@@ -1,6 +1,9 @@
 package euler;
 
+import java.util.function.Predicate;
+
 import euler.algo.Pythagorean;
+import euler.algo.Triple;
 import euler.util.LongRangedTask;
 
 public final class Problem223 {
@@ -17,13 +20,18 @@ public final class Problem223 {
 
     private static long search(int n, int limit) {
         long[][] start = {{1, n, n}};
-        return Pythagorean.solve(start, t -> {
+        Predicate<Triple> filter = t -> {
             if (t.perimeter() > limit)
                 return false;
             if (t.a == 1 && t.b != n)
                 return false;
             return true;
-        }, null, null);
+        };
+
+        long count = 0;
+        for (Triple ignored : Pythagorean.solve(start, filter, null))
+            count++;
+        return count;
     }
 
     public static void main(String[] args) {
