@@ -570,6 +570,13 @@ public class Factorization implements Iterable<PrimeFactor> {
     }
 
     /**
+     * Returns the prime factors as an array.
+     */
+    public PrimeFactor[] factors() {
+        return factors.clone();
+    }
+
+    /**
      * Returns the String representation of an integer factorization.
      */
     public String toString() {
