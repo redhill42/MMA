@@ -113,7 +113,10 @@ public class IntArray implements Iterable<Integer>, Cloneable {
      * Set the element value in the given index.
      */
     public void set(int index, int value) {
-        ensureCapacity(index + 1);
+        if (length < index + 1) {
+            ensureCapacity(length + 1);
+            length = index + 1;
+        }
         a[index] = value;
     }
 

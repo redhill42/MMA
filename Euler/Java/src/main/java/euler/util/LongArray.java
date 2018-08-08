@@ -113,7 +113,10 @@ public class LongArray implements Iterable<Long> {
      * Set the element value in the given index.
      */
     public void set(int index, long value) {
-        ensureCapacity(index + 1);
+        if (length < index + 1) {
+            ensureCapacity(length + 1);
+            length = index + 1;
+        }
         a[index] = value;
     }
 

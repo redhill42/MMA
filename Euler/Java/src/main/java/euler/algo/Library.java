@@ -437,6 +437,24 @@ public final class Library {
         return (long)Math.sqrt(n);
     }
 
+    public static long isqrtExact(long n) {
+        // "bit" starts with the highest power of four <= n
+        int  b   = 63 - Long.numberOfLeadingZeros(n);
+        long bit = 1L << (b - (b & 1));
+        long res = 0;
+
+        while (bit != 0) {
+            long t = res + bit;
+            res >>= 1;
+            if (n >= t) {
+                n -= t;
+                res += bit;
+            }
+            bit >>= 2;
+        }
+        return res;
+    }
+
     public static BigInteger isqrt(BigInteger n) {
         // "bit" starts at the highest power of four <= n
         int b = n.bitLength() - 1;
@@ -445,11 +463,11 @@ public final class Library {
 
         while (bit.signum() != 0) {
             BigInteger t = res.add(bit);
+            res = res.shiftRight(1);
             if (n.compareTo(t) >= 0) {
                 n = n.subtract(t);
-                res = res.shiftRight(1).add(bit);
-            } else
-                res = res.shiftRight(1);
+                res = res.add(bit);
+            }
             bit = bit.shiftRight(2);
         }
         return res;
