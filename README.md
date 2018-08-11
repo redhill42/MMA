@@ -8,3 +8,5 @@ Project Euler 主要以数论、组合数学、离散数学、计算几何等问
 
 每个问题都尽量给出 Mathematica 和 Java 两种解法，以呈现在不同程序风格下的算法实现。如果 Mathematica 运行速度很慢，则只给出 Java 解法。
 一些数论和组合数学的基本算法已被整理成 Java 程序包，包括埃拉托色尼筛法、中国剩余定理、整数拆分、佩尔方程、连分数等等，可以用来解决很多问题。
+
+![Score](https://projecteuler.net/profile/redhill42.png)

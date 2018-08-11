@@ -110,9 +110,15 @@ public final class Library {
         return res;
     }
 
-    public static int exgcd(int a, int b, int[] r) {
-        if (a < 0) a = -a;
-        if (b < 0) b = -b;
+    public static int exgcd(int[] r, int a, int b) {
+        if (a < 0 || b < 0) {
+            int g = exgcd(r, Math.abs(a), Math.abs(b));
+            if (a < 0)
+                r[0] = -r[0];
+            if (b < 0)
+                r[1] = -r[1];
+            return g;
+        }
 
         int x0 = 1, x1 = 0;
         int y0 = 0, y1 = 1;
@@ -131,9 +137,9 @@ public final class Library {
         return a;
     }
 
-    public static long exgcd(long a, long b, long[] r) {
+    public static long exgcd(long[] r, long a, long b) {
         if (a < 0 || b < 0) {
-            long g = exgcd(Math.abs(a), Math.abs(b), r);
+            long g = exgcd(r, Math.abs(a), Math.abs(b));
             if (a < 0)
                 r[0] = -r[0];
             if (b < 0)
@@ -158,6 +164,21 @@ public final class Library {
         return a;
     }
 
+    public static long exgcd(long[] r, long... xs) {
+        long[] t = new long[2];
+        int k = 1;
+
+        long x = xs[0];
+        r[0] = 1;
+        for (int i = 1; i < xs.length; i++) {
+            x = exgcd(t, x, xs[i]);
+            for (int j = 0; j < k; j++)
+                r[j] *= t[0];
+            r[k++] = t[1];
+        }
+        return x;
+    }
+
     public static long chineseRemainder(long a, long n, long b, long m) {
         if (n < 0)
             n = -n;
@@ -168,7 +189,7 @@ public final class Library {
         b = mod(b, m);
 
         long[] p = new long[2];
-        long d = exgcd(n, m, p);
+        long d = exgcd(p, n, m);
         if ((b - a) % d != 0)
             return -1;
         m /= d;
