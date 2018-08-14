@@ -1,21 +1,22 @@
 package euler;
 
 import java.math.BigInteger;
-import euler.algo.PrimeFactor;
 
 import static euler.algo.Library.big;
 import static euler.algo.Library.factorize;
+import static euler.algo.Library.isCoprime;
 
 public final class Problem284 {
     private Problem284() {}
 
     public static long solve(int n, int radix) {
         long sum = 1;
-        for (PrimeFactor f : factorize(radix)) {
-            long p = f.value();
-            BigInteger a = big(p).pow(n);
-            BigInteger b = big(radix / p).pow(n);
-            sum += accumulate(chineseRemainder(a, b), radix);
+        for (long d : factorize(radix).divisors()) {
+            if (d != 1 && d != radix && isCoprime(d, radix / d)) {
+                BigInteger a = big(d).pow(n);
+                BigInteger b = big(radix / d).pow(n);
+                sum += accumulate(chineseRemainder(a, b), radix);
+            }
         }
         return sum;
     }
