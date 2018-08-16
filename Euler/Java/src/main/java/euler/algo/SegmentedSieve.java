@@ -212,22 +212,31 @@ public class SegmentedSieve {
     }
 
     public Segment[] partition() {
+        return partition(1, limit);
+    }
+
+    public Segment[] partition(long lowest, long highest) {
+        if (lowest <= 0)
+            lowest = 1;
+        if (highest > limit)
+            highest = limit;
+
         int cores = Runtime.getRuntime().availableProcessors();
-        long blocksize = Math.round((double)limit / segmentSize / cores) * segmentSize;
-        if (blocksize == 0) {
+        long blocksize = Math.round((double)(highest - lowest + 1) / segmentSize / cores) * segmentSize;
+        if (blocksize <= 0) {
             return new Segment[] {segment()};
         }
 
         int numblocks = (int)Math.min(cores, (limit + blocksize - 1) / blocksize);
         Segment[] blocks = new Segment[numblocks];
-        long lowest = 1;
+        long low = lowest;
 
         for (int i = 0; i < numblocks - 1; i++) {
-            long highest = lowest + blocksize;
-            blocks[i] = new Segment(lowest, highest - 1);
-            lowest = highest;
+            long high = low + blocksize;
+            blocks[i] = new Segment(low, high - 1);
+            low = high;
         }
-        blocks[numblocks - 1] = new Segment(lowest, limit);
+        blocks[numblocks - 1] = new Segment(low, highest);
 
         return blocks;
     }
