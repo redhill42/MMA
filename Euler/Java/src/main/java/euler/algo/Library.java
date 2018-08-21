@@ -236,18 +236,29 @@ public final class Library {
     }
 
     public static long pow(long x, int n) {
-        if (n == 0)
-            return 1;
-        if (n == 1)
-            return x;
         if (x == 2)
             return 1L << n;
 
-        long y = 1;
-        while (n != 0) {
+        switch (n) {
+        case 0:
+            return 1;
+        case 1:
+            return x;
+        case 2:
+            return x*x;
+        case 3:
+            return x*x*x;
+        case 4:
+            long x2 = x*x;
+            return x2*x2;
+        }
+
+        long y = x; n--;
+        for (;;) {
             if ((n & 1) == 1)
                 y *= x;
-            n >>= 1;
+            if ((n >>= 1) == 0)
+                break;
             x *= x;
         }
         return y;
