@@ -3,6 +3,7 @@ package euler.algo;
 import java.util.Arrays;
 
 import static euler.algo.Library.isqrt;
+import static euler.algo.Library.isqrtExact;
 import static euler.algo.Library.mod;
 import static euler.algo.Library.tri;
 import static java.lang.Math.log;
@@ -116,6 +117,100 @@ public final class Sublinear {
 
     public static long mertens(long n) {
         return mertensList(n).get(n);
+    }
+
+    private static final int[] SMALL = {
+        0, 1, 2, 3, 3, 4, 5, 6, 6, 6, 7
+    };
+
+    /**
+     * Efficient counting square-free numbers.
+     *
+     * Reference: https://arxiv.org/pdf/1107.4890.pdf
+     */
+    public static long sqfn(long n) {
+        if (n < 0)
+            return 0;
+        if (n < SMALL.length)
+            return SMALL[(int)n];
+
+        int  I = (int)(Math.pow(n, 0.2) * Math.pow(log(log(n)), 0.8));
+        int  D = (int)isqrtExact(n / I);
+        int  B = isqrtExact(D);
+        long S = 0;
+
+        PrimeSieve sieve = new PrimeSieve(B);
+        byte[] mu = new byte[B];
+        long[] M1 = new long[D + 1];
+        long[] M2 = new long[I + 1];
+
+        // compute S1(n) and M(d) for d = 1,...,D
+        int a = 1;
+        do {
+            int b = Math.min(a + B - 1, D);
+            tabulateMoebiusBlock(mu, sieve, a, b);
+            for (int k = a; k <= b; k++) {
+                int m = mu[k - a];
+                if (m != 0)
+                    S += m * (n/k/k);
+                M1[k] = M1[k-1] + m;
+            }
+            a = b + 1;
+        } while (a <= D);
+
+        // compute M(x_i) by (9)
+        for (int i = I; i >= 1; i--) {
+            long x = isqrtExact(n / i);
+            long t = 1 - (x + 1) / 2;
+            int  maxd = (int)isqrtExact(x);
+            for (int d = 2; d <= maxd; d++) {
+                long j = x / d;
+                t -= (j <= D) ? M1[(int)j] : M2[d*d*i];
+                if (d != j)
+                    t -= (j - x / (d + 1)) * M1[d];
+            }
+            M2[i] = t;
+        }
+
+        // compute S2(n) by (8)
+        for (int i = 1; i < I; i++)
+            S += M2[i];
+        S -= (I - 1) * M2[I];
+
+        return S;
+    }
+
+    /**
+     * Computing values of the Moebius function: memory efficient sieving in blocks.
+     *
+     * Require: bounds 0 < a <= b
+     * Ensure: μ(k) = mu[k] for each k ∈ [a, b]
+     */
+    private static void tabulateMoebiusBlock(byte[] mu, PrimeSieve sieve, long a, long b) {
+        long[] m = new long[(int)(b - a + 1)];
+        Arrays.fill(mu, (byte)1);
+        Arrays.fill(m, 1);
+
+        int crossto = (int)isqrtExact(b);
+        for (int p = 2; p > 0 && p <= crossto; p = sieve.nextPrime(p)) {
+            for (long k = (a + p - 1) / p * p; k <= b; k += p) {
+                int i = (int)(k - a);
+                mu[i] = (byte)-mu[i];
+                m[i] *= p;
+            }
+
+            long q = (long)p * p;
+            for (long k = (a + q - 1) / q * q; k <= b; k += q) {
+                int i = (int)(k - a);
+                mu[i] = 0;
+            }
+        }
+
+        for (long k = a; k <= b; k++) {
+            int i = (int)(k - a);
+            if (m[i] < k)
+                mu[i] = (byte)-mu[i];
+        }
     }
 
     public static class TotientSumResult extends Result {
