@@ -1,9 +1,8 @@
 package euler;
 
-import java.util.Arrays;
-
 import static euler.algo.Library.modinv;
 import euler.algo.PrimeSieve;
+import euler.util.IntArray;
 import euler.util.LongRangedTask;
 
 public final class Problem365 {
@@ -33,12 +32,11 @@ public final class Problem365 {
     }
 
     private static int[] getPrimes(int from, int to) {
-        int[] primes = new PrimeSieve(to).getPrimes();
-        int i = 0;
-        while (primes[i] < from)
-            i++;
-        System.arraycopy(primes, i, primes, 0, primes.length - i);
-        return Arrays.copyOf(primes, primes.length - i);
+        PrimeSieve sieve = new PrimeSieve(to);
+        IntArray primes = new IntArray();
+        for (int p = sieve.nextPrime(from-1); p > 0; p = sieve.nextPrime(p))
+            primes.add(p);
+        return primes.toArray();
     }
 
     private static int lucas(long n, long k, int p) {
